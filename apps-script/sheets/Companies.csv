@@ -1,0 +1,2 @@
+id,name,slug,logo_url,primary_color,secondary_color,description,contact_email,whatsapp_number,site_status,max_active_jobs
+1,Test Company,test-company,,#1A73E8,#EA4335,We are a test company for WeHire development.,hr@testcompany.com,628123456789,active,5

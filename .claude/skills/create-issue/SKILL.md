@@ -1,6 +1,6 @@
 ---
 name: create-issue
-description: Create a new issue file in issues/ and a matching git branch. Use when asked to create, track, or log a new issue or task.
+description: Create a GitHub Issue, a local issue file in issues/, and a matching git branch. Use when asked to create, track, or log a new issue or task.
 disable-model-invocation: true
 context: fork
 allowed-tools: Bash, Write, Edit, Read
@@ -10,17 +10,26 @@ Create a new issue for this project from $ARGUMENTS.
 
 Steps:
 
-1. **Find next issue number**
-   Run: `ls issues/ | grep -E '^[0-9]{3}-' | sort | tail -1`
-   Extract the number and increment by 1. Zero-pad to 3 digits (e.g. 022).
+1. **Create GitHub Issue**
+   Run: `gh issue create --title "$ARGUMENTS" --body "## Goal
+[Fill in after scaffolding]
 
-2. **Determine type** from the description:
+## Acceptance Criteria
+- [ ] TBD
+
+## Notes
+"`
+   Capture the returned issue number from the printed URL (last path segment).
+
+2. **Use GitHub issue number** as the canonical issue number. Zero-pad to 3 digits → `NNN`.
+
+3. **Determine type** from the description:
    - Bug/fix → `fix`, branch prefix `fix/`
    - Feature/new → `feat`, branch prefix `feat/`
    - Chore/cleanup → `chore`, branch prefix `chore/`
    - Docs → `docs`, branch prefix `docs/`
 
-3. **Create issue file** at `issues/NNN-slug.md`
+4. **Create issue file** at `issues/NNN-slug.md`
    Use kebab-case slug from the title. Template:
 
    ```
@@ -28,6 +37,7 @@ Steps:
 
    **Phase:** [infer from context, default: TBD]
    **Status:** `pending`
+   **GitHub:** [#NNN](url)
 
    ---
 
@@ -45,16 +55,17 @@ Steps:
    - [ ] ...
    ```
 
-4. **Create git branch**
+5. **Create git branch**
    Run: `git checkout -b [type]/issue-NNN-slug`
    Example: `feat/issue-022-receipt-scanning`
 
-5. **Update backlog**
+6. **Update backlog**
    Add a row to the appropriate phase table in `issues/000-backlog.md`:
    `| NNN | Title | \`pending\` | [NNN-slug.md](./NNN-slug.md) |`
-   If unsure which phase, add under a "## Inbox" section at the bottom (create it if it doesn't exist).
+   If unsure which phase, add under the "## Inbox" section at the bottom.
 
-6. **Confirm** — show the user:
+7. **Confirm** — show the user:
+   - GitHub Issue created: title + URL
    - Issue file created: `issues/NNN-slug.md`
    - Branch created: `[type]/issue-NNN-slug`
    - Backlog updated

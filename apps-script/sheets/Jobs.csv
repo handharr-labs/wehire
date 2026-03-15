@@ -1,0 +1,4 @@
+id,company_id,title,department,location,employment_type,min_salary,max_salary,description,requirements,status,expired_at,sort_order
+101,1,Frontend Engineer,Engineering,Jakarta,full_time,8000000,15000000,Build and maintain user-facing features using React and Next.js.,"- 2+ years React experience\n- Familiar with TypeScript\n- Good communication skills",open,2026-12-31T00:00:00Z,1
+102,1,Product Designer,Design,Remote,full_time,7000000,12000000,Design intuitive user experiences for our web and mobile products.,"- Portfolio required\n- Proficient in Figma\n- Experience with design systems",open,2026-12-31T00:00:00Z,2
+103,1,Backend Engineer,Engineering,Jakarta,full_time,9000000,18000000,Design and build scalable APIs and backend services.,"- 3+ years backend experience\n- Node.js or Go\n- Familiar with REST and SQL",open,2026-12-31T00:00:00Z,3

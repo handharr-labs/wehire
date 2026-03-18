@@ -17,4 +17,19 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 | 007 | Implement subdomain routing middleware for branded career pages | `done` | [#7](https://github.com/handharr-labs/wehire/issues/7) |
 | 008 | Enforce plan job limit and surface 'not hiring' state on career page | `done` | [#8](https://github.com/handharr-labs/wehire/issues/8) |
 | 009 | Build WeHire marketing landing page | `done` | [#9](https://github.com/handharr-labs/wehire/issues/9) |
-| 010 | Document environment variable setup and create .env.example | `pending` | [#10](https://github.com/handharr-labs/wehire/issues/10) |
+| 010 | Document environment variable setup and create .env.example | `done` | [#10](https://github.com/handharr-labs/wehire/issues/10) |
+
+## Phase 3 — Multi-Company MVP (Self-Serve Admin & Onboarding) 🔵 Current
+
+| # | Title | Status | GitHub |
+|---|-------|--------|--------|
+| 011 | Implement admin authentication (login and session management) | `open` | [#22](https://github.com/handharr-labs/wehire/issues/22) |
+| 012 | Build company settings admin panel | `open` | [#23](https://github.com/handharr-labs/wehire/issues/23) |
+| 013 | Build job management CRUD for admin | `open` | [#24](https://github.com/handharr-labs/wehire/issues/24) |
+| 014 | Build client onboarding flow (Google Sheets + Drive setup wizard) | `open` | [#25](https://github.com/handharr-labs/wehire/issues/25) |
+
+## Phase 4 — Post-MVP Enhancements
+
+| # | Title | Status | GitHub |
+|---|-------|--------|--------|
+| 015 | Add basic rule-based applicant scoring | `open` | [#26](https://github.com/handharr-labs/wehire/issues/26) |

@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation';
 import { getCompanyBySlugUseCase, getJobsUseCase } from '@/di/container.server';
 import { CareerPageView } from '@/features/career-microsite/presentation/career-page/CareerPageView';
+import { BrandThemeStyle } from '@/features/career-microsite/presentation/shared/BrandThemeStyle';
+import { type Company } from '@/features/career-microsite/domain/entities/Company';
+import { type Job } from '@/features/career-microsite/domain/entities/Job';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -9,11 +12,19 @@ interface Props {
 export default async function CareerPage({ params }: Props) {
   const { slug } = await params;
 
+  let company: Company;
+  let jobs: Job[];
   try {
-    const company = await getCompanyBySlugUseCase.execute(slug);
-    const jobs = await getJobsUseCase.execute(company.id);
-    return <CareerPageView initialData={{ company, jobs }} />;
+    company = await getCompanyBySlugUseCase.execute(slug);
+    jobs = await getJobsUseCase.execute(company.id);
   } catch {
     notFound();
   }
+
+  return (
+    <>
+      <BrandThemeStyle primaryColor={company.primaryColor} secondaryColor={company.secondaryColor} />
+      <CareerPageView initialData={{ company, jobs }} />
+    </>
+  );
 }

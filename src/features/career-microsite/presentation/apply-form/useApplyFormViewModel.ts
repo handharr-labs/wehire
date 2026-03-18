@@ -5,7 +5,7 @@ import { type Company } from '../../domain/entities/Company';
 import { type Job } from '../../domain/entities/Job';
 import { type SubmitApplicationUseCase } from '../../domain/use-cases/SubmitApplicationUseCase';
 
-const CV_MAX_BYTES = 2 * 1024 * 1024; // 2 MB
+const CV_MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export interface ApplyFormViewModel {
   company: Company;
@@ -44,7 +44,7 @@ export function useApplyFormViewModel(
     }
 
     if (cvFile.size > CV_MAX_BYTES) {
-      setCvFileError('CV file must be 2 MB or smaller.');
+      setCvFileError('CV file must be 5 MB or smaller.');
       setIsSubmitting(false);
       return;
     }

@@ -14,7 +14,7 @@ export class JobMapper {
       maxSalary: dto.max_salary,
       description: dto.description,
       requirements: dto.requirements,
-      status: (dto.status as JobStatus) ?? 'active',
+      status: (dto.status === 'open' ? 'active' : (dto.status as JobStatus)) ?? 'active',
       expiredAt: dto.expired_at,
       sortOrder: dto.sort_order,
     };

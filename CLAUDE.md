@@ -21,5 +21,7 @@ Agents: `feature-scaffolder` · `backend-scaffolder` · `debug-agent` · `test-w
 
 Issue rule: On `fix/`|`feature/` branch → add feedback to current issue. On `main` → create new issue.
 
+Issues live in GitHub — use `gh issue view <n>` for context. `issues/000-backlog.md` is a quick-reference index only; no local `.md` files per issue.
+
 ## Code Principles
 CLEAN · DRY · SOLID (SRP, OCP, LSP, ISP, DIP). Wire deps via `src/shared/di/`.

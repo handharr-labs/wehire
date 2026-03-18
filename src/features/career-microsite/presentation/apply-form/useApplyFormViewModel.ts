@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { type Company } from '../../domain/entities/Company';
 import { type Job } from '../../domain/entities/Job';
 import { type SubmitApplicationUseCase } from '../../domain/use-cases/SubmitApplicationUseCase';
+import { DomainError } from '@/shared/domain/errors/DomainError';
 
 const CV_MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 
@@ -65,8 +66,12 @@ export function useApplyFormViewModel(
         coverLetter: String(formData.get('coverLetter') ?? '') || undefined,
       });
       onSuccess();
-    } catch {
-      setError('Failed to submit application. Please try again.');
+    } catch (err) {
+      if (err instanceof DomainError && err.code === 'validationFailed') {
+        setError('This position is no longer accepting applications.');
+      } else {
+        setError('Failed to submit application. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }

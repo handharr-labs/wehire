@@ -5,15 +5,14 @@ import { type Company } from '../../domain/entities/Company';
 import { type Job } from '../../domain/entities/Job';
 import { type SubmitApplicationUseCase } from '../../domain/use-cases/SubmitApplicationUseCase';
 import { DomainError } from '@/shared/domain/errors/DomainError';
-
-const CV_MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+import { applicationFormSchema } from './applicationFormSchema';
 
 export interface ApplyFormViewModel {
   company: Company;
   job: Job;
   isSubmitting: boolean;
   error: string | null;
-  cvFileError: string | null;
+  fieldErrors: Record<string, string> | null;
   handleSubmit(formData: FormData): Promise<void>;
   handleCvFileChange(): void;
 }
@@ -26,26 +25,42 @@ export function useApplyFormViewModel(
 ): ApplyFormViewModel {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [cvFileError, setCvFileError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string> | null>(null);
 
   function handleCvFileChange() {
-    setCvFileError(null);
+    setFieldErrors((prev) => {
+      if (!prev) return null;
+      const next = { ...prev };
+      delete next['cvFile'];
+      return Object.keys(next).length > 0 ? next : null;
+    });
   }
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
     setError(null);
-    setCvFileError(null);
+    setFieldErrors(null);
 
-    const cvFile = formData.get('cvFile');
-    if (!(cvFile instanceof File) || cvFile.size === 0) {
-      setError('Please attach your CV.');
-      setIsSubmitting(false);
-      return;
-    }
+    const result = applicationFormSchema.safeParse({
+      fullName:          formData.get('fullName'),
+      email:             formData.get('email'),
+      phone:             formData.get('phone'),
+      city:              formData.get('city'),
+      experienceSummary: formData.get('experienceSummary'),
+      expectedSalary:    formData.get('expectedSalary'),
+      cvFile:            formData.get('cvFile'),
+      linkedinUrl:       formData.get('linkedinUrl'),
+      portfolioUrl:      formData.get('portfolioUrl'),
+      coverLetter:       formData.get('coverLetter'),
+    });
 
-    if (cvFile.size > CV_MAX_BYTES) {
-      setCvFileError('CV file must be 5 MB or smaller.');
+    if (!result.success) {
+      const flat = result.error.flatten().fieldErrors;
+      setFieldErrors(
+        Object.fromEntries(
+          Object.entries(flat).map(([k, v]) => [k, v?.[0] ?? '']),
+        ),
+      );
       setIsSubmitting(false);
       return;
     }
@@ -54,16 +69,7 @@ export function useApplyFormViewModel(
       await submitUseCase.execute({
         jobId: job.id,
         companyId: company.id,
-        fullName: String(formData.get('fullName') ?? ''),
-        email: String(formData.get('email') ?? ''),
-        phone: String(formData.get('phone') ?? ''),
-        city: String(formData.get('city') ?? ''),
-        experienceSummary: String(formData.get('experienceSummary') ?? ''),
-        expectedSalary: Number(formData.get('expectedSalary') ?? 0),
-        cvFile,
-        linkedinUrl: String(formData.get('linkedinUrl') ?? '') || undefined,
-        portfolioUrl: String(formData.get('portfolioUrl') ?? '') || undefined,
-        coverLetter: String(formData.get('coverLetter') ?? '') || undefined,
+        ...result.data,
       });
       onSuccess();
     } catch (err) {
@@ -77,5 +83,5 @@ export function useApplyFormViewModel(
     }
   }
 
-  return { company, job, isSubmitting, error, cvFileError, handleSubmit, handleCvFileChange };
+  return { company, job, isSubmitting, error, fieldErrors, handleSubmit, handleCvFileChange };
 }

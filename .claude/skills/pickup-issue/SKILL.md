@@ -7,6 +7,8 @@ allowed-tools: Bash, Edit, Read
 
 Pick up GitHub Issue #$ARGUMENTS for local development.
 
+> **IMPORTANT — branch first, code never:** This skill MUST be invoked before any implementation work begins. Do NOT write or modify any code until the branch has been created in Step 4. If you are asked to implement a plan, remind the user to run `/pickup-issue <N>` first.
+
 Steps:
 
 1. **Fetch GitHub Issue data**
@@ -23,9 +25,10 @@ Steps:
    - Zero-pad the issue number to 3 digits → `NNN` (e.g. `35` → `035`)
    - Build a kebab-case slug from the title (lowercase, spaces→dashes, strip special chars)
 
-4. **Create git branch**
+4. **Create git branch** ← must happen before any code is written
    Run: `git checkout -b [type]/issue-NNN-slug`
    Example: `feat/issue-035-add-export-button`
+   If already on the correct branch, skip. If on `main` with uncommitted changes, stash them first (`git stash`), create the branch, then pop (`git stash pop`).
 
 5. **Update backlog**
    Add a row to the "## Inbox" section in `issues/000-backlog.md`:

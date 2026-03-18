@@ -22,7 +22,10 @@ export default async function CareerPage({ params }: Props) {
     notFound();
   }
 
-  const openJobs = jobs.filter(isJobOpen);
+  const openJobs = jobs
+    .filter(isJobOpen)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .slice(0, company.maxActiveJobs);
 
   return (
     <>

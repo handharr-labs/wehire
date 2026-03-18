@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { type CareerPageViewModel, useCareerPageViewModel } from './useCareerPageViewModel';
+import { type CareerPageViewModelInput, useCareerPageViewModel } from './useCareerPageViewModel';
 
 interface Props {
-  initialData: CareerPageViewModel;
+  initialData: CareerPageViewModelInput;
 }
 
 export function CareerPageView({ initialData }: Props) {
-  const { company, jobs } = useCareerPageViewModel(initialData);
+  const { company, jobs, isHiring } = useCareerPageViewModel(initialData);
 
   return (
     <main className="min-h-screen bg-zinc-50">
@@ -28,7 +28,9 @@ export function CareerPageView({ initialData }: Props) {
       <section className="max-w-3xl mx-auto px-4 py-10">
         <h2 className="text-lg font-semibold text-zinc-800 mb-6">Open Positions</h2>
 
-        {jobs.length === 0 ? (
+        {!isHiring ? (
+          <p className="text-zinc-500 text-sm">This company is not currently hiring.</p>
+        ) : jobs.length === 0 ? (
           <p className="text-zinc-500 text-sm">No open positions at the moment.</p>
         ) : (
           <ul className="space-y-4">

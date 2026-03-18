@@ -7,7 +7,9 @@ allowed-tools: Bash, Edit, Read
 
 Pick up GitHub Issue #$ARGUMENTS for local development.
 
-> **IMPORTANT — branch first, code never:** This skill MUST be invoked before any implementation work begins. Do NOT write or modify any code until the branch has been created in Step 4. If you are asked to implement a plan, remind the user to run `/pickup-issue <N>` first.
+> **IMPORTANT — branch first, code never:** This skill MUST be invoked before any implementation work begins. Do NOT write or modify any code until the branch has been created in Step 4.
+>
+> **Gate rule for implementers:** If you are about to implement a plan and the current branch is `main`, STOP. Do NOT treat a branch name mentioned inside a plan document as a substitute for actually creating the branch. Run `/pickup-issue <N>` (or `git checkout -b <branch-name>`) first, then proceed with implementation. A plan specifying a branch name is documentation, not execution.
 
 Steps:
 

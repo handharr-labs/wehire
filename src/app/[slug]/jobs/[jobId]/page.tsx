@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getCompanyBySlugUseCase, getJobDetailUseCase } from '@/di/container.server';
 import { JobDetailView } from '@/features/career-microsite/presentation/job-detail/JobDetailView';
 import { BrandThemeStyle } from '@/features/career-microsite/presentation/shared/BrandThemeStyle';
@@ -22,6 +22,8 @@ export default async function JobDetailPage({ params }: Props) {
   } catch {
     notFound();
   }
+
+  if (company.siteStatus !== 'active') redirect(`/${slug}`);
 
   return (
     <>

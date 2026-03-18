@@ -91,10 +91,7 @@ export function createHTTPClient(
 }
 
 export function createUnauthenticatedHTTPClient(baseURL: string): HTTPClient {
-  const instance: AxiosInstance = axios.create({
-    baseURL,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  const instance: AxiosInstance = axios.create({ baseURL });
 
   axiosRetry(instance, {
     retries: 3,

@@ -35,32 +35,32 @@ export function ApplyFormView({ company, job, submitUseCase }: Props) {
         <form onSubmit={onSubmit} className="bg-white rounded-lg border border-zinc-200 p-8 space-y-5">
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="fullName">Full Name *</label>
-            <input id="fullName" name="fullName" type="text" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <input id="fullName" name="fullName" type="text" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="email">Email *</label>
-            <input id="email" name="email" type="email" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <input id="email" name="email" type="email" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="phone">Phone *</label>
-            <input id="phone" name="phone" type="tel" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <input id="phone" name="phone" type="tel" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="city">City *</label>
-            <input id="city" name="city" type="text" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <input id="city" name="city" type="text" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="experienceSummary">Experience Summary *</label>
-            <textarea id="experienceSummary" name="experienceSummary" required rows={4} className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <textarea id="experienceSummary" name="experienceSummary" required rows={4} className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="expectedSalary">Expected Salary (IDR) *</label>
-            <input id="expectedSalary" name="expectedSalary" type="number" required min={0} className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <input id="expectedSalary" name="expectedSalary" type="number" required min={0} className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
@@ -70,17 +70,17 @@ export function ApplyFormView({ company, job, submitUseCase }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="linkedinUrl">LinkedIn URL</label>
-            <input id="linkedinUrl" name="linkedinUrl" type="url" className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <input id="linkedinUrl" name="linkedinUrl" type="url" className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="portfolioUrl">Portfolio URL</label>
-            <input id="portfolioUrl" name="portfolioUrl" type="url" className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <input id="portfolioUrl" name="portfolioUrl" type="url" className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="coverLetter">Cover Letter</label>
-            <textarea id="coverLetter" name="coverLetter" rows={4} className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400" />
+            <textarea id="coverLetter" name="coverLetter" rows={4} className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
           </div>
 
           {error && <p className="text-red-600 text-sm">{error}</p>}

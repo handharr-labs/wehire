@@ -54,8 +54,6 @@ export class AppsScriptDataSource {
     if (payload.portfolioUrl) formData.append('portfolioUrl', payload.portfolioUrl);
     if (payload.coverLetter) formData.append('coverLetter', payload.coverLetter);
 
-    await this.httpClient.post('', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    await this.httpClient.post('', formData);
   }
 }

@@ -10,7 +10,7 @@ Tracked issues for **WeHire**. Each row links to the local issue file.
 |---|-------|--------|------|
 | 001 | Implement Google Apps Script backend for career microsite data and form submission | `done` | [001-google-apps-script-backend.md](./001-google-apps-script-backend.md) |
 | 002 | Add CV file size client-side validation to application form | `done` | [002-cv-file-size-validation.md](./002-cv-file-size-validation.md) |
-| 003 | Apply company brand colors dynamically on career pages | `open` | [003-brand-color-theming.md](./003-brand-color-theming.md) |
+| 003 | Apply company brand colors dynamically on career pages | `done` | [003-brand-color-theming.md](./003-brand-color-theming.md) |
 | 004 | Guard apply form against inactive or expired jobs | `open` | [004-inactive-job-guard.md](./004-inactive-job-guard.md) |
 | 005 | Add Zod schema validation to application form fields | `open` | [005-zod-form-validation.md](./005-zod-form-validation.md) |
 | 006 | Write unit and ViewModel hook tests for career-microsite feature | `open` | [006-unit-tests-career-microsite.md](./006-unit-tests-career-microsite.md) |

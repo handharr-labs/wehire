@@ -14,7 +14,7 @@ interface Props {
 
 export function ApplyFormView({ company, job, submitUseCase }: Props) {
   const router = useRouter();
-  const { isSubmitting, error, handleSubmit } = useApplyFormViewModel(
+  const { isSubmitting, error, cvFileError, handleSubmit, handleCvFileChange } = useApplyFormViewModel(
     company,
     job,
     submitUseCase,
@@ -65,7 +65,8 @@ export function ApplyFormView({ company, job, submitUseCase }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="cvFile">CV / Resume *</label>
-            <input id="cvFile" name="cvFile" type="file" required accept=".pdf,.doc,.docx" className="w-full text-sm text-zinc-600" />
+            <input id="cvFile" name="cvFile" type="file" required accept=".pdf,.doc,.docx" onChange={handleCvFileChange} className="w-full text-sm text-zinc-600" />
+            {cvFileError && <p className="text-red-600 text-sm mt-1">{cvFileError}</p>}
           </div>
 
           <div>

@@ -12,15 +12,15 @@ export function CareerPageView({ initialData }: Props) {
 
   return (
     <main className="min-h-screen bg-zinc-50">
-      <header className="bg-white border-b border-zinc-200 py-8">
+      <header className="bg-[var(--brand-primary)] py-12">
         <div className="max-w-3xl mx-auto px-4">
           {company.logoUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={company.logoUrl} alt={company.name} className="h-12 object-contain mb-4" />
           )}
-          <h1 className="text-2xl font-bold text-zinc-900">{company.name}</h1>
+          <h1 className="text-2xl font-bold text-[var(--brand-header-text)]">{company.name}</h1>
           {company.description && (
-            <p className="mt-2 text-zinc-600 text-sm">{company.description}</p>
+            <p className="mt-2 text-[var(--brand-header-text)] opacity-75 text-sm">{company.description}</p>
           )}
         </div>
       </header>
@@ -33,7 +33,7 @@ export function CareerPageView({ initialData }: Props) {
         ) : (
           <ul className="space-y-4">
             {jobs.map((job) => (
-              <li key={job.id} className="bg-white rounded-lg border border-zinc-200 p-5 hover:border-zinc-400 transition-colors">
+              <li key={job.id} className="bg-white rounded-lg border border-zinc-200 p-5 hover:border-[var(--brand-primary)] transition-colors">
                 <Link href={`/${company.slug}/jobs/${job.id}`} className="block">
                   <h3 className="font-semibold text-zinc-900">{job.title}</h3>
                   <p className="text-sm text-zinc-500 mt-1">{job.department} · {job.location} · {job.employmentType}</p>

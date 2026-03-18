@@ -44,7 +44,7 @@ export function JobDetailView({ initialData }: Props) {
           <div className="mt-8">
             <Link
               href={`/${company.slug}/jobs/${job.id}/apply`}
-              className="inline-block bg-zinc-900 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-zinc-700 transition-colors"
+              className="inline-block bg-[var(--brand-primary)] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-[var(--brand-secondary)] transition-colors"
             >
               Apply Now
             </Link>

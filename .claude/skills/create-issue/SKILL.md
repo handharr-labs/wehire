@@ -69,3 +69,5 @@ Steps:
    - Issue file created: `issues/NNN-slug.md`
    - Branch created: `[type]/issue-NNN-slug`
    - Backlog updated
+
+> **PR reminder:** when opening a PR for this issue, put `Closes #NNN` as the **first line** of the PR body so GitHub auto-closes the issue on merge.

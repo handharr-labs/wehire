@@ -29,44 +29,17 @@ Steps:
    - Chore/cleanup → `chore`, branch prefix `chore/`
    - Docs → `docs`, branch prefix `docs/`
 
-4. **Create issue file** at `issues/NNN-slug.md`
-   Use kebab-case slug from the title. Template:
-
-   ```
-   # NNN · Title
-
-   **Phase:** [infer from context, default: TBD]
-   **Status:** `pending`
-   **GitHub:** [#NNN](url)
-
-   ---
-
-   ## Goal
-   [What this accomplishes — infer from $ARGUMENTS]
-
-   ---
-
-   ## Changes
-   [Key changes needed — infer or leave as TBD]
-
-   ---
-
-   ## Acceptance Criteria
-   - [ ] ...
-   ```
-
-5. **Create git branch**
+4. **Create git branch**
    Run: `git checkout -b [type]/issue-NNN-slug`
    Example: `feat/issue-022-receipt-scanning`
 
-6. **Update backlog**
+5. **Update backlog**
    Add a row to the appropriate phase table in `issues/000-backlog.md`:
-   `| NNN | Title | \`pending\` | [NNN-slug.md](./NNN-slug.md) |`
+   `| NNN | Title | \`pending\` | [#NNN](url) |`
    If unsure which phase, add under the "## Inbox" section at the bottom.
 
-7. **Confirm** — show the user:
+6. **Confirm** — show the user:
    - GitHub Issue created: title + URL
-   - Issue file created: `issues/NNN-slug.md`
    - Branch created: `[type]/issue-NNN-slug`
    - Backlog updated
 

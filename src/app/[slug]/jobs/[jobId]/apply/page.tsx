@@ -1,7 +1,8 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getCompanyBySlugUseCase, getJobDetailUseCase } from '@/di/container.server';
 import { ApplyFormClientWrapper } from './ApplyFormClientWrapper';
 import { BrandThemeStyle } from '@/features/career-microsite/presentation/shared/BrandThemeStyle';
+import { isJobOpen } from '@/features/career-microsite/domain/helpers/isJobOpen';
 import { type Company } from '@/features/career-microsite/domain/entities/Company';
 import { type Job } from '@/features/career-microsite/domain/entities/Job';
 
@@ -22,6 +23,8 @@ export default async function ApplyPage({ params }: Props) {
   } catch {
     notFound();
   }
+
+  if (!isJobOpen(job)) redirect(`/${slug}/jobs/${jobId}`);
 
   return (
     <>

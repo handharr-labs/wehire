@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { type JobDetailViewModel, useJobDetailViewModel } from './useJobDetailViewModel';
+import { isJobOpen } from '../../domain/helpers/isJobOpen';
 
 interface Props {
   initialData: JobDetailViewModel;
@@ -42,12 +43,16 @@ export function JobDetailView({ initialData }: Props) {
           </section>
 
           <div className="mt-8">
-            <Link
-              href={`/${company.slug}/jobs/${job.id}/apply`}
-              className="inline-block bg-[var(--brand-primary)] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-[var(--brand-secondary)] transition-colors"
-            >
-              Apply Now
-            </Link>
+            {isJobOpen(job) ? (
+              <Link
+                href={`/${company.slug}/jobs/${job.id}/apply`}
+                className="inline-block bg-[var(--brand-primary)] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-[var(--brand-secondary)] transition-colors"
+              >
+                Apply Now
+              </Link>
+            ) : (
+              <p className="text-sm text-zinc-500">This position is no longer accepting applications.</p>
+            )}
           </div>
         </div>
       </div>

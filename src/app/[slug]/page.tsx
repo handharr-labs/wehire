@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getCompanyBySlugUseCase, getJobsUseCase } from '@/di/container.server';
 import { CareerPageView } from '@/features/career-microsite/presentation/career-page/CareerPageView';
 import { BrandThemeStyle } from '@/features/career-microsite/presentation/shared/BrandThemeStyle';
+import { isJobOpen } from '@/features/career-microsite/domain/helpers/isJobOpen';
 import { type Company } from '@/features/career-microsite/domain/entities/Company';
 import { type Job } from '@/features/career-microsite/domain/entities/Job';
 
@@ -21,10 +22,12 @@ export default async function CareerPage({ params }: Props) {
     notFound();
   }
 
+  const openJobs = jobs.filter(isJobOpen);
+
   return (
     <>
       <BrandThemeStyle primaryColor={company.primaryColor} secondaryColor={company.secondaryColor} />
-      <CareerPageView initialData={{ company, jobs }} />
+      <CareerPageView initialData={{ company, jobs: openJobs }} />
     </>
   );
 }

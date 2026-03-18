@@ -32,7 +32,7 @@ export function ApplyFormView({ company, job, submitUseCase }: Props) {
         <h1 className="text-2xl font-bold text-zinc-900 mb-2">Apply for {job.title}</h1>
         <p className="text-sm text-zinc-500 mb-8">{company.name}</p>
 
-        <form onSubmit={onSubmit} className="bg-white rounded-lg border border-zinc-200 p-8 space-y-5">
+        <form onSubmit={onSubmit} noValidate className="bg-white rounded-lg border border-zinc-200 p-8 space-y-5">
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1" htmlFor="fullName">Full Name *</label>
             <input id="fullName" name="fullName" type="text" required className="w-full border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]" />

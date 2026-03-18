@@ -15,6 +15,6 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 | 005 | Add Zod schema validation to application form fields | `done` | [#5](https://github.com/handharr-labs/wehire/issues/5) |
 | 006 | Write unit and ViewModel hook tests for career-microsite feature | `done` | [#6](https://github.com/handharr-labs/wehire/issues/6) |
 | 007 | Implement subdomain routing middleware for branded career pages | `done` | [#7](https://github.com/handharr-labs/wehire/issues/7) |
-| 008 | Enforce plan job limit and surface 'not hiring' state on career page | `pending` | [#8](https://github.com/handharr-labs/wehire/issues/8) |
-| 009 | Build WeHire marketing landing page | `open` | [#9](https://github.com/handharr-labs/wehire/issues/9) |
+| 008 | Enforce plan job limit and surface 'not hiring' state on career page | `done` | [#8](https://github.com/handharr-labs/wehire/issues/8) |
+| 009 | Build WeHire marketing landing page | `pending` | [#9](https://github.com/handharr-labs/wehire/issues/9) |
 | 010 | Document environment variable setup and create .env.example | `open` | [#10](https://github.com/handharr-labs/wehire/issues/10) |

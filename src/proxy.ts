@@ -1,17 +1,48 @@
 // proxy.ts
-// Rewrites subdomain requests to path-based routes.
-// Driven by NEXT_PUBLIC_BASE_DOMAIN (e.g. "wehire.app").
+// Handles two concerns:
+// 1. Admin route guard — verifies HttpOnly JWT session for /admin/* paths
+// 2. Subdomain proxy — rewrites subdomain requests to path-based routes
 //
 // acme.wehire.app          → /acme
 // acme.wehire.app/jobs/1   → /acme/jobs/1
 // acme.wehire.app/acme/jobs/1 → /acme/jobs/1  (double-prefix guard)
 // wehire.app/acme          → /acme            (path-based, no rewrite)
 
+import { jwtVerify } from 'jose';
 import { NextRequest, NextResponse } from "next/server";
 
 const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "wehire.app";
+const ADMIN_SESSION_COOKIE = 'admin_session';
+const ADMIN_LOGIN_PATH = '/admin/login';
+const ADMIN_ROUTE_RE = /^\/admin(\/|$)/;
 
-export function proxy(request: NextRequest) {
+async function getAdminJwtSecret(): Promise<Uint8Array> {
+  return new TextEncoder().encode(process.env.ADMIN_JWT_SECRET ?? '');
+}
+
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // --- Admin route guard ---
+  if (ADMIN_ROUTE_RE.test(pathname)) {
+    if (pathname === ADMIN_LOGIN_PATH) return NextResponse.next();
+
+    const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+    if (!token) {
+      return NextResponse.redirect(new URL(ADMIN_LOGIN_PATH, request.url));
+    }
+
+    try {
+      await jwtVerify(token, await getAdminJwtSecret());
+      return NextResponse.next();
+    } catch {
+      const response = NextResponse.redirect(new URL(ADMIN_LOGIN_PATH, request.url));
+      response.cookies.delete(ADMIN_SESSION_COOKIE);
+      return response;
+    }
+  }
+
+  // --- Subdomain proxy ---
   const host = request.headers.get("host") ?? "";
   // Strip port for local dev (e.g. "acme.localhost:3000" → "acme.localhost")
   const hostname = host.split(":")[0];
@@ -25,7 +56,6 @@ export function proxy(request: NextRequest) {
   }
 
   const slug = hostname.slice(0, hostname.length - BASE_DOMAIN.length - 1);
-  const { pathname } = request.nextUrl;
 
   // Double-prefix guard: ROUTES helpers already produce /${slug}/... paths,
   // so avoid rewriting again when the path already starts with the slug.

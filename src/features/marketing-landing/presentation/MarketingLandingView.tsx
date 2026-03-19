@@ -22,7 +22,7 @@ export function MarketingLandingView() {
       </main>
 
       <footer className="text-zinc-400 text-sm text-center py-8">
-        © 2025 WeHire · Mekari Talenta
+        © 2025 WeHire · Handharr Labs
       </footer>
     </div>
   );

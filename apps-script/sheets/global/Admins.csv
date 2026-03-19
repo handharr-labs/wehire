@@ -1,0 +1,3 @@
+admin_id,email,hashed_password,role,company_id
+4d6fa091-4afb-4f7f-b1c1-9843bb15c93b,phandharmahua@gmail.com,$2b$10$RJRLMwxba7KIIdqkgLyG1.ym6H4jsyzJy1pRHRJoMW/SNom1sCsSS,SUPER_ADMIN,
+2c418211-7c94-46e0-9346-e9a0091e76ac,farhanalatas@gmail.com,$2b$10$RJRLMwxba7KIIdqkgLyG1.ym6H4jsyzJy1pRHRJoMW/SNom1sCsSS,SUPER_ADMIN,

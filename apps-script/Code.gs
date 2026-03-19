@@ -8,6 +8,7 @@
 
 var COMPANIES_SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty('COMPANIES_SPREADSHEET_ID');
 var ROOT_FOLDER_ID           = PropertiesService.getScriptProperties().getProperty('ROOT_FOLDER_ID');
+var ADMIN_API_SECRET         = PropertiesService.getScriptProperties().getProperty('ADMIN_API_SECRET');
 
 // ------------------------------------------------------------
 // Routing
@@ -30,6 +31,11 @@ function doGet(e) {
 
 function doPost(e) {
   try {
+    if (e.postData && e.postData.type === 'application/json') {
+      var body = JSON.parse(e.postData.contents);
+      if (body.action === 'getAdminByEmail') return handleGetAdminByEmail(body);
+      return jsonResponse({ error: 'Unknown action: ' + body.action }, 400);
+    }
     return handleSubmitApplication(e);
   } catch (err) {
     logError('doPost:submitApplication', err);
@@ -258,6 +264,50 @@ function handleSubmitApplication(e) {
   ]);
 
   return jsonResponse({ success: true });
+}
+
+// ------------------------------------------------------------
+// Admin auth
+// ------------------------------------------------------------
+
+function validateAdminSecret(secret) {
+  return ADMIN_API_SECRET && secret === ADMIN_API_SECRET;
+}
+
+function getAdminsSheet() {
+  return SpreadsheetApp.openById(COMPANIES_SPREADSHEET_ID).getSheetByName('Admins');
+}
+
+function toAdminDTO(row) {
+  return {
+    admin_id:        String(row.admin_id        || ''),
+    email:           String(row.email           || ''),
+    hashed_password: String(row.hashed_password || ''),
+    role:            String(row.role            || ''),
+    company_id:      row.company_id ? String(row.company_id) : null
+  };
+}
+
+function handleGetAdminByEmail(body) {
+  if (!validateAdminSecret(body.secret)) {
+    return jsonResponse({ error: 'Forbidden' }, 403);
+  }
+
+  var email = body.email;
+  if (!email) return jsonResponse({ error: 'Missing parameter: email' }, 400);
+
+  var sheet   = getAdminsSheet();
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.email).toLowerCase() === String(email).toLowerCase()) {
+      return jsonResponse({ data: toAdminDTO(row) });
+    }
+  }
+
+  return jsonResponse({ error: 'Admin not found' }, 404);
 }
 
 // ------------------------------------------------------------

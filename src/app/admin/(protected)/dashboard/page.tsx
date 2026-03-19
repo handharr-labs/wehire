@@ -21,12 +21,20 @@ export default async function AdminDashboardPage() {
             {session?.role === 'SUPER_ADMIN' ? (
               <CompanySelectorWidget companies={companies} />
             ) : (
-              <Link
-                href="/admin/settings"
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
-              >
-                Settings
-              </Link>
+              <>
+                <Link
+                  href="/admin/jobs"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
+                >
+                  Manage Jobs
+                </Link>
+                <Link
+                  href="/admin/settings"
+                  className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 text-sm font-medium rounded px-4 py-2 transition-colors"
+                >
+                  Settings
+                </Link>
+              </>
             )}
           </div>
         </div>

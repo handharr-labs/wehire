@@ -16,6 +16,10 @@ export function CompanySelectorWidget({ companies }: Props) {
     if (selectedId) router.push(`/admin/settings?companyId=${selectedId}`);
   }
 
+  function goToJobs() {
+    if (selectedId) router.push(`/admin/jobs?companyId=${selectedId}`);
+  }
+
   return (
     <div className="flex gap-2 items-center">
       <select
@@ -30,9 +34,16 @@ export function CompanySelectorWidget({ companies }: Props) {
         ))}
       </select>
       <button
-        onClick={goToSettings}
+        onClick={goToJobs}
         disabled={!selectedId}
         className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
+      >
+        Manage Jobs
+      </button>
+      <button
+        onClick={goToSettings}
+        disabled={!selectedId}
+        className="bg-white hover:bg-gray-50 disabled:opacity-50 text-gray-700 border border-gray-300 text-sm font-medium rounded px-4 py-2 transition-colors"
       >
         Settings
       </button>

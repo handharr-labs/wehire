@@ -2,10 +2,15 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getAdminSession } from '@/lib/session';
 import { logoutAdminAction } from '@/features/admin-auth/presentation/actions/logoutAdminAction';
+import { listCompaniesUseCase } from '@/di/container.server';
+import { CompanySelectorWidget } from '@/features/admin-settings/presentation/dashboard/CompanySelectorWidget';
 
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
   const session = await getAdminSession(cookieStore);
+
+  const companies =
+    session?.role === 'SUPER_ADMIN' ? await listCompaniesUseCase.execute() : [];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -30,12 +35,16 @@ export default async function AdminDashboardPage() {
           )}
 
           <div className="flex gap-3 mb-4">
-            <Link
-              href="/admin/settings"
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
-            >
-              Settings
-            </Link>
+            {session?.role === 'SUPER_ADMIN' ? (
+              <CompanySelectorWidget companies={companies} />
+            ) : (
+              <Link
+                href="/admin/settings"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
+              >
+                Settings
+              </Link>
+            )}
           </div>
 
           <form action={logoutAdminAction}>

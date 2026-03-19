@@ -4,6 +4,34 @@ This directory contains the entire backend for WeHire: a single Apps Script file
 
 The backend uses a **multi-tenant per-company structure**: one global `companies_database` spreadsheet holds company registry data, while each company has its own dedicated spreadsheet and CV folder.
 
+### Repository layout
+
+```
+apps-script/
+├── Code.gs                        ← single deployed Apps Script
+└── sheets/
+    ├── global/
+    │   └── Companies.csv          ← global registry (all companies)
+    ├── test-company/              ← test-company-database seed data
+    │   ├── Jobs.csv
+    │   ├── Candidates.csv
+    │   └── Form_Logs.csv
+    ├── nusantara-tech/
+    │   ├── Jobs.csv
+    │   ├── Candidates.csv
+    │   └── Form_Logs.csv
+    ├── kreasi-digital/
+    │   ├── Jobs.csv
+    │   ├── Candidates.csv
+    │   └── Form_Logs.csv
+    └── logistik-cepat/
+        ├── Jobs.csv
+        ├── Candidates.csv
+        └── Form_Logs.csv
+```
+
+Each subdirectory under `sheets/` mirrors one company's Google Sheet. When adding a new company, add its seed CSV folder here alongside the corresponding row in `global/Companies.csv`.
+
 ---
 
 ## 1. Overview

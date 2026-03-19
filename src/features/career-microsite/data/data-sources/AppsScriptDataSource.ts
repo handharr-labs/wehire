@@ -1,7 +1,12 @@
 import { type HTTPClient } from '@/data/networking/HTTPClient';
 import { type CompanyDTO } from '../dtos/CompanyDTO';
+import { type UpdateCompanyDTO } from '../dtos/UpdateCompanyDTO';
 import { type JobDTO } from '../dtos/JobDTO';
 import { type ApplicationPayload } from '../../domain/entities/ApplicationPayload';
+
+interface AppsScriptCompaniesResponse {
+  data: CompanyDTO[];
+}
 
 interface AppsScriptCompanyResponse {
   data: CompanyDTO;
@@ -31,11 +36,29 @@ function fileToBase64(file: File): Promise<string> {
 export class AppsScriptDataSource {
   constructor(private readonly httpClient: HTTPClient) {}
 
+  async getCompanies(): Promise<CompanyDTO[]> {
+    const response = await this.httpClient.get<AppsScriptCompaniesResponse>('', {
+      params: { action: 'getCompanies' },
+    });
+    return response.data;
+  }
+
   async getCompanyBySlug(slug: string): Promise<CompanyDTO> {
     const response = await this.httpClient.get<AppsScriptCompanyResponse>('', {
       params: { action: 'getCompany', slug },
     });
     return response.data;
+  }
+
+  async getCompanyById(companyId: string): Promise<CompanyDTO> {
+    const response = await this.httpClient.get<AppsScriptCompanyResponse>('', {
+      params: { action: 'getCompany', companyId },
+    });
+    return response.data;
+  }
+
+  async updateCompany(companyId: string, data: UpdateCompanyDTO): Promise<void> {
+    await this.httpClient.post('', { action: 'updateCompany', companyId, ...data });
   }
 
   async getJobsByCompanyId(companyId: string): Promise<JobDTO[]> {

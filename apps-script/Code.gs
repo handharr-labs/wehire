@@ -20,8 +20,9 @@ function doGet(e) {
 
     if (action === 'getCompanies') return handleGetCompanies(e);
     if (action === 'getCompany') return handleGetCompany(e);
-    if (action === 'getJobs')   return handleGetJobs(e);
-    if (action === 'getJob')    return handleGetJob(e);
+    if (action === 'getJobs')      return handleGetJobs(e);
+    if (action === 'getJob')       return handleGetJob(e);
+    if (action === 'getJobBySlug') return handleGetJobBySlug(e);
 
     return jsonResponse({ error: 'Unknown action: ' + action }, 400);
   } catch (err) {
@@ -178,6 +179,27 @@ function handleGetJob(e) {
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
   var ss      = openCompanySpreadsheet(company.slug);
+  var sheet   = ss.getSheetByName('Jobs');
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) === String(jobId)) {
+      return jsonResponse({ data: toJobDTO(row) });
+    }
+  }
+
+  return jsonResponse({ error: 'Job not found: ' + jobId }, 404);
+}
+
+function handleGetJobBySlug(e) {
+  var jobId = e.parameter.jobId;
+  var slug  = e.parameter.slug;
+  if (!jobId) return jsonResponse({ error: 'Missing parameter: jobId' }, 400);
+  if (!slug)  return jsonResponse({ error: 'Missing parameter: slug' }, 400);
+
+  var ss      = openCompanySpreadsheet(slug);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];

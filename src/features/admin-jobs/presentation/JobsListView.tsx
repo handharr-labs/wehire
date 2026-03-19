@@ -35,7 +35,7 @@ export function JobsListView({ jobs, companyId }: Props) {
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
             <h1 className="text-xl font-semibold text-gray-900">Job Postings</h1>
             <Link
-              href="/admin/jobs/new"
+              href={`/admin/jobs/new?companyId=${companyId}`}
               className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
             >
               + New Job
@@ -85,7 +85,7 @@ export function JobsListView({ jobs, companyId }: Props) {
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-3">
                           <Link
-                            href={`/admin/jobs/${job.id}/edit`}
+                            href={`/admin/jobs/${job.id}/edit?companyId=${companyId}`}
                             className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
                           >
                             Edit

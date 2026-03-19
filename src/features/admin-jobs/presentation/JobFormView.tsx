@@ -39,12 +39,14 @@ export function JobFormView({ companyId, job, mode }: Props) {
     },
   });
 
+  const jobsHref = `/admin/jobs?companyId=${companyId}`;
+
   const { execute: executeCreate, result: createResult, isPending: isCreating } = useAction(createJobAction, {
-    onSuccess: () => router.push('/admin/jobs'),
+    onSuccess: () => router.push(jobsHref),
   });
 
   const { execute: executeUpdate, result: updateResult, isPending: isUpdating } = useAction(updateJobAction, {
-    onSuccess: () => router.push('/admin/jobs'),
+    onSuccess: () => router.push(jobsHref),
   });
 
   const isPending = isCreating || isUpdating;

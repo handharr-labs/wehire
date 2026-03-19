@@ -32,9 +32,9 @@ export class AppsScriptDataSource {
     return response.data;
   }
 
-  async getJobById(jobId: string): Promise<JobDTO> {
+  async getJobById(jobId: string, companyId: string): Promise<JobDTO> {
     const response = await this.httpClient.get<AppsScriptJobResponse>('', {
-      params: { action: 'getJob', jobId },
+      params: { action: 'getJob', jobId, companyId },
     });
     return response.data;
   }

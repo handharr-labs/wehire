@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getAdminSession } from '@/lib/session';
 import { logoutAdminAction } from '@/features/admin-auth/presentation/actions/logoutAdminAction';
@@ -27,6 +28,15 @@ export default async function AdminDashboardPage() {
               )}
             </div>
           )}
+
+          <div className="flex gap-3 mb-4">
+            <Link
+              href="/admin/settings"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
+            >
+              Settings
+            </Link>
+          </div>
 
           <form action={logoutAdminAction}>
             <button

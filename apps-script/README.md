@@ -38,10 +38,10 @@ Each subdirectory under `sheets/` mirrors one company's Google Sheet. When addin
 
 | Spreadsheet | Purpose |
 |-------------|---------|
-| `companies_database` (global) | Registry of all companies: branding, config, and pointers to per-company spreadsheets |
+| `companies_database` (global) | Registry of all companies: branding and config |
 | `[company]-database` (per-company) | Jobs, Candidates, and Form_Logs for that company only |
 
-Each company's CV files are stored in a dedicated Drive folder (`CVs/`) inside that company's directory.
+Each company's CV files are stored in a dedicated Drive folder (`CVs/`) inside that company's directory. The script auto-discovers per-company resources via Drive traversal using the company slug — no IDs need to be stored in the sheet.
 
 ---
 
@@ -71,7 +71,7 @@ One tab named **`Companies`**:
 |--------|--------|------|-------|
 | A | id | string | Unique company ID |
 | B | name | string | Display name |
-| C | slug | string | URL-safe slug (e.g. `acme-corp`) |
+| C | slug | string | URL-safe slug (e.g. `acme-corp`) — **must match Drive folder name `{slug}-dir`** |
 | D | logo_url | string | Public image URL |
 | E | primary_color | string | Hex (e.g. `#1A73E8`) |
 | F | secondary_color | string | Hex |
@@ -80,8 +80,6 @@ One tab named **`Companies`**:
 | I | whatsapp_number | string | e.g. `628123456789` |
 | J | site_status | string | `active` / `inactive` |
 | K | max_active_jobs | number | |
-| L | spreadsheet_id | string | ID of this company's per-company spreadsheet |
-| M | cv_folder_id | string | ID of this company's CVs Drive folder |
 
 ### Per-company sheet: `[company]-database`
 
@@ -137,8 +135,9 @@ In the Apps Script editor: **Project Settings → Script Properties**.
 | Property | Value |
 |----------|-------|
 | `COMPANIES_SPREADSHEET_ID` | The ID from your `companies_database` Google Sheet URL (`/d/<ID>/edit`) |
+| `ROOT_FOLDER_ID` | The ID of the Drive root folder that contains all `{slug}-dir/` company folders |
 
-> `CV_FOLDER_ID` is **removed** — the CV folder ID is now stored per-company in the `cv_folder_id` column of the Companies sheet.
+> Per-company `spreadsheet_id` and `cv_folder_id` are no longer stored in the Companies sheet — the script auto-discovers them by traversing the Drive folder tree using the company slug.
 
 ---
 
@@ -146,14 +145,13 @@ In the Apps Script editor: **Project Settings → Script Properties**.
 
 To add a new company:
 
-1. **Create a Drive folder** named `[company]-dir/` (e.g. `acme-corp-dir/`) in your Drive root.
-2. **Create a `CVs/` subfolder** inside it. Note the folder ID (from the URL).
-3. **Create a spreadsheet** named `[company]-database` inside the folder.
+1. **Create a Drive folder** named `{slug}-dir` (e.g. `acme-corp-dir`) inside the root folder identified by `ROOT_FOLDER_ID`. Naming must be exact.
+2. **Create a `CVs/` subfolder** inside `{slug}-dir`. Set its sharing to **"Anyone with the link — Viewer"** so CV links work for the hiring team.
+3. **Create a spreadsheet** named `{slug}-database` (e.g. `acme-corp-database`) inside `{slug}-dir`.
    - Add three tabs: `Jobs`, `Candidates`, `Form_Logs` with the columns listed in §3.
-   - Note the spreadsheet ID (from the URL).
-4. **Add a row to the `Companies` tab** in `companies_database`:
-   - Fill all columns including `spreadsheet_id` (from step 3) and `cv_folder_id` (from step 2).
-5. Set the CVs folder sharing to **"Anyone with the link — Viewer"** so CV links work for the hiring team.
+4. **Add a row to the `Companies` tab** in `companies_database` — fill all columns. No IDs to copy; the script discovers resources by slug automatically.
+
+> The naming convention is critical. If a folder or file name doesn't match exactly, the script returns a descriptive error (e.g. `Company folder not found: acme-corp-dir`).
 
 ---
 
@@ -215,7 +213,7 @@ All error responses have the shape `{ error: "message" }`. Check the `Form_Logs`
 After deploying a new version:
 
 1. **Company data** — `GET ?action=getCompany&slug=test-company`
-   - Expect: `{ data: { id, name, slug, ..., spreadsheet_id, cv_folder_id } }`
+   - Expect: `{ data: { id, name, slug, logo_url, primary_color, ... } }` — no `spreadsheet_id`/`cv_folder_id`
 
 2. **Job listing** — `GET ?action=getJobs&companyId=1`
    - Expect: `{ data: [...] }` fetched from `test-company-database`

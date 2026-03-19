@@ -3,9 +3,11 @@
 // Deploy as: Execute as Me | Who has access: Anyone
 // Script Properties required:
 //   COMPANIES_SPREADSHEET_ID — ID of the global companies_database Sheet
+//   ROOT_FOLDER_ID           — ID of the Drive root folder containing all {slug}-dir/ folders
 // ============================================================
 
 var COMPANIES_SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty('COMPANIES_SPREADSHEET_ID');
+var ROOT_FOLDER_ID           = PropertiesService.getScriptProperties().getProperty('ROOT_FOLDER_ID');
 
 // ------------------------------------------------------------
 // Routing
@@ -72,8 +74,38 @@ function findCompanyById(companyId) {
   return null;
 }
 
-function openCompanySpreadsheet(company) {
-  return SpreadsheetApp.openById(company.spreadsheet_id);
+function openCompanySpreadsheet(slug) {
+  var root    = DriveApp.getFolderById(ROOT_FOLDER_ID);
+  var dirIter = root.getFoldersByName(slug + '-dir');
+  if (!dirIter.hasNext()) throw new Error('Company folder not found: ' + slug + '-dir');
+  var companyDir = dirIter.next();
+
+  var fileIter = companyDir.getFilesByName(slug + '-database');
+  if (!fileIter.hasNext()) throw new Error('Company database not found: ' + slug + '-database');
+  var spreadsheetId = fileIter.next().getId();
+
+  return SpreadsheetApp.openById(spreadsheetId);
+}
+
+function openCompanyResources(slug) {
+  var root    = DriveApp.getFolderById(ROOT_FOLDER_ID);
+  var dirIter = root.getFoldersByName(slug + '-dir');
+  if (!dirIter.hasNext()) throw new Error('Company folder not found: ' + slug + '-dir');
+  var companyDir = dirIter.next();
+
+  var fileIter = companyDir.getFilesByName(slug + '-database');
+  if (!fileIter.hasNext()) throw new Error('Company database not found: ' + slug + '-database');
+  var spreadsheetId = fileIter.next().getId();
+
+  var cvIter = companyDir.getFoldersByName('CVs');
+  var cvFolderId = cvIter.hasNext()
+    ? cvIter.next().getId()
+    : companyDir.createFolder('CVs').getId();
+
+  return {
+    spreadsheet: SpreadsheetApp.openById(spreadsheetId),
+    cvFolderId:  cvFolderId
+  };
 }
 
 // ------------------------------------------------------------
@@ -97,7 +129,7 @@ function handleGetJobs(e) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss      = openCompanySpreadsheet(company);
+  var ss      = openCompanySpreadsheet(company.slug);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -119,7 +151,7 @@ function handleGetJob(e) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss      = openCompanySpreadsheet(company);
+  var ss      = openCompanySpreadsheet(company.slug);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -172,7 +204,8 @@ function handleSubmitApplication(e) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var companySS = openCompanySpreadsheet(company);
+  var companyResources = openCompanyResources(company.slug);
+  var companySS        = companyResources.spreadsheet;
 
   // CV upload
   var cvUrl = '';
@@ -192,7 +225,7 @@ function handleSubmitApplication(e) {
     }
 
     if (cvBlob) {
-      var folder     = DriveApp.getFolderById(company.cv_folder_id);
+      var folder     = DriveApp.getFolderById(companyResources.cvFolderId);
       var cvFileName = 'CV_' + fullName.replace(/\s+/g, '_') + '_' + jobId + '_' + Date.now();
       var cvFile     = folder.createFile(cvBlob.setName(cvFileName));
       cvFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
@@ -243,9 +276,7 @@ function toCompanyDTO(row) {
     contact_email:    String(row.contact_email    || ''),
     whatsapp_number:  String(row.whatsapp_number  || ''),
     site_status:      String(row.site_status      || ''),
-    max_active_jobs:  Number(row.max_active_jobs  || 0),
-    spreadsheet_id:   String(row.spreadsheet_id   || ''),
-    cv_folder_id:     String(row.cv_folder_id     || '')
+    max_active_jobs:  Number(row.max_active_jobs  || 0)
   };
 }
 

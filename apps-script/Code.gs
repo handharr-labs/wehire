@@ -18,6 +18,7 @@ function doGet(e) {
   try {
     var action = e.parameter.action;
 
+    if (action === 'getCompanies') return handleGetCompanies(e);
     if (action === 'getCompany') return handleGetCompany(e);
     if (action === 'getJobs')   return handleGetJobs(e);
     if (action === 'getJob')    return handleGetJob(e);
@@ -117,6 +118,19 @@ function openCompanyResources(slug) {
 // ------------------------------------------------------------
 // GET handlers
 // ------------------------------------------------------------
+
+function handleGetCompanies(e) {
+  var sheet   = getCompaniesSheet();
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var companies = [];
+
+  for (var i = 1; i < rows.length; i++) {
+    companies.push(toCompanyDTO(rowToObject(headers, rows[i])));
+  }
+
+  return jsonResponse({ data: companies });
+}
 
 function handleGetCompany(e) {
   var slug = e.parameter.slug;

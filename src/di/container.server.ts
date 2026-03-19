@@ -12,6 +12,10 @@ import { AdminDataSource } from '@/features/admin-auth/data/data-sources/AdminDa
 import { BcryptPasswordVerifier } from '@/features/admin-auth/data/services/BcryptPasswordVerifier';
 import { AdminRepositoryImpl } from '@/features/admin-auth/data/repositories/AdminRepositoryImpl';
 import { LoginAdminUseCaseImpl } from '@/features/admin-auth/domain/use-cases/LoginAdminUseCase';
+import { CompanySettingsRepositoryImpl } from '@/features/admin-settings/data/repositories/CompanySettingsRepositoryImpl';
+import { GetCompanySettingsUseCaseImpl } from '@/features/admin-settings/domain/use-cases/GetCompanySettingsUseCase';
+import { UpdateCompanySettingsUseCaseImpl } from '@/features/admin-settings/domain/use-cases/UpdateCompanySettingsUseCase';
+import { ListCompaniesUseCaseImpl } from '@/features/admin-settings/domain/use-cases/ListCompaniesUseCase';
 
 // Infrastructure — Node.js module cache provides free singletons.
 const httpClient = createUnauthenticatedHTTPClient(
@@ -33,3 +37,15 @@ const bcryptVerifier = new BcryptPasswordVerifier();
 const adminRepository = new AdminRepositoryImpl(adminDataSource, errorMapper);
 
 export const loginAdminUseCase = () => new LoginAdminUseCaseImpl(adminRepository, bcryptVerifier);
+
+// Admin settings
+const companySettingsRepository = new CompanySettingsRepositoryImpl(
+  appsScriptDataSource,
+  errorMapper,
+);
+export const listCompaniesUseCase = new ListCompaniesUseCaseImpl(companySettingsRepository);
+export const getCompanySettingsUseCase = new GetCompanySettingsUseCaseImpl(
+  companySettingsRepository,
+);
+export const updateCompanySettingsUseCase = () =>
+  new UpdateCompanySettingsUseCaseImpl(companySettingsRepository);

@@ -133,11 +133,13 @@ function handleGetCompanies(e) {
 }
 
 function handleGetCompany(e) {
-  var slug = e.parameter.slug;
-  if (!slug) return jsonResponse({ error: 'Missing parameter: slug' }, 400);
+  var companyId = e.parameter.companyId;
+  var slug      = e.parameter.slug;
 
-  var company = findCompanyBySlug(slug);
-  if (!company) return jsonResponse({ error: 'Company not found: ' + slug }, 404);
+  if (!companyId && !slug) return jsonResponse({ error: 'Missing parameter: companyId or slug' }, 400);
+
+  var company = companyId ? findCompanyById(companyId) : findCompanyBySlug(slug);
+  if (!company) return jsonResponse({ error: 'Company not found' }, 404);
 
   return jsonResponse({ data: toCompanyDTO(company) });
 }

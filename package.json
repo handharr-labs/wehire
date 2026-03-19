@@ -1,13 +1,15 @@
 {
   "name": "wehire",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest"
+    "test": "vitest",
+    "release": "release-it",
+    "release:dry": "release-it --dry-run"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
@@ -22,6 +24,7 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^10.0.6",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -33,6 +36,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "jsdom": "^28.1.0",
+    "release-it": "^19.2.4",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.0"

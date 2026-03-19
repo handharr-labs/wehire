@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getCompanyBySlugUseCase, getJobsUseCase } from '@/di/container.server';
+import { getCachedCompanyBySlug, getCachedJobsByCompanyId } from '@/lib/cached-queries';
 import { CareerPageView } from '@/features/career-microsite/presentation/career-page/CareerPageView';
 import { BrandThemeStyle } from '@/features/career-microsite/presentation/shared/BrandThemeStyle';
 import { isJobOpen } from '@/features/career-microsite/domain/helpers/isJobOpen';
@@ -16,8 +16,8 @@ export default async function CareerPage({ params }: Props) {
   let company: Company;
   let jobs: Job[];
   try {
-    company = await getCompanyBySlugUseCase.execute(slug);
-    jobs = await getJobsUseCase.execute(company.id);
+    company = await getCachedCompanyBySlug(slug);
+    jobs = await getCachedJobsByCompanyId(company.id);
   } catch {
     notFound();
   }

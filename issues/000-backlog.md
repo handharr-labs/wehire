@@ -25,8 +25,8 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 |---|-------|--------|--------|
 | 011 | Refactor Apps Script backend and Drive folder structure to multi-tenant per-company model | `done` | [#27](https://github.com/handharr-labs/wehire/issues/27) |
 | 012 | Implement admin authentication (login and session management) | `done` | [#22](https://github.com/handharr-labs/wehire/issues/22) |
-| 013 | Build company settings admin panel | `pending` | [#23](https://github.com/handharr-labs/wehire/issues/23) |
-| 014 | Build job management CRUD for admin | `open` | [#24](https://github.com/handharr-labs/wehire/issues/24) |
+| 013 | Build company settings admin panel | `done` | [#23](https://github.com/handharr-labs/wehire/issues/23) |
+| 014 | Build job management CRUD for admin | `pending` | [#24](https://github.com/handharr-labs/wehire/issues/24) |
 | 015 | Build client onboarding flow (Google Sheets + Drive setup wizard) | `open` | [#25](https://github.com/handharr-labs/wehire/issues/25) |
 
 ## Phase 4 — Post-MVP Enhancements
@@ -34,3 +34,4 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 | # | Title | Status | GitHub |
 |---|-------|--------|--------|
 | 016 | Add basic rule-based applicant scoring | `open` | [#26](https://github.com/handharr-labs/wehire/issues/26) |
+| 017 | Performance issue: page load when opening job vacancy and application form | `open` | [#30](https://github.com/handharr-labs/wehire/issues/30) |

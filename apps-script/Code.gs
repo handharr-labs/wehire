@@ -35,6 +35,10 @@ function doPost(e) {
     if (e.postData && e.postData.type === 'application/json') {
       var body = JSON.parse(e.postData.contents);
       if (body.action === 'getAdminByEmail') return handleGetAdminByEmail(body);
+      if (body.action === 'createJob')       return handleCreateJob(body);
+      if (body.action === 'updateJob')       return handleUpdateJob(body);
+      if (body.action === 'deleteJob')       return handleDeleteJob(body);
+      if (body.action === 'updateCompany')   return handleUpdateCompany(body);
       return jsonResponse({ error: 'Unknown action: ' + body.action }, 400);
     }
     return handleSubmitApplication(e);
@@ -186,6 +190,154 @@ function handleGetJob(e) {
   }
 
   return jsonResponse({ error: 'Job not found: ' + jobId }, 404);
+}
+
+// ------------------------------------------------------------
+// POST handlers — admin job management (JSON body, requires secret)
+// ------------------------------------------------------------
+
+function handleCreateJob(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var companyId = body.companyId;
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss    = openCompanySpreadsheet(company.slug);
+  var sheet = ss.getSheetByName('Jobs');
+  var rows  = sheet.getDataRange().getValues();
+
+  // Generate a simple incremental ID
+  var maxId = 0;
+  for (var i = 1; i < rows.length; i++) {
+    var rowId = Number(rows[i][0]);
+    if (rowId > maxId) maxId = rowId;
+  }
+  var newId = String(maxId + 1);
+
+  var now = new Date().toISOString();
+
+  sheet.appendRow([
+    newId,
+    companyId,
+    String(body.title        || ''),
+    String(body.department   || ''),
+    String(body.location     || ''),
+    String(body.employment_type || 'full-time'),
+    Number(body.min_salary   || 0),
+    Number(body.max_salary   || 0),
+    String(body.description  || ''),
+    String(body.requirements || ''),
+    String(body.status       || 'draft'),
+    String(body.expired_at   || ''),
+    Number(body.sort_order   || 0)
+  ]);
+
+  return jsonResponse({ data: { id: newId, created_at: now } });
+}
+
+function handleUpdateJob(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var jobId     = body.jobId;
+  var companyId = body.companyId;
+  if (!jobId)     return jsonResponse({ error: 'Missing parameter: jobId' }, 400);
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss      = openCompanySpreadsheet(company.slug);
+  var sheet   = ss.getSheetByName('Jobs');
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) === String(jobId)) {
+      var sheetRow = i + 1; // 1-indexed, +1 for header
+      var colMap   = {};
+      for (var c = 0; c < headers.length; c++) colMap[headers[c]] = c + 1;
+
+      if (body.title        !== undefined) sheet.getRange(sheetRow, colMap['title']).setValue(body.title);
+      if (body.department   !== undefined) sheet.getRange(sheetRow, colMap['department']).setValue(body.department);
+      if (body.location     !== undefined) sheet.getRange(sheetRow, colMap['location']).setValue(body.location);
+      if (body.employment_type !== undefined) sheet.getRange(sheetRow, colMap['employment_type']).setValue(body.employment_type);
+      if (body.min_salary   !== undefined) sheet.getRange(sheetRow, colMap['min_salary']).setValue(Number(body.min_salary));
+      if (body.max_salary   !== undefined) sheet.getRange(sheetRow, colMap['max_salary']).setValue(Number(body.max_salary));
+      if (body.description  !== undefined) sheet.getRange(sheetRow, colMap['description']).setValue(body.description);
+      if (body.requirements !== undefined) sheet.getRange(sheetRow, colMap['requirements']).setValue(body.requirements);
+      if (body.status       !== undefined) sheet.getRange(sheetRow, colMap['status']).setValue(body.status);
+      if (body.expired_at   !== undefined) sheet.getRange(sheetRow, colMap['expired_at']).setValue(body.expired_at);
+      if (body.sort_order   !== undefined) sheet.getRange(sheetRow, colMap['sort_order']).setValue(Number(body.sort_order));
+
+      return jsonResponse({ success: true });
+    }
+  }
+
+  return jsonResponse({ error: 'Job not found: ' + jobId }, 404);
+}
+
+function handleDeleteJob(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var jobId     = body.jobId;
+  var companyId = body.companyId;
+  if (!jobId)     return jsonResponse({ error: 'Missing parameter: jobId' }, 400);
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss      = openCompanySpreadsheet(company.slug);
+  var sheet   = ss.getSheetByName('Jobs');
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) === String(jobId)) {
+      sheet.deleteRow(i + 1);
+      return jsonResponse({ success: true });
+    }
+  }
+
+  return jsonResponse({ error: 'Job not found: ' + jobId }, 404);
+}
+
+function handleUpdateCompany(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var companyId = body.companyId;
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+
+  var sheet   = getCompaniesSheet();
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) === String(companyId)) {
+      var sheetRow = i + 1;
+      var colMap   = {};
+      for (var c = 0; c < headers.length; c++) colMap[headers[c]] = c + 1;
+
+      if (body.name             !== undefined) sheet.getRange(sheetRow, colMap['name']).setValue(body.name);
+      if (body.logo_url         !== undefined) sheet.getRange(sheetRow, colMap['logo_url']).setValue(body.logo_url);
+      if (body.primary_color    !== undefined) sheet.getRange(sheetRow, colMap['primary_color']).setValue(body.primary_color);
+      if (body.secondary_color  !== undefined) sheet.getRange(sheetRow, colMap['secondary_color']).setValue(body.secondary_color);
+      if (body.description      !== undefined) sheet.getRange(sheetRow, colMap['description']).setValue(body.description);
+      if (body.contact_email    !== undefined) sheet.getRange(sheetRow, colMap['contact_email']).setValue(body.contact_email);
+      if (body.whatsapp_number  !== undefined) sheet.getRange(sheetRow, colMap['whatsapp_number']).setValue(body.whatsapp_number);
+      if (body.site_status      !== undefined) sheet.getRange(sheetRow, colMap['site_status']).setValue(body.site_status);
+
+      return jsonResponse({ success: true });
+    }
+  }
+
+  return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 }
 
 // ------------------------------------------------------------

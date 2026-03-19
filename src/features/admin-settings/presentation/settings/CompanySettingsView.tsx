@@ -68,7 +68,7 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
               <input
                 {...register('name')}
                 type="text"
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Acme Corp"
               />
             </Field>
@@ -77,7 +77,7 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
               <input
                 {...register('logoUrl')}
                 type="url"
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="https://example.com/logo.png"
               />
             </Field>
@@ -93,7 +93,7 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
                 <input
                   {...register('primaryColor')}
                   type="text"
-                  className="flex-1 rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="#3B82F6"
                 />
               </div>
@@ -110,7 +110,7 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
                 <input
                   {...register('secondaryColor')}
                   type="text"
-                  className="flex-1 rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="#6B7280"
                 />
               </div>
@@ -120,7 +120,7 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
               <textarea
                 {...register('description')}
                 rows={3}
-                className="w-full resize-none rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full resize-none rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Tell candidates about your company"
               />
             </Field>
@@ -129,7 +129,7 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
               <input
                 {...register('contactEmail')}
                 type="email"
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="hr@example.com"
               />
             </Field>
@@ -138,13 +138,13 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
               <input
                 {...register('whatsappNumber')}
                 type="tel"
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="+6281234567890"
               />
             </Field>
 
             <Field label="Site Status" error={errors.siteStatus?.message}>
-              <select {...register('siteStatus')} className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <select {...register('siteStatus')} className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>

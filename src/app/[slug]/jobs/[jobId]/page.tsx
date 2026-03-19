@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { getCompanyBySlugUseCase, getJobDetailUseCase } from '@/di/container.server';
+import { getCachedCompanyBySlug, getCachedJobDetailBySlug } from '@/lib/cached-queries';
 import { JobDetailView } from '@/features/career-microsite/presentation/job-detail/JobDetailView';
 import { BrandThemeStyle } from '@/features/career-microsite/presentation/shared/BrandThemeStyle';
 import { type Company } from '@/features/career-microsite/domain/entities/Company';
@@ -15,8 +15,10 @@ export default async function JobDetailPage({ params }: Props) {
   let company: Company;
   let job: Job;
   try {
-    company = await getCompanyBySlugUseCase.execute(slug);
-    job = await getJobDetailUseCase.execute(jobId, company.id);
+    [company, job] = await Promise.all([
+      getCachedCompanyBySlug(slug),
+      getCachedJobDetailBySlug(jobId, slug),
+    ]);
   } catch {
     notFound();
   }

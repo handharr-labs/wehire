@@ -24,6 +24,7 @@ import { GetAdminJobDetailUseCaseImpl } from '@/features/admin-jobs/domain/use-c
 import { CreateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/CreateJobUseCase';
 import { UpdateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/UpdateJobUseCase';
 import { DeleteJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/DeleteJobUseCase';
+import { VerifyCompanyConnectionUseCaseImpl } from '@/features/admin-onboarding/domain/use-cases/VerifyCompanyConnectionUseCase';
 
 // Infrastructure — Node.js module cache provides free singletons.
 const httpClient = createUnauthenticatedHTTPClient(
@@ -75,3 +76,8 @@ export const getAdminJobDetailUseCase = new GetAdminJobDetailUseCaseImpl(jobMana
 export const createJobUseCase = () => new CreateJobUseCaseImpl(jobManagementRepository);
 export const updateJobUseCase = () => new UpdateJobUseCaseImpl(jobManagementRepository);
 export const deleteJobUseCase = () => new DeleteJobUseCaseImpl(jobManagementRepository);
+
+// Admin onboarding
+export const verifyCompanyConnectionUseCase = new VerifyCompanyConnectionUseCaseImpl(
+  companyRepository,
+);

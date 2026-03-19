@@ -16,6 +16,14 @@ import { CompanySettingsRepositoryImpl } from '@/features/admin-settings/data/re
 import { GetCompanySettingsUseCaseImpl } from '@/features/admin-settings/domain/use-cases/GetCompanySettingsUseCase';
 import { UpdateCompanySettingsUseCaseImpl } from '@/features/admin-settings/domain/use-cases/UpdateCompanySettingsUseCase';
 import { ListCompaniesUseCaseImpl } from '@/features/admin-settings/domain/use-cases/ListCompaniesUseCase';
+import { JobManagementRemoteDataSourceImpl } from '@/features/admin-jobs/data/data-sources/JobManagementRemoteDataSource';
+import { JobManagementMapperImpl } from '@/features/admin-jobs/data/mappers/JobManagementMapper';
+import { JobManagementRepositoryImpl } from '@/features/admin-jobs/data/repositories/JobManagementRepositoryImpl';
+import { GetAdminJobsUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/GetAdminJobsUseCase';
+import { GetAdminJobDetailUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/GetAdminJobDetailUseCase';
+import { CreateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/CreateJobUseCase';
+import { UpdateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/UpdateJobUseCase';
+import { DeleteJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/DeleteJobUseCase';
 
 // Infrastructure — Node.js module cache provides free singletons.
 const httpClient = createUnauthenticatedHTTPClient(
@@ -49,3 +57,21 @@ export const getCompanySettingsUseCase = new GetCompanySettingsUseCaseImpl(
 );
 export const updateCompanySettingsUseCase = () =>
   new UpdateCompanySettingsUseCaseImpl(companySettingsRepository);
+
+// Admin job management
+const jobManagementDataSource = new JobManagementRemoteDataSourceImpl(
+  httpClient,
+  process.env.ADMIN_API_SECRET ?? '',
+);
+const jobManagementMapper = new JobManagementMapperImpl();
+const jobManagementRepository = new JobManagementRepositoryImpl(
+  jobManagementDataSource,
+  jobManagementMapper,
+  errorMapper,
+);
+
+export const getAdminJobsUseCase = new GetAdminJobsUseCaseImpl(jobManagementRepository);
+export const getAdminJobDetailUseCase = new GetAdminJobDetailUseCaseImpl(jobManagementRepository);
+export const createJobUseCase = () => new CreateJobUseCaseImpl(jobManagementRepository);
+export const updateJobUseCase = () => new UpdateJobUseCaseImpl(jobManagementRepository);
+export const deleteJobUseCase = () => new DeleteJobUseCaseImpl(jobManagementRepository);

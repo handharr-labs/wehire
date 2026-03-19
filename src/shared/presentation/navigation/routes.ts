@@ -7,4 +7,9 @@ export const ROUTES = {
   jobDetail: (slug: string, jobId: string) => `/${slug}/jobs/${jobId}`,
   applyJob: (slug: string, jobId: string) => `/${slug}/jobs/${jobId}/apply`,
   applySuccess: (slug: string, jobId: string) => `/${slug}/jobs/${jobId}/apply/success`,
+
+  // Admin job management
+  adminJobs: '/admin/jobs',
+  adminJobNew: '/admin/jobs/new',
+  adminJobEdit: (jobId: string) => `/admin/jobs/${jobId}/edit`,
 } as const;

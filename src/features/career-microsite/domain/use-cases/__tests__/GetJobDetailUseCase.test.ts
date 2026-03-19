@@ -26,9 +26,9 @@ describe('GetJobDetailUseCase', () => {
     } as unknown as JobRepository;
 
     const useCase = new GetJobDetailUseCaseImpl(mockRepo);
-    const result = await useCase.execute('j1');
+    const result = await useCase.execute('j1', 'c1');
 
-    expect(mockRepo.getById).toHaveBeenCalledWith('j1');
+    expect(mockRepo.getById).toHaveBeenCalledWith('j1', 'c1');
     expect(result).toEqual(mockJob);
   });
 });

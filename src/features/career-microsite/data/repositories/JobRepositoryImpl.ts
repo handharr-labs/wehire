@@ -20,9 +20,9 @@ export class JobRepositoryImpl implements JobRepository {
     }
   }
 
-  async getById(jobId: string): Promise<Job> {
+  async getById(jobId: string, companyId: string): Promise<Job> {
     try {
-      const dto = await this.dataSource.getJobById(jobId);
+      const dto = await this.dataSource.getJobById(jobId, companyId);
       return JobMapper.toDomain(dto);
     } catch (error) {
       throw this.errorMapper.toDomain(error as NetworkError);

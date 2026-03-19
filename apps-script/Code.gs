@@ -1,13 +1,13 @@
 // ============================================================
-// WeHire — Google Apps Script Backend
+// WeHire — Google Apps Script Backend (multi-tenant)
 // Deploy as: Execute as Me | Who has access: Anyone
 // Script Properties required:
-//   SPREADSHEET_ID  — ID of the Google Sheet
-//   CV_FOLDER_ID    — ID of the Drive folder for CV uploads
+//   COMPANIES_SPREADSHEET_ID — ID of the global companies_database Sheet
+//   ROOT_FOLDER_ID           — ID of the Drive root folder containing all {slug}-dir/ folders
 // ============================================================
 
-var SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
-var CV_FOLDER_ID   = PropertiesService.getScriptProperties().getProperty('CV_FOLDER_ID');
+var COMPANIES_SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty('COMPANIES_SPREADSHEET_ID');
+var ROOT_FOLDER_ID           = PropertiesService.getScriptProperties().getProperty('ROOT_FOLDER_ID');
 
 // ------------------------------------------------------------
 // Routing
@@ -43,6 +43,72 @@ function doPost(e) {
 // infrastructure when deployed as "Anyone".
 
 // ------------------------------------------------------------
+// Multi-tenant helpers
+// ------------------------------------------------------------
+
+function getCompaniesSheet() {
+  return SpreadsheetApp.openById(COMPANIES_SPREADSHEET_ID).getSheetByName('Companies');
+}
+
+function findCompanyBySlug(slug) {
+  var sheet   = getCompaniesSheet();
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (row.slug === slug) return row;
+  }
+  return null;
+}
+
+function findCompanyById(companyId) {
+  var sheet   = getCompaniesSheet();
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) === String(companyId)) return row;
+  }
+  return null;
+}
+
+function openCompanySpreadsheet(slug) {
+  var root    = DriveApp.getFolderById(ROOT_FOLDER_ID);
+  var dirIter = root.getFoldersByName(slug + '-dir');
+  if (!dirIter.hasNext()) throw new Error('Company folder not found: ' + slug + '-dir');
+  var companyDir = dirIter.next();
+
+  var fileIter = companyDir.getFilesByName(slug + '-database');
+  if (!fileIter.hasNext()) throw new Error('Company database not found: ' + slug + '-database');
+  var spreadsheetId = fileIter.next().getId();
+
+  return SpreadsheetApp.openById(spreadsheetId);
+}
+
+function openCompanyResources(slug) {
+  var root    = DriveApp.getFolderById(ROOT_FOLDER_ID);
+  var dirIter = root.getFoldersByName(slug + '-dir');
+  if (!dirIter.hasNext()) throw new Error('Company folder not found: ' + slug + '-dir');
+  var companyDir = dirIter.next();
+
+  var fileIter = companyDir.getFilesByName(slug + '-database');
+  if (!fileIter.hasNext()) throw new Error('Company database not found: ' + slug + '-database');
+  var spreadsheetId = fileIter.next().getId();
+
+  var cvIter = companyDir.getFoldersByName('CVs');
+  var cvFolderId = cvIter.hasNext()
+    ? cvIter.next().getId()
+    : companyDir.createFolder('CVs').getId();
+
+  return {
+    spreadsheet: SpreadsheetApp.openById(spreadsheetId),
+    cvFolderId:  cvFolderId
+  };
+}
+
+// ------------------------------------------------------------
 // GET handlers
 // ------------------------------------------------------------
 
@@ -50,48 +116,44 @@ function handleGetCompany(e) {
   var slug = e.parameter.slug;
   if (!slug) return jsonResponse({ error: 'Missing parameter: slug' }, 400);
 
-  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = ss.getSheetByName('Companies');
-  var rows  = sheet.getDataRange().getValues();
-  var headers = rows[0];
+  var company = findCompanyBySlug(slug);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + slug }, 404);
 
-  for (var i = 1; i < rows.length; i++) {
-    var row = rowToObject(headers, rows[i]);
-    if (row.slug === slug) {
-      return jsonResponse({ data: toCompanyDTO(row) });
-    }
-  }
-
-  return jsonResponse({ error: 'Company not found: ' + slug }, 404);
+  return jsonResponse({ data: toCompanyDTO(company) });
 }
 
 function handleGetJobs(e) {
   var companyId = e.parameter.companyId;
   if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
 
-  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = ss.getSheetByName('Jobs');
-  var rows  = sheet.getDataRange().getValues();
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss      = openCompanySpreadsheet(company.slug);
+  var sheet   = ss.getSheetByName('Jobs');
+  var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
-  var jobs  = [];
+  var jobs    = [];
 
   for (var i = 1; i < rows.length; i++) {
-    var row = rowToObject(headers, rows[i]);
-    if (String(row.company_id) === String(companyId)) {
-      jobs.push(toJobDTO(row));
-    }
+    jobs.push(toJobDTO(rowToObject(headers, rows[i])));
   }
 
   return jsonResponse({ data: jobs });
 }
 
 function handleGetJob(e) {
-  var jobId = e.parameter.jobId;
-  if (!jobId) return jsonResponse({ error: 'Missing parameter: jobId' }, 400);
+  var jobId     = e.parameter.jobId;
+  var companyId = e.parameter.companyId;
+  if (!jobId)     return jsonResponse({ error: 'Missing parameter: jobId' }, 400);
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
 
-  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = ss.getSheetByName('Jobs');
-  var rows  = sheet.getDataRange().getValues();
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss      = openCompanySpreadsheet(company.slug);
+  var sheet   = ss.getSheetByName('Jobs');
+  var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
 
   for (var i = 1; i < rows.length; i++) {
@@ -139,6 +201,12 @@ function handleSubmitApplication(e) {
     return jsonResponse({ error: 'Missing required fields: ' + missing.join(', ') }, 400);
   }
 
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var companyResources = openCompanyResources(company.slug);
+  var companySS        = companyResources.spreadsheet;
+
   // CV upload
   var cvUrl = '';
   try {
@@ -150,28 +218,27 @@ function handleSubmitApplication(e) {
       cvBlob = e.files['cvFile'];
     } else if (params['cvFile'] && params['cvFile'][0]) {
       // Some clients base64-encode the file content as a text field
-      var b64 = params['cvFile'][0];
-      var mimeType = params['cvFileMime'] ? params['cvFileMime'][0] : 'application/octet-stream';
-      var fileName = params['cvFileName'] ? params['cvFileName'][0] : 'cv_' + jobId + '_' + Date.now();
+      var b64      = params['cvFile'][0];
+      var mimeType = params['cvFileMime']  ? params['cvFileMime'][0]  : 'application/octet-stream';
+      var fileName = params['cvFileName']  ? params['cvFileName'][0]  : 'cv_' + jobId + '_' + Date.now();
       cvBlob = Utilities.newBlob(Utilities.base64Decode(b64), mimeType, fileName);
     }
 
     if (cvBlob) {
-      var folder = DriveApp.getFolderById(CV_FOLDER_ID);
+      var folder     = DriveApp.getFolderById(companyResources.cvFolderId);
       var cvFileName = 'CV_' + fullName.replace(/\s+/g, '_') + '_' + jobId + '_' + Date.now();
-      var cvFile = folder.createFile(cvBlob.setName(cvFileName));
+      var cvFile     = folder.createFile(cvBlob.setName(cvFileName));
       cvFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
       cvUrl = cvFile.getUrl();
     }
   } catch (uploadErr) {
-    logError('submitApplication:cvUpload', uploadErr);
+    logError('submitApplication:cvUpload', uploadErr, companySS);
     // Non-fatal — proceed without CV URL but log it
     cvUrl = 'UPLOAD_ERROR: ' + uploadErr.message;
   }
 
-  // Append to Candidates sheet
-  var ss        = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet     = ss.getSheetByName('Candidates');
+  // Append to Candidates sheet in the company spreadsheet
+  var sheet     = companySS.getSheetByName('Candidates');
   var timestamp = new Date().toISOString();
 
   sheet.appendRow([
@@ -249,12 +316,18 @@ function jsonResponse(payload) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function logError(action, err) {
+// companySpreadsheet is optional — if provided, writes to that company's
+// Form_Logs sheet; otherwise falls back to console.error only.
+function logError(action, err, companySpreadsheet) {
   try {
-    var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
-    var sheet = ss.getSheetByName('Form_Logs');
-    if (sheet) {
-      sheet.appendRow([new Date().toISOString(), action, err.message || String(err)]);
+    var ss = companySpreadsheet || null;
+    if (ss) {
+      var sheet = ss.getSheetByName('Form_Logs');
+      if (sheet) {
+        sheet.appendRow([new Date().toISOString(), action, err.message || String(err)]);
+      }
+    } else {
+      console.error('[' + action + ']', err.message || String(err));
     }
   } catch (logErr) {
     // Swallow — logging must never throw

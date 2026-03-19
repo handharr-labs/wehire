@@ -1,29 +1,91 @@
 # WeHire — Google Apps Script Backend
 
-This directory contains the entire backend for WeHire: a single Apps Script file (`Code.gs`) that reads/writes a Google Sheet and uploads CV files to Google Drive.
+This directory contains the entire backend for WeHire: a single Apps Script file (`Code.gs`) that reads/writes Google Sheets and uploads CV files to Google Drive.
+
+The backend uses a **multi-tenant per-company structure**: one global `companies_database` spreadsheet holds company registry data, while each company has its own dedicated spreadsheet and CV folder.
+
+### Repository layout
+
+```
+apps-script/
+├── Code.gs                        ← single deployed Apps Script
+└── sheets/
+    ├── global/
+    │   └── Companies.csv          ← global registry (all companies)
+    ├── test-company/              ← test-company-database seed data
+    │   ├── Jobs.csv
+    │   ├── Candidates.csv
+    │   └── Form_Logs.csv
+    ├── nusantara-tech/
+    │   ├── Jobs.csv
+    │   ├── Candidates.csv
+    │   └── Form_Logs.csv
+    ├── kreasi-digital/
+    │   ├── Jobs.csv
+    │   ├── Candidates.csv
+    │   └── Form_Logs.csv
+    └── logistik-cepat/
+        ├── Jobs.csv
+        ├── Candidates.csv
+        └── Form_Logs.csv
+```
+
+Each subdirectory under `sheets/` mirrors one company's Google Sheet. When adding a new company, add its seed CSV folder here alongside the corresponding row in `global/Companies.csv`.
 
 ---
 
-## 1. Google Sheet Setup
+## 1. Overview
 
-Create a Google Sheet with **four tabs** named exactly as shown below (case-sensitive).
+| Spreadsheet | Purpose |
+|-------------|---------|
+| `companies_database` (global) | Registry of all companies: branding and config |
+| `[company]-database` (per-company) | Jobs, Candidates, and Form_Logs for that company only |
 
-### Sheet: `Companies`
-| Column | Header | Type |
-|--------|--------|------|
-| A | id | string |
-| B | name | string |
-| C | slug | string (URL-safe, e.g. `acme-corp`) |
-| D | logo_url | string (public image URL) |
-| E | primary_color | string (hex, e.g. `#1A73E8`) |
-| F | secondary_color | string (hex) |
-| G | description | string |
-| H | contact_email | string |
-| I | whatsapp_number | string (e.g. `628123456789`) |
-| J | site_status | string (`active` / `inactive`) |
-| K | max_active_jobs | number |
+Each company's CV files are stored in a dedicated Drive folder (`CVs/`) inside that company's directory. The script auto-discovers per-company resources via Drive traversal using the company slug — no IDs need to be stored in the sheet.
 
-### Sheet: `Jobs`
+---
+
+## 2. Drive Folder Structure
+
+```
+My Drive/
+├── global/
+│   └── companies_database          ← Companies sheet (global registry)
+├── test-company-dir/
+│   ├── test-company-database       ← Jobs, Candidates, Form_Logs
+│   └── CVs/                        ← CV uploads for test-company
+└── another-company-dir/
+    ├── another-company-database
+    └── CVs/
+```
+
+---
+
+## 3. Google Sheet Schemas
+
+### Global sheet: `companies_database`
+
+One tab named **`Companies`**:
+
+| Column | Header | Type | Notes |
+|--------|--------|------|-------|
+| A | id | string | Unique company ID |
+| B | name | string | Display name |
+| C | slug | string | URL-safe slug (e.g. `acme-corp`) — **must match Drive folder name `{slug}-dir`** |
+| D | logo_url | string | Public image URL |
+| E | primary_color | string | Hex (e.g. `#1A73E8`) |
+| F | secondary_color | string | Hex |
+| G | description | string | |
+| H | contact_email | string | |
+| I | whatsapp_number | string | e.g. `628123456789` |
+| J | site_status | string | `active` / `inactive` |
+| K | max_active_jobs | number | |
+
+### Per-company sheet: `[company]-database`
+
+Three tabs named exactly **`Jobs`**, **`Candidates`**, **`Form_Logs`**:
+
+#### Tab: `Jobs`
 | Column | Header | Type |
 |--------|--------|------|
 | A | id | string |
@@ -40,7 +102,7 @@ Create a Google Sheet with **four tabs** named exactly as shown below (case-sens
 | L | expired_at | string (ISO 8601, e.g. `2026-12-31T00:00:00Z`) |
 | M | sort_order | number (lower = higher on listing) |
 
-### Sheet: `Candidates`
+#### Tab: `Candidates`
 | Column | Header | Notes |
 |--------|--------|-------|
 | A | timestamp | Written by script |
@@ -57,7 +119,7 @@ Create a Google Sheet with **four tabs** named exactly as shown below (case-sens
 | L | portfolio_url | Optional |
 | M | cover_letter | Optional |
 
-### Sheet: `Form_Logs`
+#### Tab: `Form_Logs`
 | Column | Header |
 |--------|--------|
 | A | timestamp |
@@ -66,45 +128,51 @@ Create a Google Sheet with **four tabs** named exactly as shown below (case-sens
 
 ---
 
-## 2. Create the Apps Script Project
+## 4. Script Properties
 
-**Option A — Standalone project (recommended for MVP)**
+In the Apps Script editor: **Project Settings → Script Properties**.
+
+| Property | Value |
+|----------|-------|
+| `COMPANIES_SPREADSHEET_ID` | The ID from your `companies_database` Google Sheet URL (`/d/<ID>/edit`) |
+| `ROOT_FOLDER_ID` | The ID of the Drive root folder that contains all `{slug}-dir/` company folders |
+
+> Per-company `spreadsheet_id` and `cv_folder_id` are no longer stored in the Companies sheet — the script auto-discovers them by traversing the Drive folder tree using the company slug.
+
+---
+
+## 5. Manual Company Provisioning
+
+To add a new company:
+
+1. **Create a Drive folder** named `{slug}-dir` (e.g. `acme-corp-dir`) inside the root folder identified by `ROOT_FOLDER_ID`. Naming must be exact.
+2. **Create a `CVs/` subfolder** inside `{slug}-dir`. Set its sharing to **"Anyone with the link — Viewer"** so CV links work for the hiring team.
+3. **Create a spreadsheet** named `{slug}-database` (e.g. `acme-corp-database`) inside `{slug}-dir`.
+   - Add three tabs: `Jobs`, `Candidates`, `Form_Logs` with the columns listed in §3.
+4. **Add a row to the `Companies` tab** in `companies_database` — fill all columns. No IDs to copy; the script discovers resources by slug automatically.
+
+> The naming convention is critical. If a folder or file name doesn't match exactly, the script returns a descriptive error (e.g. `Company folder not found: acme-corp-dir`).
+
+---
+
+## 6. Create the Apps Script Project
+
+**Option A — Standalone project (recommended)**
 
 1. Go to [script.google.com](https://script.google.com) → **New project**.
 2. Delete the default `myFunction` code.
 3. Paste the contents of `Code.gs` into the editor.
-4. Save the project (name it e.g. `WeHire Backend`).
+4. Save the project (e.g. name it `WeHire Backend`).
 
 **Option B — Bound to the Sheet**
 
-1. In your Google Sheet, go to **Extensions → Apps Script**.
+1. In your `companies_database` Sheet, go to **Extensions → Apps Script**.
 2. Replace all code with the contents of `Code.gs`.
 3. Save.
 
-> For Option A you must set `SPREADSHEET_ID` in Script Properties (see step 4).
-> For Option B, you can replace `SpreadsheetApp.openById(SPREADSHEET_ID)` with `SpreadsheetApp.getActiveSpreadsheet()` if you prefer — but using the property keeps the code portable.
-
 ---
 
-## 3. Set Script Properties
-
-In the Apps Script editor:
-
-1. Click the gear icon → **Project Settings** → scroll to **Script Properties**.
-2. Add the following properties:
-
-| Property | Value |
-|----------|-------|
-| `SPREADSHEET_ID` | The ID from your Google Sheet URL (`/d/<ID>/edit`) |
-| `CV_FOLDER_ID` | The ID of a Google Drive folder where CVs will be uploaded |
-
-To get a Drive folder ID: open the folder in Drive → copy the last segment of the URL (`/folders/<ID>`).
-
-Make the CV folder's general access **"Anyone with the link — Viewer"** so that CV links work for the hiring team without authentication issues.
-
----
-
-## 4. Deploy as Web App
+## 7. Deploy as Web App
 
 1. In the Apps Script editor click **Deploy → New deployment**.
 2. Click the gear next to **Select type** → choose **Web app**.
@@ -115,47 +183,47 @@ Make the CV folder's general access **"Anyone with the link — Viewer"** so tha
 4. Click **Deploy** → authorise the required permissions.
 5. Copy the **Web app URL** (looks like `https://script.google.com/macros/s/<ID>/exec`).
 
-> Every time you update `Code.gs` you must create a **new deployment** (or redeploy the existing one). The URL stays the same if you update an existing deployment.
-
----
-
-## 5. Configure the Next.js App
-
 Add the URL to `.env.local` at the project root:
 
 ```env
 NEXT_PUBLIC_APPS_SCRIPT_URL=https://script.google.com/macros/s/<YOUR_DEPLOYMENT_ID>/exec
 ```
 
-Restart the dev server:
-
-```bash
-npm run dev
-```
+> Every time you update `Code.gs` you must create a **new deployment** (or redeploy the existing one). The URL stays the same if you update an existing deployment.
 
 ---
 
-## 6. Verify End-to-End
-
-1. **Company page loads** — navigate to `http://localhost:3000/{slug}`. The page should show the company name and job listings fetched from the `Companies` and `Jobs` sheets.
-
-2. **Job detail loads** — click a job listing. The detail page fetches `?action=getJob&jobId=X`.
-
-3. **Application submission** — fill and submit the application form on a job detail page. Check:
-   - A new row appears in the `Candidates` sheet.
-   - The `cv_url` column contains a valid Google Drive link.
-
-4. **Error logging** — use an invalid slug (e.g. `/nonexistent-company`). Check the `Form_Logs` sheet for a new error row.
-
----
-
-## API Reference
+## 8. API Reference
 
 | Method | Parameters | Response |
 |--------|-----------|----------|
 | `GET ?action=getCompany&slug=X` | `slug` — company URL slug | `{ data: CompanyDTO }` |
 | `GET ?action=getJobs&companyId=X` | `companyId` — company ID | `{ data: JobDTO[] }` |
-| `GET ?action=getJob&jobId=X` | `jobId` — job ID | `{ data: JobDTO }` |
+| `GET ?action=getJob&jobId=X&companyId=X` | `jobId` — job ID; `companyId` — **required** | `{ data: JobDTO }` |
 | `POST` (multipart/form-data) | See `ApplicationPayload` fields | `{ success: true }` or `{ error: "..." }` |
 
-All error responses have the shape `{ error: "message" }`. Check the `Form_Logs` sheet for full error context.
+All error responses have the shape `{ error: "message" }`. Check the `Form_Logs` tab in the company's spreadsheet for full error context.
+
+> **Breaking change:** `getJob` now requires a `companyId` parameter in addition to `jobId`.
+
+---
+
+## 9. End-to-End Verification
+
+After deploying a new version:
+
+1. **Company data** — `GET ?action=getCompany&slug=test-company`
+   - Expect: `{ data: { id, name, slug, logo_url, primary_color, ... } }` — no `spreadsheet_id`/`cv_folder_id`
+
+2. **Job listing** — `GET ?action=getJobs&companyId=1`
+   - Expect: `{ data: [...] }` fetched from `test-company-database`
+
+3. **Single job** — `GET ?action=getJob&jobId=101&companyId=1`
+   - Expect: `{ data: { id: "101", ... } }` (new required `companyId` param)
+
+4. **Application submission** — POST with all required fields + CV file
+   - Expect: new row in `Candidates` tab of `test-company-database`
+   - Expect: CV uploaded to `test-company-dir/CVs/`
+
+5. **Error logging** — trigger an error (e.g. invalid companyId)
+   - Expect: error logged to `Form_Logs` tab in the relevant company spreadsheet (or `console.error` if no company context)

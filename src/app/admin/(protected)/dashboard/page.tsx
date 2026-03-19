@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getAdminSession } from '@/lib/session';
-import { logoutAdminAction } from '@/features/admin-auth/presentation/actions/logoutAdminAction';
 import { listCompaniesUseCase } from '@/di/container.server';
 import { CompanySelectorWidget } from '@/features/admin-settings/presentation/dashboard/CompanySelectorWidget';
 
@@ -18,22 +17,6 @@ export default async function AdminDashboardPage() {
         <div className="bg-white rounded-lg shadow p-6">
           <h1 className="text-2xl font-semibold text-gray-900 mb-4">Admin Dashboard</h1>
 
-          {session && (
-            <div className="space-y-2 text-sm text-gray-700 mb-6">
-              <p>
-                <span className="font-medium">Email:</span> {session.email}
-              </p>
-              <p>
-                <span className="font-medium">Role:</span> {session.role}
-              </p>
-              {session.companyId && (
-                <p>
-                  <span className="font-medium">Company ID:</span> {session.companyId}
-                </p>
-              )}
-            </div>
-          )}
-
           <div className="flex gap-3 mb-4">
             {session?.role === 'SUPER_ADMIN' ? (
               <CompanySelectorWidget companies={companies} />
@@ -46,15 +29,6 @@ export default async function AdminDashboardPage() {
               </Link>
             )}
           </div>
-
-          <form action={logoutAdminAction}>
-            <button
-              type="submit"
-              className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
-            >
-              Sign out
-            </button>
-          </form>
         </div>
       </div>
     </div>

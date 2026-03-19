@@ -28,4 +28,13 @@ export class JobRepositoryImpl implements JobRepository {
       throw this.errorMapper.toDomain(error as NetworkError);
     }
   }
+
+  async getByIdAndSlug(jobId: string, slug: string): Promise<Job> {
+    try {
+      const dto = await this.dataSource.getJobBySlug(jobId, slug);
+      return JobMapper.toDomain(dto);
+    } catch (error) {
+      throw this.errorMapper.toDomain(error as NetworkError);
+    }
+  }
 }

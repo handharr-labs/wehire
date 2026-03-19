@@ -75,6 +75,13 @@ export class AppsScriptDataSource {
     return response.data;
   }
 
+  async getJobBySlug(jobId: string, slug: string): Promise<JobDTO> {
+    const response = await this.httpClient.get<AppsScriptJobResponse>('', {
+      params: { action: 'getJobBySlug', jobId, slug },
+    });
+    return response.data;
+  }
+
   async submitApplication(payload: ApplicationPayload): Promise<void> {
     const cvBase64 = await fileToBase64(payload.cvFile);
 

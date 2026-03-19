@@ -115,7 +115,7 @@ export function JobFormView({ companyId, job, mode }: Props) {
             <div className="grid grid-cols-2 gap-4">
               <Field label="Min Salary (IDR)" error={errors.minSalary?.message}>
                 <input
-                  {...register('minSalary')}
+                  {...register('minSalary', { valueAsNumber: true })}
                   type="number"
                   min={0}
                   placeholder="5000000"
@@ -125,7 +125,7 @@ export function JobFormView({ companyId, job, mode }: Props) {
 
               <Field label="Max Salary (IDR)" error={errors.maxSalary?.message}>
                 <input
-                  {...register('maxSalary')}
+                  {...register('maxSalary', { valueAsNumber: true })}
                   type="number"
                   min={0}
                   placeholder="10000000"
@@ -175,7 +175,7 @@ export function JobFormView({ companyId, job, mode }: Props) {
 
             <Field label="Sort Order" error={errors.sortOrder?.message}>
               <input
-                {...register('sortOrder')}
+                {...register('sortOrder', { valueAsNumber: true })}
                 type="number"
                 min={0}
                 placeholder="0"

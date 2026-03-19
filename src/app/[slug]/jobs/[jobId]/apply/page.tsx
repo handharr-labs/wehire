@@ -16,10 +16,8 @@ export default async function ApplyPage({ params }: Props) {
   let company: Company;
   let job: Job;
   try {
-    [company, job] = await Promise.all([
-      getCompanyBySlugUseCase.execute(slug),
-      getJobDetailUseCase.execute(jobId),
-    ]);
+    company = await getCompanyBySlugUseCase.execute(slug);
+    job = await getJobDetailUseCase.execute(jobId, company.id);
   } catch {
     notFound();
   }

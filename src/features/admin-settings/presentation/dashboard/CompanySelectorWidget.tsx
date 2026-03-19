@@ -6,9 +6,10 @@ import { type Company } from '@/features/career-microsite/domain/entities/Compan
 
 interface Props {
   companies: Company[];
+  readonly?: boolean;
 }
 
-export function CompanySelectorWidget({ companies }: Props) {
+export function CompanySelectorWidget({ companies, readonly = false }: Props) {
   const router = useRouter();
   const [selectedId, setSelectedId] = useState(companies[0]?.id ?? '');
 
@@ -25,7 +26,8 @@ export function CompanySelectorWidget({ companies }: Props) {
       <select
         value={selectedId}
         onChange={(e) => setSelectedId(e.target.value)}
-        className="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        disabled={readonly}
+        className="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         {companies.map((c) => (
           <option key={c.id} value={c.id}>

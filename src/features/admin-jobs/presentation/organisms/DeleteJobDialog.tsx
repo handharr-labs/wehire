@@ -3,7 +3,7 @@
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { deleteJobAction } from './actions/deleteJobAction';
+import { deleteJobAction } from '../actions/deleteJobAction';
 
 interface Props {
   jobId: string;

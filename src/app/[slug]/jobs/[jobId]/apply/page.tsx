@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { getCachedCompanyBySlug, getCachedJobDetailBySlug } from '@/lib/cached-queries';
 import { ApplyFormClientWrapper } from './ApplyFormClientWrapper';
-import { BrandThemeStyle } from '@/features/career-microsite/presentation/shared/BrandThemeStyle';
+import { BrandThemeStyle } from '@/shared/presentation/common/atoms/BrandThemeStyle';
 import { isJobOpen } from '@/features/career-microsite/domain/helpers/isJobOpen';
 import { type Company } from '@/features/career-microsite/domain/entities/Company';
 import { type Job } from '@/features/career-microsite/domain/entities/Job';

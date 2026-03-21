@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getAdminSession } from '@/lib/session';
 import { getCompanySettingsUseCase, listCompaniesUseCase } from '@/di/container.server';
-import { CompanySelectorWidget } from '@/features/admin-settings/presentation/dashboard/CompanySelectorWidget';
+import { CompanySelectorWidget } from '@/features/admin-settings/presentation/organisms/CompanySelectorWidget';
 
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();

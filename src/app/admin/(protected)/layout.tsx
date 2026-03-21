@@ -1,4 +1,4 @@
-import { AdminHeader } from '@/features/admin-settings/presentation/layout/AdminHeader';
+import { AdminHeader } from '@/features/admin-settings/presentation/organisms/AdminHeader';
 
 export default function ProtectedAdminLayout({ children }: { children: React.ReactNode }) {
   return (

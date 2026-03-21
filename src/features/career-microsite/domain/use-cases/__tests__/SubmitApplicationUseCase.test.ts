@@ -60,7 +60,7 @@ describe('SubmitApplicationUseCase', () => {
   it('calls getJobDetailUseCase.execute with the jobId from payload', async () => {
     const { useCase, mockGetJobDetail } = makeUseCase(openJob);
     await useCase.execute(payload);
-    expect(mockGetJobDetail.execute).toHaveBeenCalledWith('j1');
+    expect(mockGetJobDetail.execute).toHaveBeenCalledWith('j1', 'c1');
   });
 
   it('calls applicationRepository.submit when the job is open', async () => {

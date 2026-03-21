@@ -1,6 +1,6 @@
-import { HeroSection } from './sections/HeroSection';
-import { FeaturesSection } from './sections/FeaturesSection';
-import { BottomCtaSection } from './sections/BottomCtaSection';
+import { HeroSection } from './organisms/HeroSection';
+import { FeaturesSection } from './organisms/FeaturesSection';
+import { BottomCtaSection } from './organisms/BottomCtaSection';
 
 export function MarketingLandingView() {
   return (

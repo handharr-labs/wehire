@@ -1,17 +1,12 @@
 import Link from 'next/link';
 import { type Job } from '@/features/career-microsite/domain/entities/Job';
-import { DeleteJobDialog } from './DeleteJobDialog';
+import { DeleteJobDialog } from './organisms/DeleteJobDialog';
+import { StatusBadge } from '@/shared/presentation/common/atoms/StatusBadge';
 
 interface Props {
   jobs: Job[];
   companyId: string;
 }
-
-const STATUS_STYLES: Record<string, string> = {
-  active: 'bg-green-100 text-green-700',
-  draft: 'bg-gray-100 text-gray-600',
-  closed: 'bg-red-100 text-red-700',
-};
 
 function formatSalary(amount: number): string {
   if (amount === 0) return '—';
@@ -73,11 +68,7 @@ export function JobsListView({ jobs, companyId }: Props) {
                         {formatSalary(job.minSalary)} – {formatSalary(job.maxSalary)}
                       </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${STATUS_STYLES[job.status] ?? 'bg-gray-100 text-gray-600'}`}
-                        >
-                          {job.status}
-                        </span>
+                        <StatusBadge status={job.status} />
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {job.expiredAt ? job.expiredAt.substring(0, 10) : '—'}

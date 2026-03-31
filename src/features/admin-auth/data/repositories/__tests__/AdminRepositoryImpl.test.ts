@@ -1,8 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { AdminRepositoryImpl } from '../AdminRepositoryImpl';
 import { type AdminDataSource } from '../../data-sources/AdminDataSource';
+import { type AdminMapper } from '../../mappers/AdminMapper';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type AdminDTO } from '../../dtos/AdminDTO';
+import { type Admin } from '@/features/admin-auth/domain/entities/Admin';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 import { NetworkError } from '@/data/networking/NetworkError';
 
@@ -14,9 +16,21 @@ const dto: AdminDTO = {
   company_id: null,
 };
 
+const mappedAdmin: Admin = {
+  adminId: 'a1',
+  email: 'admin@example.com',
+  hashedPassword: '$2b$10$hash',
+  role: 'SUPER_ADMIN',
+  companyId: null,
+};
+
 function makeDataSource(result: AdminDTO | null): AdminDataSource {
   return { findAdminByEmail: vi.fn().mockResolvedValue(result) } as unknown as AdminDataSource;
 }
+
+const adminMapper: AdminMapper = {
+  toDomain: vi.fn().mockReturnValue(mappedAdmin),
+};
 
 const errorMapper: ErrorMapper = {
   toDomain: (err: NetworkError) => DomainError.serverError(err.message),
@@ -24,7 +38,7 @@ const errorMapper: ErrorMapper = {
 
 describe('AdminRepositoryImpl.findByEmail', () => {
   it('returns mapped Admin entity when DTO is found', async () => {
-    const repo = new AdminRepositoryImpl(makeDataSource(dto), errorMapper);
+    const repo = new AdminRepositoryImpl(makeDataSource(dto), adminMapper, errorMapper);
     const admin = await repo.findByEmail('admin@example.com');
 
     expect(admin).not.toBeNull();
@@ -35,7 +49,7 @@ describe('AdminRepositoryImpl.findByEmail', () => {
   });
 
   it('returns null when data source returns null', async () => {
-    const repo = new AdminRepositoryImpl(makeDataSource(null), errorMapper);
+    const repo = new AdminRepositoryImpl(makeDataSource(null), adminMapper, errorMapper);
     const admin = await repo.findByEmail('unknown@example.com');
 
     expect(admin).toBeNull();
@@ -46,7 +60,7 @@ describe('AdminRepositoryImpl.findByEmail', () => {
       findAdminByEmail: vi.fn().mockRejectedValue(new NetworkError('httpError', 'HTTP 500', 500)),
     } as unknown as AdminDataSource;
 
-    const repo = new AdminRepositoryImpl(failingDataSource, errorMapper);
+    const repo = new AdminRepositoryImpl(failingDataSource, adminMapper, errorMapper);
 
     await expect(repo.findByEmail('admin@example.com')).rejects.toBeInstanceOf(DomainError);
   });

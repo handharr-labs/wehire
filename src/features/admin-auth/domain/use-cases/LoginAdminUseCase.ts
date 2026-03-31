@@ -1,15 +1,15 @@
 import { DomainError } from '@/shared/domain/errors/DomainError';
 import { type AdminRepository } from '../repositories/AdminRepository';
 import { type PasswordVerifier } from '../services/PasswordVerifier';
-import { type AdminSessionPayload } from '@/lib/session';
+import { type AdminSession } from '../entities/AdminSession';
 
 export interface LoginAdminInput {
-  email: string;
-  password: string;
+  readonly email: string;
+  readonly password: string;
 }
 
 export interface LoginAdminUseCase {
-  execute(input: LoginAdminInput): Promise<AdminSessionPayload>;
+  execute(input: LoginAdminInput): Promise<AdminSession>;
 }
 
 export class LoginAdminUseCaseImpl implements LoginAdminUseCase {
@@ -18,7 +18,7 @@ export class LoginAdminUseCaseImpl implements LoginAdminUseCase {
     private readonly passwordVerifier: PasswordVerifier,
   ) {}
 
-  async execute({ email, password }: LoginAdminInput): Promise<AdminSessionPayload> {
+  async execute({ email, password }: LoginAdminInput): Promise<AdminSession> {
     const admin = await this.adminRepository.findByEmail(email);
     if (!admin) throw DomainError.unauthorized();
 
@@ -26,7 +26,7 @@ export class LoginAdminUseCaseImpl implements LoginAdminUseCase {
     if (!isValid) throw DomainError.unauthorized();
 
     return {
-      sub: admin.adminId,
+      adminId: admin.adminId,
       email: admin.email,
       role: admin.role,
       companyId: admin.companyId,

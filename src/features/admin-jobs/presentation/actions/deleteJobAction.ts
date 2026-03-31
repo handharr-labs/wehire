@@ -17,5 +17,5 @@ export const deleteJobAction = authActionClient
       throw DomainError.unauthorized();
     }
 
-    await deleteJobUseCase().execute(parsedInput.jobId, parsedInput.companyId);
+    await deleteJobUseCase.execute(parsedInput.jobId, parsedInput.companyId);
   });

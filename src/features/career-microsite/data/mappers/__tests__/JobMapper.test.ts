@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { JobMapper } from '../JobMapper';
-import { type JobDTO } from '../../dtos/JobDTO';
+import { JobMapperImpl } from '../JobMapper';
+import { type JobDTO } from '@/data/dtos/JobDTO';
 
 const baseDTO: JobDTO = {
   id: 'j1',
@@ -18,9 +18,10 @@ const baseDTO: JobDTO = {
   sort_order: 1,
 };
 
-describe('JobMapper.toDomain', () => {
+describe('JobMapperImpl.toDomain', () => {
   it('maps all fields from snake_case DTO to camelCase entity', () => {
-    const job = JobMapper.toDomain(baseDTO);
+    const mapper = new JobMapperImpl();
+    const job = mapper.toDomain(baseDTO);
     expect(job).toEqual({
       id: 'j1',
       companyId: 'c1',
@@ -39,13 +40,15 @@ describe('JobMapper.toDomain', () => {
   });
 
   it('coerces "open" status to "active"', () => {
-    const job = JobMapper.toDomain({ ...baseDTO, status: 'open' });
+    const mapper = new JobMapperImpl();
+    const job = mapper.toDomain({ ...baseDTO, status: 'open' });
     expect(job.status).toBe('active');
   });
 
   it('falls back employmentType to "full-time" when employment_type is absent', () => {
+    const mapper = new JobMapperImpl();
     const dto = { ...baseDTO, employment_type: undefined as unknown as string };
-    const job = JobMapper.toDomain(dto);
+    const job = mapper.toDomain(dto);
     expect(job.employmentType).toBe('full-time');
   });
 });

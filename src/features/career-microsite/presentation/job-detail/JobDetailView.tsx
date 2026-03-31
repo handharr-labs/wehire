@@ -1,20 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { type JobDetailViewModel, useJobDetailViewModel } from './useJobDetailViewModel';
-import { isJobOpen } from '../../domain/helpers/isJobOpen';
+import { type JobDetailViewModelInput, buildJobDetailViewModel } from './buildJobDetailViewModel';
 
 interface Props {
-  initialData: JobDetailViewModel;
+  initialData: JobDetailViewModelInput;
 }
 
 export function JobDetailView({ initialData }: Props) {
-  const { company, job } = useJobDetailViewModel(initialData);
-
-  const salaryLabel =
-    job.minSalary > 0
-      ? `Rp ${job.minSalary.toLocaleString('id-ID')} – Rp ${job.maxSalary.toLocaleString('id-ID')}`
-      : 'Negotiable';
+  const { company, job, salaryLabel, isOpen } = buildJobDetailViewModel(initialData);
 
   return (
     <main className="min-h-screen bg-zinc-50">
@@ -43,7 +37,7 @@ export function JobDetailView({ initialData }: Props) {
           </section>
 
           <div className="mt-8">
-            {isJobOpen(job) ? (
+            {isOpen ? (
               <Link
                 href={`/${company.slug}/jobs/${job.id}/apply`}
                 className="inline-block bg-[var(--brand-primary)] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-[var(--brand-secondary)] transition-colors"

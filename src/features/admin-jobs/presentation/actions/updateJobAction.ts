@@ -20,7 +20,7 @@ export const updateJobAction = authActionClient
 
     const { jobId, companyId, ...input } = parsedInput;
 
-    await updateJobUseCase().execute(jobId, companyId, {
+    await updateJobUseCase.execute(jobId, companyId, {
       title: input.title,
       department: input.department,
       location: input.location,

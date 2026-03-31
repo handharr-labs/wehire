@@ -1,14 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
 import { type Job } from '@/features/career-microsite/domain/entities/Job';
-import { jobFormSchema, type JobFormValues } from './jobFormSchema';
-import { createJobAction } from './actions/createJobAction';
-import { updateJobAction } from './actions/updateJobAction';
+import { useJobFormViewModel } from './useJobFormViewModel';
+import { FormField } from '@/shared/presentation/common/atoms/FormField';
 
 interface Props {
   companyId: string;
@@ -17,55 +12,13 @@ interface Props {
 }
 
 export function JobFormView({ companyId, job, mode }: Props) {
-  const router = useRouter();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<JobFormValues>({
-    resolver: zodResolver(jobFormSchema),
-    defaultValues: {
-      title: job?.title ?? '',
-      department: job?.department ?? '',
-      location: job?.location ?? '',
-      employmentType: job?.employmentType ?? 'full-time',
-      minSalary: job?.minSalary ?? 0,
-      maxSalary: job?.maxSalary ?? 0,
-      description: job?.description ?? '',
-      requirements: job?.requirements ?? '',
-      status: job?.status ?? 'draft',
-      expiredAt: job?.expiredAt ? job.expiredAt.substring(0, 10) : '',
-      sortOrder: job?.sortOrder ?? 0,
-    },
-  });
-
-  const jobsHref = `/admin/jobs?companyId=${companyId}`;
-
-  const { execute: executeCreate, result: createResult, isPending: isCreating } = useAction(createJobAction, {
-    onSuccess: () => router.push(jobsHref),
-  });
-
-  const { execute: executeUpdate, result: updateResult, isPending: isUpdating } = useAction(updateJobAction, {
-    onSuccess: () => router.push(jobsHref),
-  });
-
-  const isPending = isCreating || isUpdating;
-  const serverError = createResult.serverError ?? updateResult.serverError;
-
-  function onSubmit(values: JobFormValues) {
-    if (mode === 'create') {
-      executeCreate({ ...values, companyId });
-    } else {
-      executeUpdate({ ...values, companyId, jobId: job!.id });
-    }
-  }
+  const vm = useJobFormViewModel({ companyId, job, mode });
 
   return (
     <div className="bg-gray-50 min-h-screen p-8">
       <div className="max-w-2xl mx-auto">
         <div className="mb-4">
-          <Link href={jobsHref} className="text-sm text-gray-500 hover:text-gray-700">
+          <Link href={vm.jobsHref} className="text-sm text-gray-500 hover:text-gray-700">
             ← Back to Jobs
           </Link>
         </div>
@@ -74,43 +27,43 @@ export function JobFormView({ companyId, job, mode }: Props) {
             {mode === 'create' ? 'New Job Posting' : 'Edit Job Posting'}
           </h1>
 
-          {serverError && (
+          {vm.serverError && (
             <div className="mb-4 p-3 rounded bg-red-50 border border-red-200 text-sm text-red-700">
-              {serverError}
+              {vm.serverError}
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <Field label="Job Title" error={errors.title?.message}>
+          <form onSubmit={vm.onFormSubmit} className="space-y-5">
+            <FormField label="Job Title" error={vm.fieldErrors.title}>
               <input
-                {...register('title')}
+                {...vm.fields.title}
                 type="text"
                 placeholder="e.g. Senior Frontend Engineer"
                 className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </Field>
+            </FormField>
 
-            <Field label="Department" error={errors.department?.message}>
+            <FormField label="Department" error={vm.fieldErrors.department}>
               <input
-                {...register('department')}
+                {...vm.fields.department}
                 type="text"
                 placeholder="e.g. Engineering"
                 className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </Field>
+            </FormField>
 
-            <Field label="Location" error={errors.location?.message}>
+            <FormField label="Location" error={vm.fieldErrors.location}>
               <input
-                {...register('location')}
+                {...vm.fields.location}
                 type="text"
                 placeholder="e.g. Jakarta / Remote"
                 className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </Field>
+            </FormField>
 
-            <Field label="Employment Type" error={errors.employmentType?.message}>
+            <FormField label="Employment Type" error={vm.fieldErrors.employmentType}>
               <select
-                {...register('employmentType')}
+                {...vm.fields.employmentType}
                 className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="full-time">Full-time</option>
@@ -118,85 +71,85 @@ export function JobFormView({ companyId, job, mode }: Props) {
                 <option value="contract">Contract</option>
                 <option value="internship">Internship</option>
               </select>
-            </Field>
+            </FormField>
 
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Min Salary (IDR)" error={errors.minSalary?.message}>
+              <FormField label="Min Salary (IDR)" error={vm.fieldErrors.minSalary}>
                 <input
-                  {...register('minSalary', { valueAsNumber: true })}
+                  {...vm.fields.minSalary}
                   type="number"
                   min={0}
                   placeholder="5000000"
                   className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-              </Field>
+              </FormField>
 
-              <Field label="Max Salary (IDR)" error={errors.maxSalary?.message}>
+              <FormField label="Max Salary (IDR)" error={vm.fieldErrors.maxSalary}>
                 <input
-                  {...register('maxSalary', { valueAsNumber: true })}
+                  {...vm.fields.maxSalary}
                   type="number"
                   min={0}
                   placeholder="10000000"
                   className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-              </Field>
+              </FormField>
             </div>
 
-            <Field label="Description" error={errors.description?.message}>
+            <FormField label="Description" error={vm.fieldErrors.description}>
               <textarea
-                {...register('description')}
+                {...vm.fields.description}
                 rows={5}
                 placeholder="Describe the role and responsibilities"
                 className="w-full resize-none rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </Field>
+            </FormField>
 
-            <Field label="Requirements" error={errors.requirements?.message}>
+            <FormField label="Requirements" error={vm.fieldErrors.requirements}>
               <textarea
-                {...register('requirements')}
+                {...vm.fields.requirements}
                 rows={5}
                 placeholder="List candidate requirements"
                 className="w-full resize-none rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </Field>
+            </FormField>
 
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Status" error={errors.status?.message}>
+              <FormField label="Status" error={vm.fieldErrors.status}>
                 <select
-                  {...register('status')}
+                  {...vm.fields.status}
                   className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="draft">Draft</option>
                   <option value="active">Active</option>
                   <option value="closed">Closed</option>
                 </select>
-              </Field>
+              </FormField>
 
-              <Field label="Expiry Date" error={errors.expiredAt?.message}>
+              <FormField label="Expiry Date" error={vm.fieldErrors.expiredAt}>
                 <input
-                  {...register('expiredAt')}
+                  {...vm.fields.expiredAt}
                   type="date"
                   className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-              </Field>
+              </FormField>
             </div>
 
-            <Field label="Sort Order" error={errors.sortOrder?.message}>
+            <FormField label="Sort Order" error={vm.fieldErrors.sortOrder}>
               <input
-                {...register('sortOrder', { valueAsNumber: true })}
+                {...vm.fields.sortOrder}
                 type="number"
                 min={0}
                 placeholder="0"
                 className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </Field>
+            </FormField>
 
             <button
               type="submit"
-              disabled={isPending}
+              disabled={vm.isPending}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
             >
-              {isPending
+              {vm.isPending
                 ? mode === 'create'
                   ? 'Creating…'
                   : 'Saving…'
@@ -207,24 +160,6 @@ export function JobFormView({ companyId, job, mode }: Props) {
           </form>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      {children}
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   );
 }

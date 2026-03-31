@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CompanyMapper } from '../CompanyMapper';
+import { CompanyMapperImpl } from '../CompanyMapper';
 import { type CompanyDTO } from '../../dtos/CompanyDTO';
 
 const baseDTO: CompanyDTO = {
@@ -16,9 +16,10 @@ const baseDTO: CompanyDTO = {
   max_active_jobs: 10,
 };
 
-describe('CompanyMapper.toDomain', () => {
+describe('CompanyMapperImpl.toDomain', () => {
   it('maps all snake_case DTO fields to camelCase entity', () => {
-    const company = CompanyMapper.toDomain(baseDTO);
+    const mapper = new CompanyMapperImpl();
+    const company = mapper.toDomain(baseDTO);
     expect(company).toEqual({
       id: 'c1',
       name: 'Acme Corp',
@@ -35,8 +36,9 @@ describe('CompanyMapper.toDomain', () => {
   });
 
   it('falls back siteStatus to "inactive" when site_status is absent', () => {
+    const mapper = new CompanyMapperImpl();
     const dto = { ...baseDTO, site_status: undefined as unknown as string };
-    const company = CompanyMapper.toDomain(dto);
+    const company = mapper.toDomain(dto);
     expect(company.siteStatus).toBe('inactive');
   });
 });

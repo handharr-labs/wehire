@@ -19,7 +19,7 @@ vi.mock('@/lib/session', () => ({
 
 const mockExecute = vi.fn();
 vi.mock('@/di/container.server', () => ({
-  loginAdminUseCase: () => ({ execute: mockExecute }),
+  loginAdminUseCase: { execute: mockExecute },
 }));
 
 describe('loginAdminAction', () => {

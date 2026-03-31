@@ -1,21 +1,22 @@
 import { type Company } from '@/features/career-microsite/domain/entities/Company';
-import { CompanyMapper } from '@/features/career-microsite/data/mappers/CompanyMapper';
-import { type AppsScriptDataSource } from '@/features/career-microsite/data/data-sources/AppsScriptDataSource';
+import { type CompanyMapper } from '@/data/mappers/CompanyMapper';
+import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type NetworkError } from '@/data/networking/NetworkError';
 import { type CompanySettingsRepository } from '../../domain/repositories/CompanySettingsRepository';
-import { type CompanySettingsInput } from '../../domain/use-cases/UpdateCompanySettingsUseCase';
+import { type CompanySettingsInput } from '../../domain/entities/CompanySettingsInput';
 
 export class CompanySettingsRepositoryImpl implements CompanySettingsRepository {
   constructor(
     private readonly dataSource: AppsScriptDataSource,
+    private readonly mapper: CompanyMapper,
     private readonly errorMapper: ErrorMapper,
   ) {}
 
   async getAll(): Promise<Company[]> {
     try {
       const dtos = await this.dataSource.getCompanies();
-      return dtos.map(CompanyMapper.toDomain);
+      return dtos.map((dto) => this.mapper.toDomain(dto));
     } catch (error) {
       throw this.errorMapper.toDomain(error as NetworkError);
     }
@@ -24,7 +25,7 @@ export class CompanySettingsRepositoryImpl implements CompanySettingsRepository 
   async getById(companyId: string): Promise<Company> {
     try {
       const dto = await this.dataSource.getCompanyById(companyId);
-      return CompanyMapper.toDomain(dto);
+      return this.mapper.toDomain(dto);
     } catch (error) {
       throw this.errorMapper.toDomain(error as NetworkError);
     }

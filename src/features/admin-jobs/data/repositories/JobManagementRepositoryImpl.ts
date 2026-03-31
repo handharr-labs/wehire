@@ -2,17 +2,17 @@ import { type Job } from '@/features/career-microsite/domain/entities/Job';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type NetworkError } from '@/data/networking/NetworkError';
 import {
-  type IJobManagementRepository,
+  type JobManagementRepository,
   type CreateJobInput,
   type UpdateJobInput,
-} from '../../domain/repositories/IJobManagementRepository';
+} from '../../domain/repositories/JobManagementRepository';
 import { type JobManagementRemoteDataSource } from '../data-sources/JobManagementRemoteDataSource';
-import { type IJobManagementMapper } from '../mappers/JobManagementMapper';
+import { type JobManagementMapper } from '../mappers/JobManagementMapper';
 
-export class JobManagementRepositoryImpl implements IJobManagementRepository {
+export class JobManagementRepositoryImpl implements JobManagementRepository {
   constructor(
     private readonly dataSource: JobManagementRemoteDataSource,
-    private readonly mapper: IJobManagementMapper,
+    private readonly mapper: JobManagementMapper,
     private readonly errorMapper: ErrorMapper,
   ) {}
 

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SubmitApplicationUseCaseImpl } from '../SubmitApplicationUseCase';
 import { type ApplicationRepository } from '../../repositories/ApplicationRepository';
 import { type GetJobDetailUseCase } from '../GetJobDetailUseCase';
-import { type ApplicationPayload } from '../../entities/ApplicationPayload';
+import { type ApplicationPayload } from '@/shared/domain/entities/ApplicationPayload';
 import { type Job } from '../../entities/Job';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 
@@ -38,7 +38,9 @@ const payload: ApplicationPayload = {
   city: 'Jakarta',
   experienceSummary: '5 years',
   expectedSalary: 5_000_000,
-  cvFile: new File(['cv'], 'cv.pdf', { type: 'application/pdf' }),
+  cvBase64: 'dGVzdA==',
+  cvFileName: 'cv.pdf',
+  cvFileMime: 'application/pdf',
 };
 
 function makeUseCase(job: Job) {

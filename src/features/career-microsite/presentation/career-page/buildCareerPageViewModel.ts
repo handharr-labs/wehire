@@ -1,5 +1,3 @@
-'use client';
-
 import { type Company } from '../../domain/entities/Company';
 import { type Job } from '../../domain/entities/Job';
 
@@ -14,7 +12,7 @@ export interface CareerPageViewModel {
   isHiring: boolean;
 }
 
-export function useCareerPageViewModel(initialData: CareerPageViewModelInput): CareerPageViewModel {
+export function buildCareerPageViewModel(initialData: CareerPageViewModelInput): CareerPageViewModel {
   return {
     ...initialData,
     isHiring: initialData.company.siteStatus === 'active',

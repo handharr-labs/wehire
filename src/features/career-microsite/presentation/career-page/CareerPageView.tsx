@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { type CareerPageViewModelInput, useCareerPageViewModel } from './useCareerPageViewModel';
+import { type CareerPageViewModelInput, buildCareerPageViewModel } from './buildCareerPageViewModel';
 
 interface Props {
   initialData: CareerPageViewModelInput;
 }
 
 export function CareerPageView({ initialData }: Props) {
-  const { company, jobs, isHiring } = useCareerPageViewModel(initialData);
+  const { company, jobs, isHiring } = buildCareerPageViewModel(initialData);
 
   return (
     <main className="min-h-screen bg-zinc-50">

@@ -35,4 +35,5 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 |---|-------|--------|--------|
 | 016 | Add basic rule-based applicant scoring | `open` | [#26](https://github.com/handharr-labs/wehire/issues/26) |
 | 017 | Performance issue: page load when opening job vacancy and application form | `done` | [#30](https://github.com/handharr-labs/wehire/issues/30) |
-| 018 | refactor(presentation): extract atoms, molecules, and organisms per Atomic Design | `open` | [#38](https://github.com/handharr-labs/wehire/issues/38) |
+| 018 | refactor(presentation): extract atoms, molecules, and organisms per Atomic Design | `done` | [#38](https://github.com/handharr-labs/wehire/issues/38) |
+| 042 | Fix Clean Architecture violations from arch review | `pending` | [#42](https://github.com/handharr-labs/wehire/issues/42) |

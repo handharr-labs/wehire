@@ -1,33 +1,33 @@
 export interface CreateJobDTO {
-  companyId: string;
-  title: string;
-  department: string;
-  location: string;
-  employment_type: string;
-  min_salary: number;
-  max_salary: number;
-  description: string;
-  requirements: string;
-  status: string;
-  expired_at: string;
-  sort_order: number;
+  readonly companyId: string;
+  readonly title: string;
+  readonly department: string;
+  readonly location: string;
+  readonly employment_type: string;
+  readonly min_salary: number;
+  readonly max_salary: number;
+  readonly description: string;
+  readonly requirements: string;
+  readonly status: string;
+  readonly expired_at: string;
+  readonly sort_order: number;
 }
 
 export interface UpdateJobDTO {
-  title?: string;
-  department?: string;
-  location?: string;
-  employment_type?: string;
-  min_salary?: number;
-  max_salary?: number;
-  description?: string;
-  requirements?: string;
-  status?: string;
-  expired_at?: string;
-  sort_order?: number;
+  readonly title?: string;
+  readonly department?: string;
+  readonly location?: string;
+  readonly employment_type?: string;
+  readonly min_salary?: number;
+  readonly max_salary?: number;
+  readonly description?: string;
+  readonly requirements?: string;
+  readonly status?: string;
+  readonly expired_at?: string;
+  readonly sort_order?: number;
 }
 
 export interface JobWriteResultDTO {
-  id: string;
-  created_at?: string;
+  readonly id: string;
+  readonly created_at?: string;
 }

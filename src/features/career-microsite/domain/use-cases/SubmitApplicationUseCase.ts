@@ -1,4 +1,4 @@
-import { type ApplicationPayload } from '../entities/ApplicationPayload';
+import { type ApplicationPayload } from '@/shared/domain/entities/ApplicationPayload';
 import { type ApplicationRepository } from '../repositories/ApplicationRepository';
 import { type GetJobDetailUseCase } from './GetJobDetailUseCase';
 import { isJobOpen } from '../helpers/isJobOpen';

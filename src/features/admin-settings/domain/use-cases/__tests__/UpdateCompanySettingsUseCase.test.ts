@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { UpdateCompanySettingsUseCaseImpl, type CompanySettingsInput } from '../UpdateCompanySettingsUseCase';
+import { UpdateCompanySettingsUseCaseImpl } from '../UpdateCompanySettingsUseCase';
+import { type CompanySettingsInput } from '../../entities/CompanySettingsInput';
 import { type CompanySettingsRepository } from '../../repositories/CompanySettingsRepository';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 

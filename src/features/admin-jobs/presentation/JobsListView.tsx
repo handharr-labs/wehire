@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { type Job } from '@/features/career-microsite/domain/entities/Job';
-import { DeleteJobDialog } from './organisms/DeleteJobDialog';
+import { DeleteJobView } from './views/DeleteJobView';
 import { StatusBadge } from '@/shared/presentation/common/atoms/StatusBadge';
 
 interface Props {
@@ -81,7 +81,7 @@ export function JobsListView({ jobs, companyId }: Props) {
                           >
                             Edit
                           </Link>
-                          <DeleteJobDialog
+                          <DeleteJobView
                             jobId={job.id}
                             jobTitle={job.title}
                             companyId={companyId}

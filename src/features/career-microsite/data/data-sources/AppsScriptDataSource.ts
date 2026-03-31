@@ -1,8 +1,9 @@
 import { type HTTPClient } from '@/data/networking/HTTPClient';
-import { type CompanyDTO } from '../dtos/CompanyDTO';
-import { type UpdateCompanyDTO } from '../dtos/UpdateCompanyDTO';
-import { type JobDTO } from '../dtos/JobDTO';
-import { type ApplicationPayload } from '../../domain/entities/ApplicationPayload';
+import { type CompanyDTO } from '@/data/dtos/CompanyDTO';
+import { type UpdateCompanyDTO } from '@/data/dtos/UpdateCompanyDTO';
+import { type JobDTO } from '@/data/dtos/JobDTO';
+import { type ApplicationPayload } from '@/shared/domain/entities/ApplicationPayload';
+import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
 
 interface AppsScriptCompaniesResponse {
   data: CompanyDTO[];
@@ -20,20 +21,7 @@ interface AppsScriptJobResponse {
   data: JobDTO;
 }
 
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      // Strip the data URL prefix (e.g. "data:application/pdf;base64,")
-      resolve(result.split(',')[1]);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-export class AppsScriptDataSource {
+export class AppsScriptDataSourceImpl implements AppsScriptDataSource {
   constructor(private readonly httpClient: HTTPClient) {}
 
   async getCompanies(): Promise<CompanyDTO[]> {
@@ -83,8 +71,6 @@ export class AppsScriptDataSource {
   }
 
   async submitApplication(payload: ApplicationPayload): Promise<void> {
-    const cvBase64 = await fileToBase64(payload.cvFile);
-
     const formData = new FormData();
     formData.append('jobId', payload.jobId);
     formData.append('companyId', payload.companyId);
@@ -94,9 +80,9 @@ export class AppsScriptDataSource {
     formData.append('city', payload.city);
     formData.append('experienceSummary', payload.experienceSummary);
     formData.append('expectedSalary', String(payload.expectedSalary));
-    formData.append('cvFile', cvBase64);
-    formData.append('cvFileMime', payload.cvFile.type);
-    formData.append('cvFileName', payload.cvFile.name);
+    formData.append('cvFile', payload.cvBase64);
+    formData.append('cvFileMime', payload.cvFileMime);
+    formData.append('cvFileName', payload.cvFileName);
     if (payload.linkedinUrl) formData.append('linkedinUrl', payload.linkedinUrl);
     if (payload.portfolioUrl) formData.append('portfolioUrl', payload.portfolioUrl);
     if (payload.coverLetter) formData.append('coverLetter', payload.coverLetter);

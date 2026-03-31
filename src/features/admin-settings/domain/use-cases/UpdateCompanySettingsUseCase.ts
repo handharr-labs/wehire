@@ -1,16 +1,7 @@
-import { type SiteStatus } from '@/features/career-microsite/domain/entities/Company';
+import { type CompanySettingsInput } from '../entities/CompanySettingsInput';
 import { type CompanySettingsRepository } from '../repositories/CompanySettingsRepository';
 
-export interface CompanySettingsInput {
-  name: string;
-  logoUrl: string;
-  primaryColor: string;
-  secondaryColor: string;
-  description: string;
-  contactEmail: string;
-  whatsappNumber: string;
-  siteStatus: SiteStatus;
-}
+export type { CompanySettingsInput };
 
 export interface UpdateCompanySettingsUseCase {
   execute(companyId: string, input: CompanySettingsInput): Promise<void>;

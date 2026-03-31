@@ -1,10 +1,26 @@
-import { cookies } from 'next/headers';
-import { getAdminSession } from '@/lib/session';
-import { logoutAdminAction } from '@/features/admin-auth/presentation/actions/logoutAdminAction';
+'use client';
 
-export async function AdminHeader() {
-  const cookieStore = await cookies();
-  const session = await getAdminSession(cookieStore);
+import { useRouter } from 'next/navigation';
+import { useAction } from 'next-safe-action/hooks';
+import { logoutAdminAction } from '@/features/admin-auth/presentation/actions/logoutAdminAction';
+import { LogoutButton } from '@/shared/presentation/common/atoms/LogoutButton';
+
+interface AdminHeaderSession {
+  email: string;
+  role: string;
+}
+
+interface Props {
+  session: AdminHeaderSession | null;
+}
+
+export function AdminHeader({ session }: Props) {
+  const router = useRouter();
+  const { execute, isPending } = useAction(logoutAdminAction, {
+    onSuccess: ({ data }) => {
+      if (data?.redirectTo) router.replace(data.redirectTo);
+    },
+  });
 
   return (
     <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
@@ -23,14 +39,7 @@ export async function AdminHeader() {
             >
               {session.role}
             </span>
-            <form action={logoutAdminAction}>
-              <button
-                type="submit"
-                className="text-xs text-red-600 hover:text-red-800 font-medium transition-colors"
-              >
-                Sign out
-              </button>
-            </form>
+            <LogoutButton onLogout={() => execute()} isPending={isPending} />
           </div>
         )}
       </div>

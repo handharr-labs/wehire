@@ -88,12 +88,6 @@ function setup(submitExecute: SubmitApplicationUseCase['execute'] = vi.fn().mock
 
 describe('useApplyFormViewModel', () => {
   describe('initial state', () => {
-    it('exposes company and job from arguments', () => {
-      const { result } = setup();
-      expect(result.current.company).toEqual(company);
-      expect(result.current.job).toEqual(job);
-    });
-
     it('starts with isSubmitting=false, error=null, fieldErrors=null', () => {
       const { result } = setup();
       expect(result.current.isSubmitting).toBe(false);
@@ -119,7 +113,7 @@ describe('useApplyFormViewModel', () => {
   });
 
   describe('successful submission', () => {
-    it('calls submitUseCase.execute and onSuccess, then resets isSubmitting', async () => {
+    it('calls submitUseCase.execute with base64 payload (no cvFile) and calls onSuccess', async () => {
       const { result, submitUseCase, onSuccess } = setup();
 
       await act(async () => {
@@ -127,6 +121,11 @@ describe('useApplyFormViewModel', () => {
       });
 
       expect(submitUseCase.execute).toHaveBeenCalledOnce();
+      const payload = (submitUseCase.execute as ReturnType<typeof vi.fn>).mock.calls[0][0];
+      expect(payload).not.toHaveProperty('cvFile');
+      expect(payload).toHaveProperty('cvBase64');
+      expect(payload).toHaveProperty('cvFileName', 'cv.pdf');
+      expect(payload).toHaveProperty('cvFileMime', 'application/pdf');
       expect(onSuccess).toHaveBeenCalledOnce();
       expect(result.current.isSubmitting).toBe(false);
       expect(result.current.error).toBeNull();

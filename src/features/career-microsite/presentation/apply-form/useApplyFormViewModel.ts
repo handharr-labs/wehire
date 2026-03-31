@@ -8,8 +8,6 @@ import { DomainError } from '@/shared/domain/errors/DomainError';
 import { applicationFormSchema } from './applicationFormSchema';
 
 export interface ApplyFormViewModel {
-  company: Company;
-  job: Job;
   isSubmitting: boolean;
   error: string | null;
   fieldErrors: Record<string, string> | null;
@@ -66,10 +64,21 @@ export function useApplyFormViewModel(
     }
 
     try {
+      const file = result.data.cvFile;
+      const buffer = await file.arrayBuffer();
+      const bytes = new Uint8Array(buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const cvBase64 = btoa(binary);
+
+      const { cvFile: _cvFile, ...rest } = result.data;
       await submitUseCase.execute({
         jobId: job.id,
         companyId: company.id,
-        ...result.data,
+        ...rest,
+        cvBase64,
+        cvFileName: file.name,
+        cvFileMime: file.type,
       });
       onSuccess();
     } catch (err) {
@@ -83,5 +92,5 @@ export function useApplyFormViewModel(
     }
   }
 
-  return { company, job, isSubmitting, error, fieldErrors, handleSubmit, handleCvFileChange };
+  return { isSubmitting, error, fieldErrors, handleSubmit, handleCvFileChange };
 }

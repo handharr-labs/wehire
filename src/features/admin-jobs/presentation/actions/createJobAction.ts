@@ -20,7 +20,7 @@ export const createJobAction = authActionClient
 
     const { companyId: _unused, ...input } = parsedInput;
 
-    return createJobUseCase().execute({
+    return createJobUseCase.execute({
       companyId,
       title: input.title,
       department: input.department,

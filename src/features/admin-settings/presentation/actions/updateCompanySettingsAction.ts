@@ -15,5 +15,5 @@ export const updateCompanySettingsAction = authActionClient
       throw DomainError.unauthorized();
     }
     const { companyId, ...input } = parsedInput;
-    await updateCompanySettingsUseCase().execute(companyId, input);
+    await updateCompanySettingsUseCase.execute(companyId, input);
   });

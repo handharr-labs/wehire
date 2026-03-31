@@ -23,7 +23,7 @@ export const saveOnboardingProfileAction = authActionClient
     // Fetch existing company to preserve fields not in the onboarding form
     const existing = await getCompanySettingsUseCase.execute(companyId);
 
-    await updateCompanySettingsUseCase().execute(companyId, {
+    await updateCompanySettingsUseCase.execute(companyId, {
       name: parsedInput.name,
       logoUrl: parsedInput.logoUrl,
       primaryColor: parsedInput.primaryColor,

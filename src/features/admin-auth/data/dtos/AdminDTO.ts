@@ -1,7 +1,7 @@
 export interface AdminDTO {
-  admin_id: string;
-  email: string;
-  hashed_password: string;
-  role: string;
-  company_id: string | null;
+  readonly admin_id: string;
+  readonly email: string;
+  readonly hashed_password: string;
+  readonly role: string;
+  readonly company_id: string | null;
 }

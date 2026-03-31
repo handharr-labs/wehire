@@ -15,12 +15,12 @@ export const SESSION_COOKIE_OPTIONS = {
 };
 
 export interface AdminSessionPayload {
-  sub: string;
-  email: string;
-  role: AdminRole;
-  companyId: string | null;
-  iat?: number;
-  exp?: number;
+  readonly sub: string;
+  readonly email: string;
+  readonly role: AdminRole;
+  readonly companyId: string | null;
+  readonly iat?: number;
+  readonly exp?: number;
 }
 
 function getJwtSecret(): Uint8Array {

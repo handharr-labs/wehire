@@ -1,15 +1,15 @@
 export type SiteStatus = 'active' | 'inactive';
 
 export interface Company {
-  id: string;
-  name: string;
-  slug: string;
-  logoUrl: string;
-  primaryColor: string;
-  secondaryColor: string;
-  description: string;
-  contactEmail: string;
-  whatsappNumber: string;
-  siteStatus: SiteStatus;
-  maxActiveJobs: number;
+  readonly id: string;
+  readonly name: string;
+  readonly slug: string;
+  readonly logoUrl: string;
+  readonly primaryColor: string;
+  readonly secondaryColor: string;
+  readonly description: string;
+  readonly contactEmail: string;
+  readonly whatsappNumber: string;
+  readonly siteStatus: SiteStatus;
+  readonly maxActiveJobs: number;
 }

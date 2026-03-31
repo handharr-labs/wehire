@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getCachedCompanyBySlug, getCachedJobsByCompanyId } from '@/lib/cached-queries';
+import { getCachedCompanyBySlug, getCachedJobsByCompanyId } from '@/di/cachedQueries';
 import { CareerPageView } from '@/features/career-microsite/presentation/career-page/CareerPageView';
 import { BrandThemeStyle } from '@/shared/presentation/common/atoms/BrandThemeStyle';
 import { isJobOpen } from '@/features/career-microsite/domain/helpers/isJobOpen';
@@ -23,7 +23,7 @@ export default async function CareerPage({ params }: Props) {
   }
 
   const openJobs = jobs
-    .filter(isJobOpen)
+    .filter((job) => isJobOpen(job))
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .slice(0, company.maxActiveJobs);
 

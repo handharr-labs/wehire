@@ -2,15 +2,18 @@ import 'server-only';
 
 import { createUnauthenticatedHTTPClient } from '@/data/networking/AxiosHTTPClient';
 import { ErrorMapperImpl } from '@/data/mappers/ErrorMapper';
-import { AppsScriptDataSource } from '@/features/career-microsite/data/data-sources/AppsScriptDataSource';
+import { AppsScriptDataSourceImpl } from '@/features/career-microsite/data/data-sources/AppsScriptDataSource';
+import { CompanyMapperImpl } from '@/features/career-microsite/data/mappers/CompanyMapper';
+import { JobMapperImpl } from '@/features/career-microsite/data/mappers/JobMapper';
 import { CompanyRepositoryImpl } from '@/features/career-microsite/data/repositories/CompanyRepositoryImpl';
 import { JobRepositoryImpl } from '@/features/career-microsite/data/repositories/JobRepositoryImpl';
 import { GetCompanyBySlugUseCaseImpl } from '@/features/career-microsite/domain/use-cases/GetCompanyBySlugUseCase';
 import { GetJobsUseCaseImpl } from '@/features/career-microsite/domain/use-cases/GetJobsUseCase';
 import { GetJobDetailUseCaseImpl } from '@/features/career-microsite/domain/use-cases/GetJobDetailUseCase';
 import { GetJobDetailBySlugUseCaseImpl } from '@/features/career-microsite/domain/use-cases/GetJobDetailBySlugUseCase';
-import { AdminDataSource } from '@/features/admin-auth/data/data-sources/AdminDataSource';
-import { BcryptPasswordVerifier } from '@/features/admin-auth/data/services/BcryptPasswordVerifier';
+import { AdminDataSourceImpl } from '@/features/admin-auth/data/data-sources/AdminDataSource';
+import { BcryptPasswordVerifierImpl } from '@/features/admin-auth/data/services/BcryptPasswordVerifier';
+import { AdminMapperImpl } from '@/features/admin-auth/data/mappers/AdminMapper';
 import { AdminRepositoryImpl } from '@/features/admin-auth/data/repositories/AdminRepositoryImpl';
 import { LoginAdminUseCaseImpl } from '@/features/admin-auth/domain/use-cases/LoginAdminUseCase';
 import { CompanySettingsRepositoryImpl } from '@/features/admin-settings/data/repositories/CompanySettingsRepositoryImpl';
@@ -32,10 +35,12 @@ const httpClient = createUnauthenticatedHTTPClient(
   process.env.NEXT_PUBLIC_APPS_SCRIPT_URL ?? '',
 );
 const errorMapper = new ErrorMapperImpl();
-const appsScriptDataSource = new AppsScriptDataSource(httpClient);
+const appsScriptDataSource = new AppsScriptDataSourceImpl(httpClient);
 
-const companyRepository = new CompanyRepositoryImpl(appsScriptDataSource, errorMapper);
-const jobRepository = new JobRepositoryImpl(appsScriptDataSource, errorMapper);
+const companyMapper = new CompanyMapperImpl();
+const jobMapper = new JobMapperImpl();
+const companyRepository = new CompanyRepositoryImpl(appsScriptDataSource, companyMapper, errorMapper);
+const jobRepository = new JobRepositoryImpl(appsScriptDataSource, jobMapper, errorMapper);
 
 export const getCompanyBySlugUseCase = new GetCompanyBySlugUseCaseImpl(companyRepository);
 export const getJobsUseCase = new GetJobsUseCaseImpl(jobRepository);
@@ -43,30 +48,33 @@ export const getJobDetailUseCase = new GetJobDetailUseCaseImpl(jobRepository);
 export const getJobDetailBySlugUseCase = new GetJobDetailBySlugUseCaseImpl(jobRepository);
 
 // Admin auth
-const adminDataSource = new AdminDataSource(httpClient, process.env.ADMIN_API_SECRET ?? '');
-const bcryptVerifier = new BcryptPasswordVerifier();
-const adminRepository = new AdminRepositoryImpl(adminDataSource, errorMapper);
+const adminDataSource = new AdminDataSourceImpl(httpClient, process.env.ADMIN_API_SECRET ?? '');
+const bcryptVerifier = new BcryptPasswordVerifierImpl();
+const adminMapper = new AdminMapperImpl();
+const adminRepository = new AdminRepositoryImpl(adminDataSource, adminMapper, errorMapper);
 
-export const loginAdminUseCase = () => new LoginAdminUseCaseImpl(adminRepository, bcryptVerifier);
+export const loginAdminUseCase = new LoginAdminUseCaseImpl(adminRepository, bcryptVerifier);
 
 // Admin settings
 const companySettingsRepository = new CompanySettingsRepositoryImpl(
   appsScriptDataSource,
+  companyMapper,
   errorMapper,
 );
 export const listCompaniesUseCase = new ListCompaniesUseCaseImpl(companySettingsRepository);
 export const getCompanySettingsUseCase = new GetCompanySettingsUseCaseImpl(
   companySettingsRepository,
 );
-export const updateCompanySettingsUseCase = () =>
-  new UpdateCompanySettingsUseCaseImpl(companySettingsRepository);
+export const updateCompanySettingsUseCase = new UpdateCompanySettingsUseCaseImpl(
+  companySettingsRepository,
+);
 
 // Admin job management
 const jobManagementDataSource = new JobManagementRemoteDataSourceImpl(
   httpClient,
   process.env.ADMIN_API_SECRET ?? '',
 );
-const jobManagementMapper = new JobManagementMapperImpl();
+const jobManagementMapper = new JobManagementMapperImpl(jobMapper);
 const jobManagementRepository = new JobManagementRepositoryImpl(
   jobManagementDataSource,
   jobManagementMapper,
@@ -75,9 +83,9 @@ const jobManagementRepository = new JobManagementRepositoryImpl(
 
 export const getAdminJobsUseCase = new GetAdminJobsUseCaseImpl(jobManagementRepository);
 export const getAdminJobDetailUseCase = new GetAdminJobDetailUseCaseImpl(jobManagementRepository);
-export const createJobUseCase = () => new CreateJobUseCaseImpl(jobManagementRepository);
-export const updateJobUseCase = () => new UpdateJobUseCaseImpl(jobManagementRepository);
-export const deleteJobUseCase = () => new DeleteJobUseCaseImpl(jobManagementRepository);
+export const createJobUseCase = new CreateJobUseCaseImpl(jobManagementRepository);
+export const updateJobUseCase = new UpdateJobUseCaseImpl(jobManagementRepository);
+export const deleteJobUseCase = new DeleteJobUseCaseImpl(jobManagementRepository);
 
 // Admin onboarding
 export const verifyCompanyConnectionUseCase = new VerifyCompanyConnectionUseCaseImpl(

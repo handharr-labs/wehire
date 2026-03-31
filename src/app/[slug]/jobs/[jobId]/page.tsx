@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { getCachedCompanyBySlug, getCachedJobDetailBySlug } from '@/lib/cached-queries';
+import { getCachedCompanyBySlug, getCachedJobDetailBySlug } from '@/di/cachedQueries';
 import { JobDetailView } from '@/features/career-microsite/presentation/job-detail/JobDetailView';
 import { BrandThemeStyle } from '@/shared/presentation/common/atoms/BrandThemeStyle';
 import { type Company } from '@/features/career-microsite/domain/entities/Company';

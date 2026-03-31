@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getAdminSession } from '@/lib/session';
 import { getCompanySettingsUseCase, listCompaniesUseCase } from '@/di/container.server';
-import { CompanySelectorWidget } from '@/features/admin-settings/presentation/organisms/CompanySelectorWidget';
+import { AdminDashboardView } from '@/features/admin-settings/presentation/views/AdminDashboardView';
 
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
@@ -23,7 +23,7 @@ export default async function AdminDashboardPage() {
           <h1 className="text-2xl font-semibold text-gray-900 mb-4">Admin Dashboard</h1>
 
           <div className="flex gap-3 mb-4">
-            <CompanySelectorWidget
+            <AdminDashboardView
               companies={companies}
               readonly={session?.role !== 'SUPER_ADMIN'}
             />

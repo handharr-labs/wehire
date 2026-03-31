@@ -1,6 +1,6 @@
-import { type ApplicationPayload } from '../../domain/entities/ApplicationPayload';
+import { type ApplicationPayload } from '@/shared/domain/entities/ApplicationPayload';
 import { type ApplicationRepository } from '../../domain/repositories/ApplicationRepository';
-import { type AppsScriptDataSource } from '../data-sources/AppsScriptDataSource';
+import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type NetworkError } from '@/data/networking/NetworkError';
 

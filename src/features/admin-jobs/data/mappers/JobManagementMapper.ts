@@ -1,31 +1,20 @@
-import { type Job, type EmploymentType, type JobStatus } from '@/features/career-microsite/domain/entities/Job';
-import { type CreateJobInput, type UpdateJobInput } from '../../domain/repositories/IJobManagementRepository';
-import { type JobDTO } from '@/features/career-microsite/data/dtos/JobDTO';
+import { type Job } from '@/features/career-microsite/domain/entities/Job';
+import { type JobMapper } from '@/data/mappers/JobMapper';
+import { type CreateJobInput, type UpdateJobInput } from '../../domain/repositories/JobManagementRepository';
+import { type JobDTO } from '@/data/dtos/JobDTO';
 import { type CreateJobDTO, type UpdateJobDTO } from '../dtos/JobWriteDTO';
 
-export interface IJobManagementMapper {
+export interface JobManagementMapper {
   toDomain(dto: JobDTO): Job;
   toCreateDTO(input: CreateJobInput): CreateJobDTO;
   toUpdateDTO(input: UpdateJobInput): UpdateJobDTO;
 }
 
-export class JobManagementMapperImpl implements IJobManagementMapper {
+export class JobManagementMapperImpl implements JobManagementMapper {
+  constructor(private readonly jobMapper: JobMapper) {}
+
   toDomain(dto: JobDTO): Job {
-    return {
-      id: dto.id,
-      companyId: dto.company_id,
-      title: dto.title,
-      department: dto.department,
-      location: dto.location,
-      employmentType: (dto.employment_type as EmploymentType) ?? 'full-time',
-      minSalary: dto.min_salary,
-      maxSalary: dto.max_salary,
-      description: dto.description,
-      requirements: dto.requirements,
-      status: (dto.status === 'open' ? 'active' : (dto.status as JobStatus)) ?? 'active',
-      expiredAt: dto.expired_at,
-      sortOrder: dto.sort_order,
-    };
+    return this.jobMapper.toDomain(dto);
   }
 
   toCreateDTO(input: CreateJobInput): CreateJobDTO {
@@ -46,18 +35,18 @@ export class JobManagementMapperImpl implements IJobManagementMapper {
   }
 
   toUpdateDTO(input: UpdateJobInput): UpdateJobDTO {
-    const dto: UpdateJobDTO = {};
-    if (input.title !== undefined) dto.title = input.title;
-    if (input.department !== undefined) dto.department = input.department;
-    if (input.location !== undefined) dto.location = input.location;
-    if (input.employmentType !== undefined) dto.employment_type = input.employmentType;
-    if (input.minSalary !== undefined) dto.min_salary = input.minSalary;
-    if (input.maxSalary !== undefined) dto.max_salary = input.maxSalary;
-    if (input.description !== undefined) dto.description = input.description;
-    if (input.requirements !== undefined) dto.requirements = input.requirements;
-    if (input.status !== undefined) dto.status = input.status;
-    if (input.expiredAt !== undefined) dto.expired_at = input.expiredAt;
-    if (input.sortOrder !== undefined) dto.sort_order = input.sortOrder;
-    return dto;
+    return {
+      ...(input.title !== undefined && { title: input.title }),
+      ...(input.department !== undefined && { department: input.department }),
+      ...(input.location !== undefined && { location: input.location }),
+      ...(input.employmentType !== undefined && { employment_type: input.employmentType }),
+      ...(input.minSalary !== undefined && { min_salary: input.minSalary }),
+      ...(input.maxSalary !== undefined && { max_salary: input.maxSalary }),
+      ...(input.description !== undefined && { description: input.description }),
+      ...(input.requirements !== undefined && { requirements: input.requirements }),
+      ...(input.status !== undefined && { status: input.status }),
+      ...(input.expiredAt !== undefined && { expired_at: input.expiredAt }),
+      ...(input.sortOrder !== undefined && { sort_order: input.sortOrder }),
+    };
   }
 }

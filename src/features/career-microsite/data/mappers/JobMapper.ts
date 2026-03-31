@@ -1,8 +1,10 @@
+export type { JobMapper } from '@/data/mappers/JobMapper';
 import { type Job, type EmploymentType, type JobStatus } from '../../domain/entities/Job';
-import { type JobDTO } from '../dtos/JobDTO';
+import { type JobDTO } from '@/data/dtos/JobDTO';
+import { type JobMapper } from '@/data/mappers/JobMapper';
 
-export class JobMapper {
-  static toDomain(dto: JobDTO): Job {
+export class JobMapperImpl implements JobMapper {
+  toDomain(dto: JobDTO): Job {
     return {
       id: dto.id,
       companyId: dto.company_id,

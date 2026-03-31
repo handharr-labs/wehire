@@ -1,8 +1,11 @@
 import { type Company, type SiteStatus } from '../../domain/entities/Company';
-import { type CompanyDTO } from '../dtos/CompanyDTO';
+import { type CompanyDTO } from '@/data/dtos/CompanyDTO';
+import { type CompanyMapper } from '@/data/mappers/CompanyMapper';
 
-export class CompanyMapper {
-  static toDomain(dto: CompanyDTO): Company {
+export type { CompanyMapper };
+
+export class CompanyMapperImpl implements CompanyMapper {
+  toDomain(dto: CompanyDTO): Company {
     return {
       id: dto.id,
       name: dto.name,

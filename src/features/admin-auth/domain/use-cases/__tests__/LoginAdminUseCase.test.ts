@@ -26,7 +26,7 @@ describe('LoginAdminUseCaseImpl', () => {
     const useCase = new LoginAdminUseCaseImpl(makeRepo(), makeVerifier(true));
     const payload = await useCase.execute({ email: 'admin@example.com', password: 'secret' });
 
-    expect(payload.sub).toBe('admin-1');
+    expect(payload.adminId).toBe('admin-1');
     expect(payload.email).toBe('admin@example.com');
     expect(payload.role).toBe('SUPER_ADMIN');
     expect(payload.companyId).toBeNull();

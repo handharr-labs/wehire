@@ -9,7 +9,11 @@ interface ErrorResponse {
   error: string;
 }
 
-export class AdminDataSource {
+export interface AdminDataSource {
+  findAdminByEmail(email: string): Promise<AdminDTO | null>;
+}
+
+export class AdminDataSourceImpl implements AdminDataSource {
   constructor(
     private readonly httpClient: HTTPClient,
     private readonly adminApiSecret: string,

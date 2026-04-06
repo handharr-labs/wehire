@@ -1,6 +1,6 @@
 'use client';
 
-import { useDeleteJobViewModel } from '../useDeleteJobViewModel';
+import { useDeleteJobViewModel } from './useDeleteJobViewModel';
 import { DeleteJobDialog } from '../organisms/DeleteJobDialog';
 
 interface Props {

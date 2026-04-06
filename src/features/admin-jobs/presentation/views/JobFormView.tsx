@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { type Job } from '@/features/career-microsite/domain/entities/Job';
+import { type Job } from '@/shared/domain/entities/Job';
 import { useJobFormViewModel } from './useJobFormViewModel';
 import { FormField } from '@/shared/presentation/common/atoms/FormField';
 

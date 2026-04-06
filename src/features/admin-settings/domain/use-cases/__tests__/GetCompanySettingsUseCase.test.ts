@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GetCompanySettingsUseCaseImpl } from '../GetCompanySettingsUseCase';
 import { type CompanySettingsRepository } from '../../repositories/CompanySettingsRepository';
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
+import { type Company } from '@/shared/domain/entities/Company';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 
 const mockCompany: Company = {

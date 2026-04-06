@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
+import { type Company } from '@/shared/domain/entities/Company';
 import { updateCompanySettingsAction } from '../actions/updateCompanySettingsAction';
 import {
   companySettingsFormSchema,

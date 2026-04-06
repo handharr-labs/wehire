@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { type Company } from '../../domain/entities/Company';
-import { type Job } from '../../domain/entities/Job';
+import { type Company } from '@/shared/domain/entities/Company';
+import { type Job } from '@/shared/domain/entities/Job';
 import { type SubmitApplicationUseCase } from '../../domain/use-cases/SubmitApplicationUseCase';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 import { applicationFormSchema } from './applicationFormSchema';

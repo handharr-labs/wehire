@@ -1,4 +1,4 @@
-import { type Job } from '@/features/career-microsite/domain/entities/Job';
+import { type Job } from '@/shared/domain/entities/Job';
 
 export interface CreateJobInput {
   readonly companyId: string;

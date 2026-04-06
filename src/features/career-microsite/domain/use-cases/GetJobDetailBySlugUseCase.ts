@@ -1,4 +1,4 @@
-import { type Job } from '../entities/Job';
+import { type Job } from '@/shared/domain/entities/Job';
 import { type JobRepository } from '../repositories/JobRepository';
 
 export interface GetJobDetailBySlugUseCase {

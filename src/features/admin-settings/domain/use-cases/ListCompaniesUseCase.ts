@@ -1,4 +1,4 @@
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
+import { type Company } from '@/shared/domain/entities/Company';
 import { type CompanySettingsRepository } from '../repositories/CompanySettingsRepository';
 
 export interface ListCompaniesUseCase {

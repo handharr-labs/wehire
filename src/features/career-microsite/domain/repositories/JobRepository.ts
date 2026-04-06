@@ -1,4 +1,4 @@
-import { type Job } from '../entities/Job';
+import { type Job } from '@/shared/domain/entities/Job';
 
 export interface JobRepository {
   getByCompanyId(companyId: string): Promise<Job[]>;

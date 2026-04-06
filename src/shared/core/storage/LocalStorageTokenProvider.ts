@@ -1,3 +1,4 @@
+// TODO(future): used by planned OAuth flow, not yet wired
 import 'client-only';
 
 import { type TokenStorage } from '@/data/networking/TokenProvider';

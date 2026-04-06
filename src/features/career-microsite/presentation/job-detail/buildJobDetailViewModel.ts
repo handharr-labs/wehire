@@ -1,5 +1,5 @@
-import { type Company } from '../../domain/entities/Company';
-import { type Job } from '../../domain/entities/Job';
+import { type Company } from '@/shared/domain/entities/Company';
+import { type Job } from '@/shared/domain/entities/Job';
 import { isJobOpen } from '../../domain/helpers/isJobOpen';
 
 export interface JobDetailViewModelInput {

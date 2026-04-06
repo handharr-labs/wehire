@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
+import { type Company } from '@/shared/domain/entities/Company';
 
 interface Props {
   companies: Company[];

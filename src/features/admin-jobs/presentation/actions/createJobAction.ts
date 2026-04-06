@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { authActionClient } from '@/lib/safe-action';
 import { createJobUseCase } from '@/di/container.server';
 import { DomainError } from '@/shared/domain/errors/DomainError';
-import { jobFormSchema } from '../jobFormSchema';
+import { jobFormSchema } from '../schemas/jobFormSchema';
 
 const schema = jobFormSchema.extend({ companyId: z.string().min(1) });
 

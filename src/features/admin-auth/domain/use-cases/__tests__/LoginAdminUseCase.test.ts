@@ -18,7 +18,7 @@ function makeRepo(admin: Admin | null = mockAdmin): AdminRepository {
 }
 
 function makeVerifier(result: boolean): PasswordVerifier {
-  return { compare: vi.fn().mockResolvedValue(result) };
+  return { compare: vi.fn().mockReturnValue(result) };
 }
 
 describe('LoginAdminUseCaseImpl', () => {

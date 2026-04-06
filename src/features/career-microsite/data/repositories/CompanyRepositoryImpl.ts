@@ -1,7 +1,7 @@
-import { type Company } from '../../domain/entities/Company';
-import { type CompanyRepository } from '../../domain/repositories/CompanyRepository';
+import { type Company } from '@/shared/domain/entities/Company';
+import { type CompanyRepository } from '@/shared/domain/repositories/CompanyRepository';
 import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
-import { type CompanyMapper } from '@/data/mappers/CompanyMapper';
+import { type CompanyMapper } from '@/shared/data/mappers/CompanyMapper';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type NetworkError } from '@/data/networking/NetworkError';
 

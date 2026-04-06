@@ -1,7 +1,7 @@
 'use server';
 
 import { authActionClient } from '@/lib/safe-action';
-import { getCompanySettingsUseCase, updateCompanySettingsUseCase } from '@/di/container.server';
+import { launchCompanyUseCase } from '@/di/container.server';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 
 export const launchCompanyAction = authActionClient.action(async ({ ctx: { session } }) => {
@@ -14,19 +14,7 @@ export const launchCompanyAction = authActionClient.action(async ({ ctx: { sessi
     throw DomainError.unauthorized();
   }
 
-  // Fetch existing company to preserve all fields while updating siteStatus only
-  const existing = await getCompanySettingsUseCase.execute(companyId);
-
-  await updateCompanySettingsUseCase.execute(companyId, {
-    name: existing.name,
-    logoUrl: existing.logoUrl,
-    primaryColor: existing.primaryColor,
-    secondaryColor: existing.secondaryColor,
-    description: existing.description,
-    contactEmail: existing.contactEmail,
-    whatsappNumber: existing.whatsappNumber,
-    siteStatus: 'active',
-  });
+  await launchCompanyUseCase.execute(companyId);
 
   return { redirectTo: '/admin/jobs' };
 });

@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
-import { type Job } from '@/features/career-microsite/domain/entities/Job';
-import { jobFormSchema, type JobFormValues } from './jobFormSchema';
-import { createJobAction } from './actions/createJobAction';
-import { updateJobAction } from './actions/updateJobAction';
+import { type Job } from '@/shared/domain/entities/Job';
+import { jobFormSchema, type JobFormValues } from '../schemas/jobFormSchema';
+import { createJobAction } from '../actions/createJobAction';
+import { updateJobAction } from '../actions/updateJobAction';
 
 interface Props {
   companyId: string;

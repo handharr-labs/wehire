@@ -1,3 +1,4 @@
+// TODO(future): used by planned OAuth flow, not yet wired
 // data/networking/TokenRefreshService.ts
 import { type HTTPClient } from './HTTPClient';
 import { NetworkError } from './NetworkError';

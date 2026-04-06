@@ -3,8 +3,8 @@ import { getCachedCompanyBySlug, getCachedJobDetailBySlug } from '@/di/cachedQue
 import { ApplyFormClientWrapper } from './ApplyFormClientWrapper';
 import { BrandThemeStyle } from '@/shared/presentation/common/atoms/BrandThemeStyle';
 import { isJobOpen } from '@/features/career-microsite/domain/helpers/isJobOpen';
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
-import { type Job } from '@/features/career-microsite/domain/entities/Job';
+import { type Company } from '@/shared/domain/entities/Company';
+import { type Job } from '@/shared/domain/entities/Job';
 
 interface Props {
   params: Promise<{ slug: string; jobId: string }>;

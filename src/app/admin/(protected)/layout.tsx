@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { getAdminSession } from '@/lib/session';
-import { AdminHeader } from '@/shared/presentation/common/organisms/AdminHeader';
+import { AdminHeaderView } from '@/shared/presentation/common/organisms/AdminHeaderView';
 
 export default async function ProtectedAdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -8,7 +8,7 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
 
   return (
     <>
-      <AdminHeader session={session} />
+      <AdminHeaderView session={session} />
       <main>{children}</main>
     </>
   );

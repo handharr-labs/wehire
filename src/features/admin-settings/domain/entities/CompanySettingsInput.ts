@@ -1,4 +1,4 @@
-import { type SiteStatus } from '@/features/career-microsite/domain/entities/Company';
+import { type SiteStatus } from '@/shared/domain/entities/Company';
 
 export interface CompanySettingsInput {
   readonly name: string;

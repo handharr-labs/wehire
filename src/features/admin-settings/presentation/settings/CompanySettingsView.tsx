@@ -1,6 +1,6 @@
 'use client';
 
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
+import { type Company } from '@/shared/domain/entities/Company';
 import { useCompanySettingsViewModel } from './useCompanySettingsViewModel';
 import { FormField } from '@/shared/presentation/common/atoms/FormField';
 

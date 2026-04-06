@@ -1,4 +1,4 @@
-import { type Company } from '../entities/Company';
+import { type Company } from '@/shared/domain/entities/Company';
 
 export interface CompanyRepository {
   getBySlug(slug: string): Promise<Company>;

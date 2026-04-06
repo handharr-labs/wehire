@@ -1,5 +1,5 @@
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
-import { type CompanyMapper } from '@/data/mappers/CompanyMapper';
+import { type Company } from '@/shared/domain/entities/Company';
+import { type CompanyMapper } from '@/shared/data/mappers/CompanyMapper';
 import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type NetworkError } from '@/data/networking/NetworkError';

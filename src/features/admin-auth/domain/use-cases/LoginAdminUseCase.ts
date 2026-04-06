@@ -22,7 +22,7 @@ export class LoginAdminUseCaseImpl implements LoginAdminUseCase {
     const admin = await this.adminRepository.findByEmail(email);
     if (!admin) throw DomainError.unauthorized();
 
-    const isValid = await this.passwordVerifier.compare(password, admin.hashedPassword);
+    const isValid = this.passwordVerifier.compare(password, admin.hashedPassword);
     if (!isValid) throw DomainError.unauthorized();
 
     return {

@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { getAdminSession } from '@/lib/session';
 import { getAdminJobsUseCase } from '@/di/container.server';
-import { JobsListView } from '@/features/admin-jobs/presentation/JobsListView';
+import { JobsListView } from '@/features/admin-jobs/presentation/views/JobsListView';
 
 interface Props {
   searchParams: Promise<{ companyId?: string }>;

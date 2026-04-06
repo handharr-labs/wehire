@@ -22,4 +22,9 @@ Issues live in GitHub — use `gh issue view <n>` for context. `issues/000-backl
 ## Project-specific agent rules
 `.claude/agents.local/` — additive rules on top of the shared starter-kit agents.
 
+## Naming conventions
+
+`use*ViewModel` — React hooks (stateful, client-only).
+`build*ViewModel` — pure transform functions (no hooks, no side effects). The `build*` prefix intentionally deviates from the `use*` hook convention because these are not React hooks.
+
 <!-- Shared arch docs, skills, workflow, and code principles → .claude/starter-kit/ -->

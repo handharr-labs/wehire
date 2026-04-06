@@ -1,7 +1,9 @@
-export type { JobMapper } from '@/data/mappers/JobMapper';
-import { type Job, type EmploymentType, type JobStatus } from '../../domain/entities/Job';
+import { type Job, type EmploymentType, type JobStatus } from '@/shared/domain/entities/Job';
 import { type JobDTO } from '@/data/dtos/JobDTO';
-import { type JobMapper } from '@/data/mappers/JobMapper';
+
+export interface JobMapper {
+  toDomain(dto: JobDTO): Job;
+}
 
 export class JobMapperImpl implements JobMapper {
   toDomain(dto: JobDTO): Job {

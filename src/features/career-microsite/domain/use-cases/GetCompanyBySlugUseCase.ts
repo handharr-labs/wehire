@@ -1,5 +1,5 @@
-import { type Company } from '../entities/Company';
-import { type CompanyRepository } from '../repositories/CompanyRepository';
+import { type Company } from '@/shared/domain/entities/Company';
+import { type CompanyRepository } from '@/shared/domain/repositories/CompanyRepository';
 
 export interface GetCompanyBySlugUseCase {
   execute(slug: string): Promise<Company>;

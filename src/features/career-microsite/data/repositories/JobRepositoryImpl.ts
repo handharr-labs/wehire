@@ -1,7 +1,7 @@
-import { type Job } from '../../domain/entities/Job';
+import { type Job } from '@/shared/domain/entities/Job';
 import { type JobRepository } from '../../domain/repositories/JobRepository';
 import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
-import { type JobMapper } from '../mappers/JobMapper';
+import { type JobMapper } from '@/shared/data/mappers/JobMapper';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type NetworkError } from '@/data/networking/NetworkError';
 

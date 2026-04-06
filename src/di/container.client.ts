@@ -2,8 +2,8 @@ import 'client-only';
 
 import { createUnauthenticatedHTTPClient } from '@/data/networking/AxiosHTTPClient';
 import { ErrorMapperImpl } from '@/data/mappers/ErrorMapper';
-import { AppsScriptDataSourceImpl } from '@/features/career-microsite/data/data-sources/AppsScriptDataSource';
-import { JobMapperImpl } from '@/features/career-microsite/data/mappers/JobMapper';
+import { AppsScriptDataSourceImpl } from '@/features/career-microsite/data/data-sources/AppsScriptDataSourceImpl';
+import { JobMapperImpl } from '@/shared/data/mappers/JobMapper';
 import { ApplicationRepositoryImpl } from '@/features/career-microsite/data/repositories/ApplicationRepositoryImpl';
 import { JobRepositoryImpl } from '@/features/career-microsite/data/repositories/JobRepositoryImpl';
 import { SubmitApplicationUseCaseImpl } from '@/features/career-microsite/domain/use-cases/SubmitApplicationUseCase';

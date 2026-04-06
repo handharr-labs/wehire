@@ -1,9 +1,12 @@
-'use client';
+import { type useLoginFormViewModel } from './useLoginFormViewModel';
 
-import { useLoginFormViewModel } from './useLoginFormViewModel';
+type LoginFormViewModel = ReturnType<typeof useLoginFormViewModel>;
 
-export function LoginFormView() {
-  const vm = useLoginFormViewModel();
+interface Props {
+  vm: LoginFormViewModel;
+}
+
+export function LoginFormView({ vm }: Props) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

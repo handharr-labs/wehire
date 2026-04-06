@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { type Company } from '@/features/career-microsite/domain/entities/Company';
+import { type Company } from '@/shared/domain/entities/Company';
 import { CompanySelectorWidget } from '../organisms/CompanySelectorWidget';
+import { useAdminDashboardViewModel } from './useAdminDashboardViewModel';
 
 interface Props {
   companies: Company[];
@@ -11,17 +10,16 @@ interface Props {
 }
 
 export function AdminDashboardView({ companies, readonly = false }: Props) {
-  const router = useRouter();
-  const [selectedId, setSelectedId] = useState(companies[0]?.id ?? '');
+  const vm = useAdminDashboardViewModel({ companies });
 
   return (
     <CompanySelectorWidget
       companies={companies}
-      selectedId={selectedId}
-      onSelectionChange={setSelectedId}
+      selectedId={vm.selectedId}
+      onSelectionChange={vm.onSelectionChange}
       readonly={readonly}
-      onGoToJobs={(id) => router.push(`/admin/jobs?companyId=${id}`)}
-      onGoToSettings={(id) => router.push(`/admin/settings?companyId=${id}`)}
+      onGoToJobs={vm.onGoToJobs}
+      onGoToSettings={vm.onGoToSettings}
     />
   );
 }

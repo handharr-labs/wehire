@@ -1,6 +1,6 @@
 'use client';
 
-import { AdminHeader } from './AdminHeader';
+import { AdminHeader } from '../molecules/AdminHeader';
 import { useAdminHeaderViewModel } from '../viewmodels/useAdminHeaderViewModel';
 
 interface AdminHeaderSession {

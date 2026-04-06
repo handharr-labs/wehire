@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { type Job } from '@/shared/domain/entities/Job';
+// DeleteJobView is a Client Component; this Server Component intentionally renders
+// it as a client subtree — no 'use client' needed here.
 import { DeleteJobView } from './DeleteJobView';
 import { StatusBadge } from '@/shared/presentation/common/atoms/StatusBadge';
 

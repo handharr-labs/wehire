@@ -1,8 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useAction } from 'next-safe-action/hooks';
-import { logoutAdminAction } from '@/features/admin-auth/presentation/actions/logoutAdminAction';
 import { LogoutButton } from '@/shared/presentation/common/atoms/LogoutButton';
 
 interface AdminHeaderSession {
@@ -12,16 +9,11 @@ interface AdminHeaderSession {
 
 interface Props {
   session: AdminHeaderSession | null;
+  onLogout: () => void;
+  isPending: boolean;
 }
 
-export function AdminHeader({ session }: Props) {
-  const router = useRouter();
-  const { execute, isPending } = useAction(logoutAdminAction, {
-    onSuccess: ({ data }) => {
-      if (data?.redirectTo) router.replace(data.redirectTo);
-    },
-  });
-
+export function AdminHeader({ session, onLogout, isPending }: Props) {
   return (
     <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
       <div className="max-w-2xl mx-auto px-8 h-14 flex items-center justify-between">
@@ -39,7 +31,7 @@ export function AdminHeader({ session }: Props) {
             >
               {session.role}
             </span>
-            <LogoutButton onLogout={() => execute()} isPending={isPending} />
+            <LogoutButton onLogout={onLogout} isPending={isPending} />
           </div>
         )}
       </div>

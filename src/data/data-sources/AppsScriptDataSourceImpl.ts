@@ -2,7 +2,6 @@ import { type HTTPClient } from '@/data/networking/HTTPClient';
 import { type CompanyDTO } from '@/data/dtos/CompanyDTO';
 import { type UpdateCompanyDTO } from '@/data/dtos/UpdateCompanyDTO';
 import { type JobDTO } from '@/data/dtos/JobDTO';
-import { type ApplicationPayload } from '@/shared/domain/entities/ApplicationPayload';
 import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
 
 interface AppsScriptCompaniesResponse {
@@ -70,23 +69,7 @@ export class AppsScriptDataSourceImpl implements AppsScriptDataSource {
     return response.data;
   }
 
-  async submitApplication(payload: ApplicationPayload): Promise<void> {
-    const formData = new FormData();
-    formData.append('jobId', payload.jobId);
-    formData.append('companyId', payload.companyId);
-    formData.append('fullName', payload.fullName);
-    formData.append('email', payload.email);
-    formData.append('phone', payload.phone);
-    formData.append('city', payload.city);
-    formData.append('experienceSummary', payload.experienceSummary);
-    formData.append('expectedSalary', String(payload.expectedSalary));
-    formData.append('cvFile', payload.cvBase64);
-    formData.append('cvFileMime', payload.cvFileMime);
-    formData.append('cvFileName', payload.cvFileName);
-    if (payload.linkedinUrl) formData.append('linkedinUrl', payload.linkedinUrl);
-    if (payload.portfolioUrl) formData.append('portfolioUrl', payload.portfolioUrl);
-    if (payload.coverLetter) formData.append('coverLetter', payload.coverLetter);
-
+  async submitApplication(formData: FormData): Promise<void> {
     await this.httpClient.post('', formData);
   }
 }

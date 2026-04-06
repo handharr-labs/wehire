@@ -1,4 +1,4 @@
-import { type CompanySettingsRepository } from '../repositories/CompanySettingsRepository';
+import { type CompanySettingsRepository } from '@/features/admin-settings/domain/repositories/CompanySettingsRepository';
 
 export interface SaveCompanyProfileInput {
   readonly name: string;

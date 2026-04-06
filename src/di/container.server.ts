@@ -2,7 +2,7 @@ import 'server-only';
 
 import { createUnauthenticatedHTTPClient } from '@/data/networking/AxiosHTTPClient';
 import { ErrorMapperImpl } from '@/data/mappers/ErrorMapper';
-import { AppsScriptDataSourceImpl } from '@/features/career-microsite/data/data-sources/AppsScriptDataSourceImpl';
+import { AppsScriptDataSourceImpl } from '@/data/data-sources/AppsScriptDataSourceImpl';
 import { CompanyMapperImpl } from '@/shared/data/mappers/CompanyMapper';
 import { JobMapperImpl } from '@/shared/data/mappers/JobMapper';
 import { CompanyRepositoryImpl } from '@/features/career-microsite/data/repositories/CompanyRepositoryImpl';
@@ -20,8 +20,8 @@ import { CompanySettingsRepositoryImpl } from '@/features/admin-settings/data/re
 import { GetCompanySettingsUseCaseImpl } from '@/features/admin-settings/domain/use-cases/GetCompanySettingsUseCase';
 import { UpdateCompanySettingsUseCaseImpl } from '@/features/admin-settings/domain/use-cases/UpdateCompanySettingsUseCase';
 import { ListCompaniesUseCaseImpl } from '@/features/admin-settings/domain/use-cases/ListCompaniesUseCase';
-import { LaunchCompanyUseCaseImpl } from '@/features/admin-settings/domain/use-cases/LaunchCompanyUseCase';
-import { SaveCompanyProfileUseCaseImpl } from '@/features/admin-settings/domain/use-cases/SaveCompanyProfileUseCase';
+import { LaunchCompanyUseCaseImpl } from '@/features/admin-onboarding/domain/use-cases/LaunchCompanyUseCase';
+import { SaveCompanyProfileUseCaseImpl } from '@/features/admin-onboarding/domain/use-cases/SaveCompanyProfileUseCase';
 import { JobManagementRemoteDataSourceImpl } from '@/features/admin-jobs/data/data-sources/JobManagementRemoteDataSource';
 import { JobManagementMapperImpl } from '@/features/admin-jobs/data/mappers/JobManagementMapper';
 import { JobManagementRepositoryImpl } from '@/features/admin-jobs/data/repositories/JobManagementRepositoryImpl';
@@ -30,7 +30,7 @@ import { GetAdminJobDetailUseCaseImpl } from '@/features/admin-jobs/domain/use-c
 import { CreateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/CreateJobUseCase';
 import { UpdateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/UpdateJobUseCase';
 import { DeleteJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/DeleteJobUseCase';
-import { VerifyCompanyConnectionUseCaseImpl } from '@/features/admin-onboarding/domain/use-cases/VerifyCompanyConnectionUseCase';
+import { VerifyCompanyConnectionUseCaseImpl } from '@/shared/domain/use-cases/VerifyCompanyConnectionUseCase';
 
 // Infrastructure — Node.js module cache provides free singletons.
 const httpClient = createUnauthenticatedHTTPClient(

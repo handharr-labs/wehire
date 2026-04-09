@@ -1,6 +1,6 @@
 import 'client-only';
 
-import { createUnauthenticatedHTTPClient } from '@/data/networking/AxiosHTTPClient';
+import { AxiosHTTPClient } from '@/data/networking/AxiosHTTPClient';
 import { ErrorMapperImpl } from '@/data/mappers/ErrorMapper';
 import { AppsScriptDataSourceImpl } from '@/data/data-sources/AppsScriptDataSourceImpl';
 import { JobMapperImpl } from '@/shared/data/mappers/JobMapper';
@@ -9,7 +9,7 @@ import { JobRepositoryImpl } from '@/features/career-microsite/data/repositories
 import { SubmitApplicationUseCaseImpl } from '@/features/career-microsite/domain/use-cases/SubmitApplicationUseCase';
 import { GetJobDetailUseCaseImpl } from '@/features/career-microsite/domain/use-cases/GetJobDetailUseCase';
 
-const httpClient = createUnauthenticatedHTTPClient(
+const httpClient = new AxiosHTTPClient(
   process.env.NEXT_PUBLIC_APPS_SCRIPT_URL ?? '',
 );
 const errorMapper = new ErrorMapperImpl();

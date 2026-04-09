@@ -13,5 +13,5 @@ export function buildJobDetailViewModel({ company, job }: JobDetailViewModelInpu
       ? `Rp ${job.minSalary.toLocaleString('id-ID')} – Rp ${job.maxSalary.toLocaleString('id-ID')}`
       : 'Negotiable';
 
-  return { company, job, salaryLabel, isOpen: isJobOpen(job) };
+  return { company, job, salaryLabel, isOpen: isJobOpen(job, new Date()) };
 }

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createUnauthenticatedHTTPClient } from '@/data/networking/AxiosHTTPClient';
+import { AxiosHTTPClient } from '@/data/networking/AxiosHTTPClient';
 import { ErrorMapperImpl } from '@/data/mappers/ErrorMapper';
 import { AppsScriptDataSourceImpl } from '@/data/data-sources/AppsScriptDataSourceImpl';
 import { CompanyMapperImpl } from '@/shared/data/mappers/CompanyMapper';
@@ -33,7 +33,7 @@ import { DeleteJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/Del
 import { VerifyCompanyConnectionUseCaseImpl } from '@/shared/domain/use-cases/VerifyCompanyConnectionUseCase';
 
 // Infrastructure — Node.js module cache provides free singletons.
-const httpClient = createUnauthenticatedHTTPClient(
+const httpClient = new AxiosHTTPClient(
   process.env.NEXT_PUBLIC_APPS_SCRIPT_URL ?? '',
 );
 const errorMapper = new ErrorMapperImpl();

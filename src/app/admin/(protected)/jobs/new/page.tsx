@@ -12,7 +12,7 @@ export default async function NewJobPage({ searchParams }: Props) {
   const session = await getAdminSession(cookieStore);
 
   if (!session) {
-    notFound();
+    redirect('/admin/login');
   }
 
   const resolvedParams = await searchParams;

@@ -3,6 +3,8 @@ import 'server-only';
 import { createSafeActionClient } from 'next-safe-action';
 import { cookies } from 'next/headers';
 import { DomainError } from '@/shared/domain/errors/DomainError';
+// Intentionally coupled to admin session — this project has a single auth context.
+// If non-admin server actions are ever needed, extract session-getter as an injected dependency.
 import { getAdminSession, type AdminSessionPayload } from './session';
 
 export const actionClient = createSafeActionClient({

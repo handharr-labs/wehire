@@ -1,5 +1,5 @@
 import { type Company, type SiteStatus } from '@/shared/domain/entities/Company';
-import { type CompanyDTO } from '@/data/dtos/CompanyDTO';
+import { type CompanyDTO } from '@/shared/data/dtos/CompanyDTO';
 
 export interface CompanyMapper {
   toDomain(dto: CompanyDTO): Company;

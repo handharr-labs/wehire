@@ -14,7 +14,7 @@ export default async function EditJobPage({ params, searchParams }: Props) {
   const session = await getAdminSession(cookieStore);
 
   if (!session) {
-    notFound();
+    redirect('/admin/login');
   }
 
   const [resolvedParams, resolvedSearch] = await Promise.all([params, searchParams]);

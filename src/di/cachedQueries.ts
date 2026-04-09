@@ -4,6 +4,7 @@ import {
   getJobDetailUseCase,
   getJobDetailBySlugUseCase,
   getJobsUseCase,
+  getAdminJobsUseCase,
 } from '@/di/container.server';
 
 export const getCachedCompanyBySlug = unstable_cache(
@@ -28,4 +29,10 @@ export const getCachedJobDetailBySlug = unstable_cache(
   (jobId: string, slug: string) => getJobDetailBySlugUseCase.execute(jobId, slug),
   ['job-detail-by-slug'],
   { revalidate: 60, tags: ['job'] },
+);
+
+export const getCachedAdminJobs = unstable_cache(
+  (companyId: string) => getAdminJobsUseCase.execute(companyId),
+  ['admin-jobs-by-company'],
+  { revalidate: 30, tags: ['job'] },
 );

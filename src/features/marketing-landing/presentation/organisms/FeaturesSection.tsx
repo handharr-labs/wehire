@@ -1,3 +1,5 @@
+'use client';
+
 const features = [
   {
     title: 'Your Own Branded Microsite',

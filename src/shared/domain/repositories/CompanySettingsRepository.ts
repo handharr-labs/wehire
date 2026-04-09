@@ -1,5 +1,5 @@
 import { type Company } from '@/shared/domain/entities/Company';
-import { type CompanySettingsInput } from '../entities/CompanySettingsInput';
+import { type CompanySettingsInput } from '@/shared/domain/entities/CompanySettingsInput';
 
 export interface CompanySettingsRepository {
   getAll(): Promise<Company[]>;

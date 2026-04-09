@@ -16,7 +16,7 @@ export class SubmitApplicationUseCaseImpl implements SubmitApplicationUseCase {
 
   async execute(payload: ApplicationPayload): Promise<void> {
     const job = await this.getJobDetailUseCase.execute(payload.jobId, payload.companyId);
-    if (!isJobOpen(job)) {
+    if (!isJobOpen(job, new Date())) {
       throw DomainError.validationFailed('job', 'inactive or expired');
     }
     return this.applicationRepository.submit(payload);

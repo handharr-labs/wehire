@@ -30,5 +30,3 @@ export class ConsoleLogger implements Logger {
   }
 }
 
-// Singleton for app-wide logging
-export const logger: Logger = new ConsoleLogger();

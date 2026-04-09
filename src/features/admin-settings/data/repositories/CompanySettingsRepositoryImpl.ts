@@ -3,8 +3,8 @@ import { type CompanyMapper } from '@/shared/data/mappers/CompanyMapper';
 import { type AppsScriptDataSource } from '@/data/data-sources/AppsScriptDataSource';
 import { type ErrorMapper } from '@/data/mappers/ErrorMapper';
 import { type NetworkError } from '@/data/networking/NetworkError';
-import { type CompanySettingsRepository } from '../../domain/repositories/CompanySettingsRepository';
-import { type CompanySettingsInput } from '../../domain/entities/CompanySettingsInput';
+import { type CompanySettingsRepository } from '@/shared/domain/repositories/CompanySettingsRepository';
+import { type CompanySettingsInput } from '@/shared/domain/entities/CompanySettingsInput';
 
 export class CompanySettingsRepositoryImpl implements CompanySettingsRepository {
   constructor(

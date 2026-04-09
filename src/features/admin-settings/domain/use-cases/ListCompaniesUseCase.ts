@@ -1,5 +1,5 @@
 import { type Company } from '@/shared/domain/entities/Company';
-import { type CompanySettingsRepository } from '../repositories/CompanySettingsRepository';
+import { type CompanySettingsRepository } from '@/shared/domain/repositories/CompanySettingsRepository';
 
 export interface ListCompaniesUseCase {
   execute(): Promise<Company[]>;

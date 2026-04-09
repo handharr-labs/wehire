@@ -1,0 +1,3 @@
+[submodule ".claude/web-agentic"]
+	path = .claude/web-agentic
+	url = https://github.com/handharr-labs/web-agentic

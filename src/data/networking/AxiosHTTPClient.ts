@@ -1,22 +1,37 @@
 import axios, { type AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
-import { type HTTPClient } from './HTTPClient';
+import { type HTTPClient, type RequestOptions } from './HTTPClient';
 
-export function createUnauthenticatedHTTPClient(baseURL: string): HTTPClient {
-  const instance: AxiosInstance = axios.create({ baseURL });
+export class AxiosHTTPClient implements HTTPClient {
+  private readonly instance: AxiosInstance;
 
-  axiosRetry(instance, {
-    retries: 3,
-    retryDelay: axiosRetry.exponentialDelay,
-    retryCondition: (error) => axiosRetry.isNetworkError(error),
-  });
+  constructor(baseURL: string) {
+    this.instance = axios.create({ baseURL });
 
-  return {
-    get: (path, options) => instance.get(path, { params: options?.params }).then((r) => r.data),
-    post: (path, body) => instance.post(path, body).then((r) => r.data),
-    put: (path, body) => instance.put(path, body).then((r) => r.data),
-    patch: (path, body) => instance.patch(path, body).then((r) => r.data),
-    delete: (path) => instance.delete(path).then((r) => r.data),
-  };
+    axiosRetry(this.instance, {
+      retries: 3,
+      retryDelay: axiosRetry.exponentialDelay,
+      retryCondition: (error) => axiosRetry.isNetworkError(error),
+    });
+  }
+
+  get<T>(path: string, options?: RequestOptions): Promise<T> {
+    return this.instance.get(path, { params: options?.params }).then((r) => r.data);
+  }
+
+  post<T>(path: string, body: unknown): Promise<T> {
+    return this.instance.post(path, body).then((r) => r.data);
+  }
+
+  put<T>(path: string, body: unknown): Promise<T> {
+    return this.instance.put(path, body).then((r) => r.data);
+  }
+
+  patch<T>(path: string, body: unknown): Promise<T> {
+    return this.instance.patch(path, body).then((r) => r.data);
+  }
+
+  delete<T>(path: string): Promise<T> {
+    return this.instance.delete(path).then((r) => r.data);
+  }
 }
-

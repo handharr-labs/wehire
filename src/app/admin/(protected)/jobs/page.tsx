@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { getAdminSession } from '@/lib/session';
-import { getAdminJobsUseCase } from '@/di/container.server';
+import { getCachedAdminJobs } from '@/di/cachedQueries';
 import { JobsListView } from '@/features/admin-jobs/presentation/views/JobsListView';
 
 interface Props {
@@ -29,7 +29,7 @@ export default async function AdminJobsPage({ searchParams }: Props) {
     notFound();
   }
 
-  const jobs = await getAdminJobsUseCase.execute(companyId);
+  const jobs = await getCachedAdminJobs(companyId);
 
   return <JobsListView jobs={jobs} companyId={companyId} />;
 }

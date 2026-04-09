@@ -19,25 +19,27 @@ const baseJob: Job = {
 };
 
 describe('isJobOpen', () => {
+  const now = new Date('2026-04-09T00:00:00Z');
+
   it('returns false for "closed" status', () => {
-    expect(isJobOpen({ ...baseJob, status: 'closed' })).toBe(false);
+    expect(isJobOpen({ ...baseJob, status: 'closed' }, now)).toBe(false);
   });
 
   it('returns false for "draft" status', () => {
-    expect(isJobOpen({ ...baseJob, status: 'draft' })).toBe(false);
+    expect(isJobOpen({ ...baseJob, status: 'draft' }, now)).toBe(false);
   });
 
   it('returns true for active status with no expiry', () => {
-    expect(isJobOpen({ ...baseJob, expiredAt: '' })).toBe(true);
+    expect(isJobOpen({ ...baseJob, expiredAt: '' }, now)).toBe(true);
   });
 
   it('returns true for active status with a future expiry date', () => {
-    const future = new Date(Date.now() + 86_400_000).toISOString();
-    expect(isJobOpen({ ...baseJob, expiredAt: future })).toBe(true);
+    const future = new Date('2026-04-10T00:00:00Z').toISOString();
+    expect(isJobOpen({ ...baseJob, expiredAt: future }, now)).toBe(true);
   });
 
   it('returns false for active status with a past expiry date', () => {
-    const past = new Date(Date.now() - 86_400_000).toISOString();
-    expect(isJobOpen({ ...baseJob, expiredAt: past })).toBe(false);
+    const past = new Date('2026-04-08T00:00:00Z').toISOString();
+    expect(isJobOpen({ ...baseJob, expiredAt: past }, now)).toBe(false);
   });
 });

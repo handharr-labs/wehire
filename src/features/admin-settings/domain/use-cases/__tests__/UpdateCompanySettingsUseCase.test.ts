@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { UpdateCompanySettingsUseCaseImpl } from '../UpdateCompanySettingsUseCase';
-import { type CompanySettingsInput } from '../../entities/CompanySettingsInput';
-import { type CompanySettingsRepository } from '../../repositories/CompanySettingsRepository';
+import { type CompanySettingsInput } from '@/shared/domain/entities/CompanySettingsInput';
+import { type CompanySettingsRepository } from '@/shared/domain/repositories/CompanySettingsRepository';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 
 const mockInput: CompanySettingsInput = {

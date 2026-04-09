@@ -1,5 +1,5 @@
-import { type CompanySettingsInput } from '../entities/CompanySettingsInput';
-import { type CompanySettingsRepository } from '../repositories/CompanySettingsRepository';
+import { type CompanySettingsInput } from '@/shared/domain/entities/CompanySettingsInput';
+import { type CompanySettingsRepository } from '@/shared/domain/repositories/CompanySettingsRepository';
 
 export type { CompanySettingsInput };
 

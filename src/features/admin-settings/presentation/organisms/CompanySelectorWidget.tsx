@@ -1,3 +1,5 @@
+'use client';
+
 import { type Company } from '@/shared/domain/entities/Company';
 
 interface Props {

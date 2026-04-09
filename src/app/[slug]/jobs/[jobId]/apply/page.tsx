@@ -25,7 +25,7 @@ export default async function ApplyPage({ params }: Props) {
   }
 
   if (company.siteStatus !== 'active') redirect(`/${slug}`);
-  if (!isJobOpen(job)) redirect(`/${slug}/jobs/${jobId}`);
+  if (!isJobOpen(job, new Date())) redirect(`/${slug}/jobs/${jobId}`);
 
   return (
     <>

@@ -1,25 +1,17 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { type Company } from '@/shared/domain/entities/Company';
 import { type Job } from '@/shared/domain/entities/Job';
-import { type SubmitApplicationUseCase } from '../../domain/use-cases/SubmitApplicationUseCase';
-import { useApplyFormViewModel } from './useApplyFormViewModel';
+import { type ApplyFormViewModel } from './useApplyFormViewModel';
 
 interface Props {
   company: Company;
   job: Job;
-  submitUseCase: SubmitApplicationUseCase;
+  vm: ApplyFormViewModel;
 }
 
-export function ApplyFormView({ company, job, submitUseCase }: Props) {
-  const router = useRouter();
-  const { isSubmitting, error, fieldErrors, handleSubmit, handleCvFileChange } = useApplyFormViewModel(
-    company,
-    job,
-    submitUseCase,
-    () => router.push(`/${company.slug}/jobs/${job.id}/apply/success`),
-  );
+export function ApplyFormView({ company, job, vm }: Props) {
+  const { isSubmitting, error, fieldErrors, handleSubmit, handleCvFileChange } = vm;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

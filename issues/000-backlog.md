@@ -38,3 +38,4 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 | 018 | refactor(presentation): extract atoms, molecules, and organisms per Atomic Design | `done` | [#38](https://github.com/handharr-labs/wehire/issues/38) |
 | 042 | Fix Clean Architecture violations from arch review | `pending` | [#42](https://github.com/handharr-labs/wehire/issues/42) |
 | 044 | fix architecture violations: promote shared entities, fix cross-feature coupling, clean dead code | `pending` | [#44](https://github.com/handharr-labs/wehire/issues/44) |
+| 046 | fix all architecture violations and warnings from 2026-04-09 review | `pending` | [#46](https://github.com/handharr-labs/wehire/issues/46) |

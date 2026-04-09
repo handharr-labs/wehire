@@ -1,3 +1,0 @@
-[submodule ".claude/starter-kit"]
-	path = .claude/web-agentic
-	url = https://github.com/handharr-labs/web-agentic

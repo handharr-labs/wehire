@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { CompanyMapperImpl } from '../CompanyMapper';
-import { type CompanyDTO } from '../../dtos/CompanyDTO';
+import { CompanyMapperImpl } from '@/shared/data/mappers/CompanyMapper';
+import { type CompanyDTO } from '@/shared/data/dtos/CompanyDTO';
 
 const baseDTO: CompanyDTO = {
   id: 'c1',

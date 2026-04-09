@@ -1,5 +1,5 @@
 import { type Job, type EmploymentType, type JobStatus } from '@/shared/domain/entities/Job';
-import { type JobDTO } from '@/data/dtos/JobDTO';
+import { type JobDTO } from '@/shared/data/dtos/JobDTO';
 
 export interface JobMapper {
   toDomain(dto: JobDTO): Job;

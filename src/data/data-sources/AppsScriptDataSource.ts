@@ -1,6 +1,6 @@
-import { type CompanyDTO } from '@/data/dtos/CompanyDTO';
+import { type CompanyDTO } from '@/shared/data/dtos/CompanyDTO';
 import { type UpdateCompanyDTO } from '@/data/dtos/UpdateCompanyDTO';
-import { type JobDTO } from '@/data/dtos/JobDTO';
+import { type JobDTO } from '@/shared/data/dtos/JobDTO';
 export interface AppsScriptDataSource {
   getCompanies(): Promise<CompanyDTO[]>;
   getCompanyBySlug(slug: string): Promise<CompanyDTO>;

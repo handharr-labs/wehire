@@ -1,7 +1,7 @@
 import { type Job } from '@/shared/domain/entities/Job';
 import { type JobMapper } from '@/shared/data/mappers/JobMapper';
 import { type CreateJobInput, type UpdateJobInput } from '../../domain/repositories/JobManagementRepository';
-import { type JobDTO } from '@/data/dtos/JobDTO';
+import { type JobDTO } from '@/shared/data/dtos/JobDTO';
 import { type CreateJobDTO, type UpdateJobDTO } from '../dtos/JobWriteDTO';
 
 export interface JobManagementMapper {

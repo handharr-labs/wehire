@@ -1,5 +1,5 @@
 import { type HTTPClient } from '@/data/networking/HTTPClient';
-import { type JobDTO } from '@/data/dtos/JobDTO';
+import { type JobDTO } from '@/shared/data/dtos/JobDTO';
 import { type CreateJobDTO, type UpdateJobDTO, type JobWriteResultDTO } from '../dtos/JobWriteDTO';
 
 interface AppsScriptJobsResponse {

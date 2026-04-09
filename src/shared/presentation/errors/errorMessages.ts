@@ -1,5 +1,4 @@
-// domain/errors/errorMessages.ts
-import { type DomainErrorCode } from './DomainError';
+import { type DomainErrorCode } from '@/shared/domain/errors/DomainError';
 
 export function humanizeError(code: DomainErrorCode): string {
   const messages: Record<DomainErrorCode, string> = {

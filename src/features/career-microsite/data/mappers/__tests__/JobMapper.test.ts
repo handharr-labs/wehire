@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { JobMapperImpl } from '../JobMapper';
-import { type JobDTO } from '@/data/dtos/JobDTO';
+import { JobMapperImpl } from '@/shared/data/mappers/JobMapper';
+import { type JobDTO } from '@/shared/data/dtos/JobDTO';
 
 const baseDTO: JobDTO = {
   id: 'j1',

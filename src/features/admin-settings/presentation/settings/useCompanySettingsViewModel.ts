@@ -33,6 +33,7 @@ export function useCompanySettingsViewModel({ defaultValues, companyId }: Props)
       contactEmail: defaultValues.contactEmail,
       whatsappNumber: defaultValues.whatsappNumber,
       siteStatus: defaultValues.siteStatus,
+      scoringEnabled: defaultValues.scoringEnabled,
     },
   });
 
@@ -55,6 +56,7 @@ export function useCompanySettingsViewModel({ defaultValues, companyId }: Props)
       contactEmail: register('contactEmail'),
       whatsappNumber: register('whatsappNumber'),
       siteStatus: register('siteStatus'),
+      scoringEnabled: register('scoringEnabled'),
     },
     fieldErrors: {
       name: errors.name?.message,
@@ -65,6 +67,7 @@ export function useCompanySettingsViewModel({ defaultValues, companyId }: Props)
       contactEmail: errors.contactEmail?.message,
       whatsappNumber: errors.whatsappNumber?.message,
       siteStatus: errors.siteStatus?.message,
+      scoringEnabled: errors.scoringEnabled?.message,
     },
     onFormSubmit: handleSubmit(onSubmit),
     isPending,

@@ -11,6 +11,7 @@ export const companySettingsFormSchema = z.object({
   contactEmail: z.string().email('Must be a valid email'),
   whatsappNumber: z.string().min(1, 'WhatsApp number is required'),
   siteStatus: z.enum(['active', 'inactive']),
+  scoringEnabled: z.boolean(),
 });
 
 export type CompanySettingsFormValues = z.infer<typeof companySettingsFormSchema>;

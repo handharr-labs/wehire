@@ -72,14 +72,17 @@ export function useApplyFormViewModel(
       const cvBase64 = btoa(binary);
 
       const { cvFile: _cvFile, ...rest } = result.data;
-      await submitUseCase.execute({
-        jobId: job.id,
-        companyId: company.id,
-        ...rest,
-        cvBase64,
-        cvFileName: file.name,
-        cvFileMime: file.type,
-      });
+      await submitUseCase.execute(
+        {
+          jobId: job.id,
+          companyId: company.id,
+          ...rest,
+          cvBase64,
+          cvFileName: file.name,
+          cvFileMime: file.type,
+        },
+        company,
+      );
       onSuccess();
     } catch (err) {
       if (err instanceof DomainError && err.code === 'validationFailed') {

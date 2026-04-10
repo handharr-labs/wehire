@@ -12,17 +12,36 @@ export function CareerPageView({ initialData }: Props) {
 
   return (
     <main className="min-h-screen bg-[#FAFAFC]">
-      <header className="bg-[var(--brand-primary)] py-16">
-        <div className="max-w-3xl mx-auto px-4 flex flex-col items-center text-center">
-          {company.logoUrl && (
-            <div className="bg-white/15 rounded-2xl p-3 mb-5">
+      <header className="relative bg-[var(--brand-primary)] py-20 overflow-hidden">
+        {/* Dot grid texture for depth */}
+        <div
+          className="absolute inset-0 opacity-[0.08]"
+          style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '28px 28px' }}
+        />
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-black/10 to-transparent" />
+
+        <div className="relative max-w-3xl mx-auto px-4 flex flex-col items-center text-center">
+          {/* Logo or monogram fallback */}
+          {company.logoUrl ? (
+            <div className="bg-white rounded-2xl p-4 mb-6 shadow-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={company.logoUrl} alt={company.name} className="h-12 w-auto object-contain" />
             </div>
+          ) : (
+            <div className="bg-white/20 rounded-2xl w-16 h-16 flex items-center justify-center mb-6 text-2xl font-bold text-[var(--brand-header-text)]">
+              {company.name.charAt(0)}
+            </div>
           )}
-          <h1 className="text-3xl font-bold text-[var(--brand-header-text)] tracking-tight">{company.name}</h1>
+
+          {/* "We're hiring" pill */}
+          <div className="bg-white/20 text-[var(--brand-header-text)] text-xs font-semibold px-3 py-1 rounded-full mb-4 uppercase tracking-widest">
+            We&apos;re hiring
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl font-bold text-[var(--brand-header-text)] tracking-tight">{company.name}</h1>
           {company.description && (
-            <p className="mt-3 text-[var(--brand-header-text)] opacity-75 text-sm max-w-md leading-relaxed">{company.description}</p>
+            <p className="mt-4 text-[var(--brand-header-text)] text-sm max-w-md leading-relaxed [text-shadow:0_1px_3px_rgba(0,0,0,0.15)]">{company.description}</p>
           )}
         </div>
       </header>

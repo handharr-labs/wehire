@@ -27,6 +27,7 @@ export class SaveCompanyProfileUseCaseImpl implements SaveCompanyProfileUseCase 
       contactEmail: profile.contactEmail,
       whatsappNumber: profile.whatsappNumber,
       siteStatus: existing.siteStatus,
+      scoringEnabled: existing.scoringEnabled,
     });
   }
 }

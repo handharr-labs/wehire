@@ -12,4 +12,5 @@ export interface Company {
   readonly whatsappNumber: string;
   readonly siteStatus: SiteStatus;
   readonly maxActiveJobs: number;
+  readonly scoringEnabled: boolean;
 }

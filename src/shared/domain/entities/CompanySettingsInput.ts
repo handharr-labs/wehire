@@ -9,4 +9,5 @@ export interface CompanySettingsInput {
   readonly contactEmail: string;
   readonly whatsappNumber: string;
   readonly siteStatus: SiteStatus;
+  readonly scoringEnabled: boolean;
 }

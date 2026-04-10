@@ -33,11 +33,11 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 
 | # | Title | Status | GitHub |
 |---|-------|--------|--------|
-| 016 | Add basic rule-based applicant scoring | `open` | [#26](https://github.com/handharr-labs/wehire/issues/26) |
+| 016 | Add basic rule-based applicant scoring | `in-progress` | [#26](https://github.com/handharr-labs/wehire/issues/26) |
 | 017 | Performance issue: page load when opening job vacancy and application form | `done` | [#30](https://github.com/handharr-labs/wehire/issues/30) |
 | 018 | refactor(presentation): extract atoms, molecules, and organisms per Atomic Design | `done` | [#38](https://github.com/handharr-labs/wehire/issues/38) |
-| 042 | Fix Clean Architecture violations from arch review | `pending` | [#42](https://github.com/handharr-labs/wehire/issues/42) |
-| 044 | fix architecture violations: promote shared entities, fix cross-feature coupling, clean dead code | `pending` | [#44](https://github.com/handharr-labs/wehire/issues/44) |
-| 046 | fix all architecture violations and warnings from 2026-04-09 review | `pending` | [#46](https://github.com/handharr-labs/wehire/issues/46) |
-| 048 | feat: optimistic navigation + skeleton loading states across the project | `open` | [#48](https://github.com/handharr-labs/wehire/issues/48) |
-| 050 | UI revamp: Miro-inspired design system | `pending` | [#50](https://github.com/handharr-labs/wehire/issues/50) |
+| 042 | Fix Clean Architecture violations from arch review | `done` | [#42](https://github.com/handharr-labs/wehire/issues/42) |
+| 044 | fix architecture violations: promote shared entities, fix cross-feature coupling, clean dead code | `done` | [#44](https://github.com/handharr-labs/wehire/issues/44) |
+| 046 | fix all architecture violations and warnings from 2026-04-09 review | `done` | [#46](https://github.com/handharr-labs/wehire/issues/46) |
+| 048 | feat: optimistic navigation + skeleton loading states across the project | `done` | [#48](https://github.com/handharr-labs/wehire/issues/48) |
+| 050 | UI revamp: Miro-inspired design system | `done` | [#50](https://github.com/handharr-labs/wehire/issues/50) |

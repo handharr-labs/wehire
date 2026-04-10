@@ -36,6 +36,7 @@ describe('JobMapperImpl.toDomain', () => {
       status: 'active',
       expiredAt: '2027-01-01',
       sortOrder: 1,
+      targetCity: undefined,
     });
   });
 
@@ -50,5 +51,11 @@ describe('JobMapperImpl.toDomain', () => {
     const dto = { ...baseDTO, employment_type: undefined as unknown as string };
     const job = mapper.toDomain(dto);
     expect(job.employmentType).toBe('full-time');
+  });
+
+  it('maps target_city when present', () => {
+    const mapper = new JobMapperImpl();
+    const job = mapper.toDomain({ ...baseDTO, target_city: 'Jakarta, Bandung' });
+    expect(job.targetCity).toBe('Jakarta, Bandung');
   });
 });

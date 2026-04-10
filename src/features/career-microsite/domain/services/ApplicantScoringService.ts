@@ -62,37 +62,20 @@ const ALL_RULES: readonly ScoringRule[] = [
 
 export class ApplicantScoringServiceImpl implements ApplicantScoringService {
   score(input: ScoringInput): number | null {
-    console.log('[ApplicantScoring] scoringEnabled:', input.scoringEnabled);
     if (!input.scoringEnabled) return null;
 
-    console.log('[ApplicantScoring] inputs:', {
-      expectedSalary: input.payload.expectedSalary,
-      city: input.payload.city,
-      linkedinUrl: input.payload.linkedinUrl ?? null,
-      portfolioUrl: input.payload.portfolioUrl ?? null,
-      jobMinSalary: input.job.minSalary,
-      jobMaxSalary: input.job.maxSalary,
-      jobTargetCity: input.job.targetCity ?? null,
-    });
-
-    const RULE_NAMES = ['salary', 'domicile', 'linkedin', 'portfolio'] as const;
     let earnedPoints = 0;
     let applicableMaxPoints = 0;
-    const ruleResults: Record<string, number | null> = {};
 
-    ALL_RULES.forEach((rule, i) => {
+    for (const rule of ALL_RULES) {
       const result = rule.evaluate(input);
-      ruleResults[RULE_NAMES[i]] = result;
-      if (result === null) return;
+      if (result === null) continue;
       earnedPoints += result;
       applicableMaxPoints += rule.maxPoints;
-    });
+    }
 
-    console.log('[ApplicantScoring] rule results:', ruleResults);
+    if (applicableMaxPoints === 0) return 0;
 
-    const finalScore = applicableMaxPoints === 0 ? 0 : Math.round((earnedPoints / applicableMaxPoints) * 100);
-    console.log('[ApplicantScoring] final score:', finalScore, `(${earnedPoints}/${applicableMaxPoints} applicable pts)`);
-
-    return finalScore;
+    return Math.round((earnedPoints / applicableMaxPoints) * 100);
   }
 }

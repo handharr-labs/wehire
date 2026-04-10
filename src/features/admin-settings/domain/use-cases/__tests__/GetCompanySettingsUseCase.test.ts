@@ -16,6 +16,7 @@ const mockCompany: Company = {
   whatsappNumber: '+6281234567890',
   siteStatus: 'active',
   maxActiveJobs: 5,
+  scoringEnabled: false,
 };
 
 function makeRepo(overrides: Partial<CompanySettingsRepository> = {}): CompanySettingsRepository {

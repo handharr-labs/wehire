@@ -42,6 +42,7 @@ export class CompanySettingsRepositoryImpl implements CompanySettingsRepository 
         contact_email: input.contactEmail,
         whatsapp_number: input.whatsappNumber,
         site_status: input.siteStatus,
+        scoring_enabled: input.scoringEnabled,
       });
     } catch (error) {
       throw this.errorMapper.toDomain(error as NetworkError);

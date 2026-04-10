@@ -13,4 +13,5 @@ export interface ApplicationPayload {
   readonly linkedinUrl?: string;
   readonly portfolioUrl?: string;
   readonly coverLetter?: string;
+  readonly screeningScore?: number | null;
 }

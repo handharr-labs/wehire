@@ -21,6 +21,7 @@ export class JobMapperImpl implements JobMapper {
       status: (dto.status === 'open' ? 'active' : (dto.status as JobStatus)) ?? 'active',
       expiredAt: dto.expired_at,
       sortOrder: dto.sort_order,
+      targetCity: dto.target_city,
     };
   }
 }

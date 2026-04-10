@@ -15,6 +15,7 @@ const baseCompany: Company = {
   whatsappNumber: '',
   siteStatus: 'active',
   maxActiveJobs: 5,
+  scoringEnabled: false,
 };
 
 const job: Job = {

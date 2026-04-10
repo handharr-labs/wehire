@@ -10,4 +10,5 @@ export interface CompanyDTO {
   readonly whatsapp_number: string;
   readonly site_status: string;
   readonly max_active_jobs: number;
+  readonly scoring_enabled?: boolean;
 }

@@ -117,6 +117,23 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
               </select>
             </FormField>
 
+            <div className="flex items-start gap-3">
+              <input
+                {...vm.fields.scoringEnabled}
+                type="checkbox"
+                id="scoringEnabled"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              />
+              <div>
+                <label htmlFor="scoringEnabled" className="text-sm font-medium text-gray-700 cursor-pointer">
+                  Enable applicant scoring
+                </label>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Automatically score each applicant (0–100) based on salary fit, city, LinkedIn, and portfolio.
+                </p>
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={vm.isPending}

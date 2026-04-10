@@ -32,6 +32,7 @@ describe('CompanyMapperImpl.toDomain', () => {
       whatsappNumber: '+6281234567890',
       siteStatus: 'active',
       maxActiveJobs: 10,
+      scoringEnabled: false,
     });
   });
 
@@ -40,5 +41,17 @@ describe('CompanyMapperImpl.toDomain', () => {
     const dto = { ...baseDTO, site_status: undefined as unknown as string };
     const company = mapper.toDomain(dto);
     expect(company.siteStatus).toBe('inactive');
+  });
+
+  it('maps scoringEnabled to true when scoring_enabled is true', () => {
+    const mapper = new CompanyMapperImpl();
+    const company = mapper.toDomain({ ...baseDTO, scoring_enabled: true });
+    expect(company.scoringEnabled).toBe(true);
+  });
+
+  it('defaults scoringEnabled to false when scoring_enabled is absent', () => {
+    const mapper = new CompanyMapperImpl();
+    const company = mapper.toDomain(baseDTO);
+    expect(company.scoringEnabled).toBe(false);
   });
 });

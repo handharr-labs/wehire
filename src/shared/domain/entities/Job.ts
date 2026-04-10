@@ -15,4 +15,5 @@ export interface Job {
   readonly status: JobStatus;
   readonly expiredAt: string;
   readonly sortOrder: number;
+  readonly targetCity?: string;
 }

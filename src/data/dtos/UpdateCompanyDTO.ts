@@ -7,4 +7,5 @@ export interface UpdateCompanyDTO {
   readonly contact_email: string;
   readonly whatsapp_number: string;
   readonly site_status: string;
+  readonly scoring_enabled?: boolean;
 }

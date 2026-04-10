@@ -18,6 +18,7 @@ export class LaunchCompanyUseCaseImpl implements LaunchCompanyUseCase {
       contactEmail: company.contactEmail,
       whatsappNumber: company.whatsappNumber,
       siteStatus: 'active',
+      scoringEnabled: company.scoringEnabled,
     });
   }
 }

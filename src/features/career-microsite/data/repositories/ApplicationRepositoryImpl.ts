@@ -26,6 +26,7 @@ export class ApplicationRepositoryImpl implements ApplicationRepository {
     if (payload.linkedinUrl) formData.append('linkedinUrl', payload.linkedinUrl);
     if (payload.portfolioUrl) formData.append('portfolioUrl', payload.portfolioUrl);
     if (payload.coverLetter) formData.append('coverLetter', payload.coverLetter);
+    if (payload.screeningScore != null) formData.append('screeningScore', String(payload.screeningScore));
 
     try {
       await this.dataSource.submitApplication(formData);

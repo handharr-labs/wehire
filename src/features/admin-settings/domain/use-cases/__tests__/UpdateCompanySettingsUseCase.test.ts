@@ -13,6 +13,7 @@ const mockInput: CompanySettingsInput = {
   contactEmail: 'hr@acme.com',
   whatsappNumber: '+6281234567890',
   siteStatus: 'active',
+  scoringEnabled: false,
 };
 
 function makeRepo(overrides: Partial<CompanySettingsRepository> = {}): CompanySettingsRepository {

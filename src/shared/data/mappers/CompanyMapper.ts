@@ -19,6 +19,7 @@ export class CompanyMapperImpl implements CompanyMapper {
       whatsappNumber: dto.whatsapp_number,
       siteStatus: (dto.site_status as SiteStatus) ?? 'inactive',
       maxActiveJobs: dto.max_active_jobs,
+      scoringEnabled: dto.scoring_enabled ?? false,
     };
   }
 }

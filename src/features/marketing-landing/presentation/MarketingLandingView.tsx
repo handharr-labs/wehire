@@ -14,7 +14,7 @@ export function MarketingLandingView() {
         <BottomCtaSection />
       </main>
 
-      <footer className="text-zinc-400 text-sm text-center py-8">
+      <footer className="bg-white border-t border-[#E8E8F0] text-[#5E5E7A] text-sm text-center py-8">
         © 2025 WeHire · Handharr Labs
       </footer>
     </div>

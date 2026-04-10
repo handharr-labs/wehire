@@ -241,21 +241,24 @@ function handleCreateJob(body) {
 
   var now = new Date().toISOString();
 
-  sheet.appendRow([
-    newId,
-    companyId,
-    String(body.title        || ''),
-    String(body.department   || ''),
-    String(body.location     || ''),
-    String(body.employment_type || 'full-time'),
-    Number(body.min_salary   || 0),
-    Number(body.max_salary   || 0),
-    String(body.description  || ''),
-    String(body.requirements || ''),
-    String(body.status       || 'draft'),
-    String(body.expired_at   || ''),
-    Number(body.sort_order   || 0)
-  ]);
+  ensureColumn(sheet, 'target_city');
+
+  appendRowByColumnMap(sheet, {
+    id:              newId,
+    company_id:      companyId,
+    title:           String(body.title           || ''),
+    department:      String(body.department      || ''),
+    location:        String(body.location        || ''),
+    employment_type: String(body.employment_type || 'full-time'),
+    min_salary:      Number(body.min_salary      || 0),
+    max_salary:      Number(body.max_salary      || 0),
+    description:     String(body.description     || ''),
+    requirements:    String(body.requirements    || ''),
+    status:          String(body.status          || 'draft'),
+    expired_at:      String(body.expired_at      || ''),
+    sort_order:      Number(body.sort_order      || 0),
+    target_city:     String(body.target_city     || '')
+  });
 
   return jsonResponse({ data: { id: newId, created_at: now } });
 }
@@ -294,6 +297,10 @@ function handleUpdateJob(body) {
       if (body.status       !== undefined) sheet.getRange(sheetRow, colMap['status']).setValue(body.status);
       if (body.expired_at   !== undefined) sheet.getRange(sheetRow, colMap['expired_at']).setValue(body.expired_at);
       if (body.sort_order   !== undefined) sheet.getRange(sheetRow, colMap['sort_order']).setValue(Number(body.sort_order));
+      if (body.target_city  !== undefined) {
+        var tcCol = ensureColumn(sheet, 'target_city');
+        sheet.getRange(sheetRow, tcCol).setValue(String(body.target_city));
+      }
 
       return jsonResponse({ success: true });
     }
@@ -354,6 +361,10 @@ function handleUpdateCompany(body) {
       if (body.contact_email    !== undefined) sheet.getRange(sheetRow, colMap['contact_email']).setValue(body.contact_email);
       if (body.whatsapp_number  !== undefined) sheet.getRange(sheetRow, colMap['whatsapp_number']).setValue(body.whatsapp_number);
       if (body.site_status      !== undefined) sheet.getRange(sheetRow, colMap['site_status']).setValue(body.site_status);
+      if (body.scoring_enabled  !== undefined) {
+        var seCol = ensureColumn(sheet, 'scoring_enabled');
+        sheet.getRange(sheetRow, seCol).setValue(body.scoring_enabled === true || body.scoring_enabled === 'true');
+      }
 
       return jsonResponse({ success: true });
     }
@@ -388,6 +399,7 @@ function handleSubmitApplication(e) {
   var linkedinUrl       = field('linkedinUrl');
   var portfolioUrl      = field('portfolioUrl');
   var coverLetter       = field('coverLetter');
+  var screeningScore    = field('screeningScore');
 
   // Required fields validation
   var missing = [];
@@ -433,25 +445,26 @@ function handleSubmitApplication(e) {
     cvUrl = 'UPLOAD_ERROR: ' + uploadErr.message;
   }
 
-  // Append to Candidates sheet in the company spreadsheet
-  var sheet     = companySS.getSheetByName('Candidates');
-  var timestamp = new Date().toISOString();
+  // Append to Candidates sheet — auto-add screening_score column if missing
+  var sheet = companySS.getSheetByName('Candidates');
+  ensureColumn(sheet, 'screening_score');
 
-  sheet.appendRow([
-    timestamp,
-    jobId,
-    companyId,
-    fullName,
-    email,
-    phone,
-    city,
-    experienceSummary,
-    expectedSalary,
-    cvUrl,
-    linkedinUrl,
-    portfolioUrl,
-    coverLetter
-  ]);
+  appendRowByColumnMap(sheet, {
+    timestamp:          new Date().toISOString(),
+    job_id:             jobId,
+    company_id:         companyId,
+    full_name:          fullName,
+    email:              email,
+    phone:              phone,
+    city:               city,
+    experience_summary: experienceSummary,
+    expected_salary:    expectedSalary,
+    cv_url:             cvUrl,
+    linkedin_url:       linkedinUrl,
+    portfolio_url:      portfolioUrl,
+    cover_letter:       coverLetter,
+    screening_score:    screeningScore !== '' ? Number(screeningScore) : ''
+  });
 
   return jsonResponse({ success: true });
 }
@@ -516,7 +529,8 @@ function toCompanyDTO(row) {
     contact_email:    String(row.contact_email    || ''),
     whatsapp_number:  String(row.whatsapp_number  || ''),
     site_status:      String(row.site_status      || ''),
-    max_active_jobs:  Number(row.max_active_jobs  || 0)
+    max_active_jobs:  Number(row.max_active_jobs  || 0),
+    scoring_enabled:  row.scoring_enabled === true || String(row.scoring_enabled).toLowerCase() === 'true'
   };
 }
 
@@ -534,13 +548,42 @@ function toJobDTO(row) {
     requirements:    String(row.requirements    || ''),
     status:          String(row.status          || ''),
     expired_at:      row.expired_at ? String(row.expired_at) : '',
-    sort_order:      Number(row.sort_order      || 0)
+    sort_order:      Number(row.sort_order      || 0),
+    target_city:     String(row.target_city     || '')
   };
 }
 
 // ------------------------------------------------------------
 // Utilities
 // ------------------------------------------------------------
+
+// Ensures a column header exists on the sheet.
+// If missing, appends it at the end. Returns the 1-indexed column number.
+function ensureColumn(sheet, columnName) {
+  var lastCol = sheet.getLastColumn();
+  if (lastCol === 0) {
+    sheet.getRange(1, 1).setValue(columnName);
+    return 1;
+  }
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var idx = headers.indexOf(columnName);
+  if (idx !== -1) return idx + 1;
+  var newCol = lastCol + 1;
+  sheet.getRange(1, newCol).setValue(columnName);
+  return newCol;
+}
+
+// Appends a row using an object keyed by column header name.
+// Columns not present in `data` are written as empty string.
+// Safe regardless of column order — relies on the header row.
+function appendRowByColumnMap(sheet, data) {
+  var lastCol = Math.max(sheet.getLastColumn(), 1);
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var row = headers.map(function(h) {
+    return data.hasOwnProperty(h) ? data[h] : '';
+  });
+  sheet.appendRow(row);
+}
 
 function rowToObject(headers, row) {
   var obj = {};

@@ -11,20 +11,28 @@ Stack: Next.js 15 App Router + React 19 · Google Sheets (via Apps Script) · Ta
 ## Features
 `src/features/{auth,[feature-a],[feature-b],...}` · `src/shared/{domain,presentation,core,di}` · `src/lib/` · `src/app/`
 
-## Workflow
-Before any work: `/create-issue [title]` → wait for instruction → invoke agent
-
-## Issue rule
-On `fix/`|`feature/` branch → add feedback to current issue. On `main` → create new issue.
-
-Issues live in GitHub — use `gh issue view <n>` for context. `issues/000-backlog.md` is a quick-reference index only; no local `.md` files per issue.
-
 ## Project-specific agent rules
 `.claude/agents.local/` — additive rules on top of the shared starter-kit agents.
 
 ## Naming conventions
-
 `use*ViewModel` — React hooks (stateful, client-only).
 `build*ViewModel` — pure transform functions (no hooks, no side effects). The `build*` prefix intentionally deviates from the `use*` hook convention because these are not React hooks.
 
-<!-- Shared arch docs, skills, workflow, and code principles → .claude/starter-kit/ -->
+Issues live in GitHub — use `gh issue view <n>` for context. `issues/000-backlog.md` is a quick-reference index only; no local `.md` files per issue.
+
+<!-- BEGIN web-agentic -->
+## Workflow
+Before any work, invoke the **issue-worker** agent with a title (new) or number (existing).
+
+```
+issue-worker "add X"   → create GH issue + branch + backlog row
+issue-worker 42        → pick up existing GH issue + branch + backlog row
+```
+
+Agents: `feature-orchestrator` · `backend-orchestrator` · `debug-worker` · `test-worker` · `arch-review-worker` · `/simplify` · `.claude/skills/`
+
+Issue rule: On `fix/`|`feat/` branch → add feedback to current issue. On `main` → create new issue.
+
+## Code Principles
+CLEAN · DRY · SOLID (SRP, OCP, LSP, ISP, DIP). Wire deps via `src/shared/di/`.
+<!-- END web-agentic -->

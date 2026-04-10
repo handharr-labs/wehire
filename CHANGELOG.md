@@ -5,6 +5,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 
 ---
 
+## [2.0.0] - 2026-04-10
+
+### Changed
+- **Marketing landing page** — full revamp with Miro design system ([#50](https://github.com/handharr-labs/wehire/issues/50))
+- **Career microsite** — redesigned career page and job detail screens ([#50](https://github.com/handharr-labs/wehire/issues/50))
+- **Career page header** — improved header design ([#50](https://github.com/handharr-labs/wehire/issues/50))
+
+---
+
 ## [1.1.0] - 2026-03-19
 
 ### Added
@@ -41,5 +50,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 
 ---
 
+[2.0.0]: https://github.com/handharr-labs/wehire/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/handharr-labs/wehire/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/handharr-labs/wehire/releases/tag/v1.0.0

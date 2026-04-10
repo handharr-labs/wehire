@@ -12,4 +12,5 @@ export interface JobDTO {
   readonly status: string;
   readonly expired_at: string;
   readonly sort_order: number;
+  readonly target_city?: string;
 }

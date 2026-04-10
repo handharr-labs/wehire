@@ -5,6 +5,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 
 ---
 
+## [2.1.0] — 2026-04-10
+
+### Added
+- **Rule-based applicant scoring** — automated scoring of job applicants based on configurable criteria ([#26](https://github.com/handharr-labs/wehire/issues/26))
+  - `ApplicantScoringService` — domain service implementing scoring logic across entities
+  - Scoring fields extended across DTOs, mappers, and repositories in the data layer
+  - Scoring integrated into apply form and company settings in the presentation layer
+  - Apps Script backend auto-adds missing scoring columns and handles new fields
+  - Unit tests for scoring logic and updated fixtures for new entity fields
+
+---
+
 ## [2.0.0] - 2026-04-10
 
 ### Changed

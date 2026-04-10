@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import NextTopLoader from "nextjs-toploader";
 import { QueryClientProvider } from "@/shared/presentation/providers/QueryClientProvider";
 
 const geistSans = Geist({
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* QueryClientProvider is 'use client' internally — wraps only what needs it */}
+        <NextTopLoader showSpinner={false} />
         <QueryClientProvider>
           {children}
         </QueryClientProvider>

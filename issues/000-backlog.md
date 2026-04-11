@@ -42,3 +42,4 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 | 048 | feat: optimistic navigation + skeleton loading states across the project | `done` | [#48](https://github.com/handharr-labs/wehire/issues/48) |
 | 050 | UI revamp: Miro-inspired design system | `done` | [#50](https://github.com/handharr-labs/wehire/issues/50) |
 | 053 | Add admin-configurable form fields with dynamic Google Sheet column sync | `pending` | [#53](https://github.com/handharr-labs/wehire/issues/53) |
+| 055 | fix(design-system): establish proper design tokens, fix font setup, and unify color strategy | `pending` | [#55](https://github.com/handharr-labs/wehire/issues/55) |

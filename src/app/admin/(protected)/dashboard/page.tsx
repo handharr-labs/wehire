@@ -21,19 +21,25 @@ export default async function AdminDashboardPage() {
 
   const companies = await getAdminCompanies(session);
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-4">Admin Dashboard</h1>
+  const firstName = session?.email?.split('@')[0] ?? 'Admin';
 
-          <div className="flex gap-3 mb-4">
-            <AdminDashboardView
-              companies={companies}
-              readonly={session?.role !== 'SUPER_ADMIN'}
-            />
-          </div>
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        {/* Welcome header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-gray-900">
+            Welcome back, {firstName}
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            {companies.length === 1
+              ? 'Manage your company, jobs, and application form below.'
+              : `You have access to ${companies.length} companies.`}
+          </p>
         </div>
+
+        {/* Company cards */}
+        <AdminDashboardView companies={companies} />
       </div>
     </div>
   );

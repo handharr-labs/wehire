@@ -36,23 +36,23 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="bg-[#FAFAFC] py-24 px-4">
+    <section id="features" className="bg-page py-24 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-3xl font-bold text-[#1A1A2E] tracking-tight">Everything you need to start hiring</h2>
-          <p className="text-[#5E5E7A] mt-3 max-w-md mx-auto">No HR software, no design skills, no budget required.</p>
+          <h2 className="text-3xl font-bold text-ink tracking-tight">Everything you need to start hiring</h2>
+          <p className="text-ink-muted mt-3 max-w-md mx-auto">No HR software, no design skills, no budget required.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="bg-white rounded-xl border border-[#E8E8F0] p-8 hover:shadow-md transition-shadow"
+              className="bg-surface rounded-xl border border-stroke p-8 hover:shadow-md transition-shadow"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#EEF0FF] text-[#4262FF] flex items-center justify-center mb-5">
+              <div className="w-12 h-12 rounded-xl bg-accent-subtle text-accent flex items-center justify-center mb-5">
                 {feature.icon}
               </div>
-              <h3 className="font-semibold text-[#1A1A2E] mb-2">{feature.title}</h3>
-              <p className="text-sm text-[#5E5E7A] leading-relaxed">{feature.description}</p>
+              <h3 className="font-semibold text-ink mb-2">{feature.title}</h3>
+              <p className="text-sm text-ink-muted leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>

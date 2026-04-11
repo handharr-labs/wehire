@@ -11,7 +11,7 @@ export function CareerPageView({ initialData }: Props) {
   const { company, jobs, isHiring } = buildCareerPageViewModel(initialData);
 
   return (
-    <main className="min-h-screen bg-[#FAFAFC]">
+    <main className="min-h-screen bg-page">
       <header className="relative bg-[var(--brand-primary)] py-20 overflow-hidden">
         {/* Dot grid texture for depth */}
         <div
@@ -24,7 +24,7 @@ export function CareerPageView({ initialData }: Props) {
         <div className="relative max-w-3xl mx-auto px-4 flex flex-col items-center text-center">
           {/* Logo or monogram fallback */}
           {company.logoUrl ? (
-            <div className="bg-white rounded-2xl p-4 mb-6 shadow-lg">
+            <div className="bg-surface rounded-2xl p-4 mb-6 shadow-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={company.logoUrl} alt={company.name} className="h-12 w-auto object-contain" />
             </div>
@@ -47,20 +47,20 @@ export function CareerPageView({ initialData }: Props) {
       </header>
 
       <section className="max-w-3xl mx-auto px-4 py-12">
-        <h2 className="text-xl font-bold text-[#1A1A2E] mb-6">
+        <h2 className="text-xl font-bold text-ink mb-6">
           Open Positions
           {isHiring && jobs.length > 0 && (
-            <span className="ml-2 text-sm font-medium text-[#5E5E7A]">({jobs.length})</span>
+            <span className="ml-2 text-sm font-medium text-ink-muted">({jobs.length})</span>
           )}
         </h2>
 
         {!isHiring ? (
-          <div className="bg-white rounded-xl border border-[#E8E8F0] p-10 text-center">
-            <p className="text-[#5E5E7A] text-sm">This company is not currently hiring.</p>
+          <div className="bg-surface rounded-xl border border-stroke p-10 text-center">
+            <p className="text-ink-muted text-sm">This company is not currently hiring.</p>
           </div>
         ) : jobs.length === 0 ? (
-          <div className="bg-white rounded-xl border border-[#E8E8F0] p-10 text-center">
-            <p className="text-[#5E5E7A] text-sm">No open positions at the moment. Check back soon.</p>
+          <div className="bg-surface rounded-xl border border-stroke p-10 text-center">
+            <p className="text-ink-muted text-sm">No open positions at the moment. Check back soon.</p>
           </div>
         ) : (
           <ul className="space-y-3">
@@ -68,17 +68,17 @@ export function CareerPageView({ initialData }: Props) {
               <li key={job.id}>
                 <Link
                   href={`/${company.slug}/jobs/${job.id}`}
-                  className="group flex items-center justify-between bg-white rounded-xl border border-[#E8E8F0] p-6 hover:border-[var(--brand-primary)] hover:shadow-md transition-all"
+                  className="group flex items-center justify-between bg-surface rounded-xl border border-stroke p-6 hover:border-[var(--brand-primary)] hover:shadow-md transition-all"
                 >
                   <div>
-                    <h3 className="font-semibold text-[#1A1A2E] group-hover:text-[var(--brand-primary)] transition-colors">{job.title}</h3>
+                    <h3 className="font-semibold text-ink group-hover:text-[var(--brand-primary)] transition-colors">{job.title}</h3>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="bg-[#F5F5F8] text-[#5E5E7A] text-xs px-2.5 py-1 rounded-full">{job.department}</span>
-                      <span className="bg-[#F5F5F8] text-[#5E5E7A] text-xs px-2.5 py-1 rounded-full">{job.location}</span>
-                      <span className="bg-[#F5F5F8] text-[#5E5E7A] text-xs px-2.5 py-1 rounded-full capitalize">{job.employmentType}</span>
+                      <span className="bg-chip text-ink-muted text-xs px-2.5 py-1 rounded-full">{job.department}</span>
+                      <span className="bg-chip text-ink-muted text-xs px-2.5 py-1 rounded-full">{job.location}</span>
+                      <span className="bg-chip text-ink-muted text-xs px-2.5 py-1 rounded-full capitalize">{job.employmentType}</span>
                     </div>
                   </div>
-                  <svg className="w-5 h-5 text-[#5E5E7A] group-hover:text-[var(--brand-primary)] shrink-0 ml-4 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-ink-muted group-hover:text-[var(--brand-primary)] shrink-0 ml-4 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
                   </svg>
                 </Link>

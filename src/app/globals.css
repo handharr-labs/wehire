@@ -1,20 +1,29 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+@theme {
+  /* ── Public / career microsite surface palette ───────────────────────────
+     Use these tokens in all public-facing views instead of raw hex values.
+     Admin panel continues to use standard Tailwind gray and blue semantics.
+  ──────────────────────────────────────────────────────────────────────── */
+  --color-page: #fafafc;          /* page background                        */
+  --color-surface: #ffffff;       /* card / content surface                 */
+  --color-stroke: #e8e8f0;        /* borders and dividers                   */
+  --color-ink: #1a1a2e;           /* primary text                           */
+  --color-ink-muted: #5e5e7a;     /* secondary / muted text                 */
+  --color-chip: #f5f5f8;          /* tag / pill background                  */
+  --color-accent: #4262ff;        /* brand blue — CTAs, links, highlights   */
+  --color-accent-dim: #3651e6;    /* accent hover state                     */
+  --color-accent-subtle: #eef0ff; /* accent tint background                 */
+  --color-accent-alt: #6b4eff;    /* accent secondary (gradient end)        */
+}
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }

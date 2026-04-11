@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/handharr-labs/wehire/compare/v2.1.0...v2.2.0) (2026-04-11)
+
+### Features
+
+* **admin-header:** revamp navbar with brand mark, user avatar, and sign-out icon ([58e4bdf](https://github.com/handharr-labs/wehire/commit/58e4bdfcfeab1938e5ac9df7dd3e50557d374f56))
+* **dashboard:** revamp admin dashboard with company cards and welcome header ([bc4fbd0](https://github.com/handharr-labs/wehire/commit/bc4fbd082fc593f3fb6f8f0bbb844a7ddc75a416))
+* **form-fields:** admin-configurable form fields with dynamic sheet sync ([4cc99e0](https://github.com/handharr-labs/wehire/commit/4cc99e01d21d6b8a2038c2bd2ab3cb53598712cc)), closes [#53](https://github.com/handharr-labs/wehire/issues/53)
+
+### Bug Fixes
+
+* **design-system:** establish design tokens, fix font, and unify color strategy ([3002153](https://github.com/handharr-labs/wehire/commit/3002153f5039daf62ed7b62b00fdd4060de793ba)), closes [#55](https://github.com/handharr-labs/wehire/issues/55)
+
 * chore: update backlog index for issue #55 (a3c7d8a)
 * Merge pull request #56 from handharr-labs/fix/issue-055-design-system-tokens-font-color-strategy (79a2533)
 * feat(admin-header): revamp navbar with brand mark, user avatar, and sign-out icon (58e4bdf)

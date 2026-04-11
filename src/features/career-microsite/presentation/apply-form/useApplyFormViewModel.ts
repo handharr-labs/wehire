@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import { type Company } from '@/shared/domain/entities/Company';
 import { type Job } from '@/shared/domain/entities/Job';
+import { type FormField } from '@/shared/domain/entities/FormField';
 import { type SubmitApplicationUseCase } from '../../domain/use-cases/SubmitApplicationUseCase';
 import { DomainError } from '@/shared/domain/errors/DomainError';
-import { applicationFormSchema } from './applicationFormSchema';
+import { buildApplicationFormSchema, SYSTEM_FIELD_FORM_KEY } from './buildApplicationFormSchema';
 
 export interface ApplyFormViewModel {
   isSubmitting: boolean;
@@ -20,6 +21,7 @@ export function useApplyFormViewModel(
   job: Job,
   submitUseCase: SubmitApplicationUseCase,
   onSuccess: () => void,
+  formFields: FormField[],
 ): ApplyFormViewModel {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,18 +41,21 @@ export function useApplyFormViewModel(
     setError(null);
     setFieldErrors(null);
 
-    const result = applicationFormSchema.safeParse({
-      fullName:          formData.get('fullName'),
-      email:             formData.get('email'),
-      phone:             formData.get('phone'),
-      city:              formData.get('city'),
-      experienceSummary: formData.get('experienceSummary'),
-      expectedSalary:    formData.get('expectedSalary'),
-      cvFile:            formData.get('cvFile'),
-      linkedinUrl:       formData.get('linkedinUrl'),
-      portfolioUrl:      formData.get('portfolioUrl'),
-      coverLetter:       formData.get('coverLetter'),
-    });
+    const { schema, customFieldNames } = buildApplicationFormSchema(formFields);
+
+    // Build parse input: system fields with camelCase keys, custom with fieldName
+    const parseInput: Record<string, unknown> = {};
+    for (const field of formFields) {
+      if (!field.enabled) continue;
+      if (field.isSystem) {
+        const formKey = SYSTEM_FIELD_FORM_KEY[field.fieldName];
+        if (formKey) parseInput[formKey] = formData.get(formKey);
+      } else {
+        parseInput[field.fieldName] = formData.get(field.fieldName);
+      }
+    }
+
+    const result = schema.safeParse(parseInput);
 
     if (!result.success) {
       const flat = result.error.flatten().fieldErrors;
@@ -64,22 +69,42 @@ export function useApplyFormViewModel(
     }
 
     try {
-      const file = result.data.cvFile;
+      const data = result.data as Record<string, unknown>;
+
+      // Extract CV file and encode to base64
+      const file = data['cvFile'] as File;
       const buffer = await file.arrayBuffer();
       const bytes = new Uint8Array(buffer);
       let binary = '';
       for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
       const cvBase64 = btoa(binary);
 
-      const { cvFile: _cvFile, ...rest } = result.data;
+      // Separate custom fields from system fields
+      const customFields: Record<string, string | number> = {};
+      for (const fieldName of customFieldNames) {
+        const value = data[fieldName];
+        if (value !== undefined && value !== '') {
+          customFields[fieldName] = value as string | number;
+        }
+      }
+
       await submitUseCase.execute(
         {
-          jobId: job.id,
-          companyId: company.id,
-          ...rest,
+          jobId:             job.id,
+          companyId:         company.id,
+          fullName:          data['fullName'] as string,
+          email:             data['email'] as string,
+          phone:             data['phone'] as string,
+          city:              data['city'] as string,
+          experienceSummary: data['experienceSummary'] as string,
+          expectedSalary:    data['expectedSalary'] as number,
           cvBase64,
-          cvFileName: file.name,
-          cvFileMime: file.type,
+          cvFileName:        file.name,
+          cvFileMime:        file.type,
+          linkedinUrl:       data['linkedinUrl'] as string | undefined,
+          portfolioUrl:      data['portfolioUrl'] as string | undefined,
+          coverLetter:       data['coverLetter'] as string | undefined,
+          ...(Object.keys(customFields).length > 0 ? { customFields } : {}),
         },
         company,
       );

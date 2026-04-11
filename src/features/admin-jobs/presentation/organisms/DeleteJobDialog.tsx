@@ -13,7 +13,7 @@ export function DeleteJobDialog({ jobTitle, open, isPending, serverError, onOpen
     <>
       <button
         onClick={onOpen}
-        className="text-xs text-red-600 hover:text-red-800 font-medium transition-colors"
+        className="cursor-pointer text-xs text-red-600 hover:text-red-800 font-medium transition-colors"
       >
         Delete
       </button>
@@ -43,7 +43,7 @@ export function DeleteJobDialog({ jobTitle, open, isPending, serverError, onOpen
                 type="button"
                 onClick={onClose}
                 disabled={isPending}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors disabled:opacity-50"
+                className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
@@ -51,7 +51,7 @@ export function DeleteJobDialog({ jobTitle, open, isPending, serverError, onOpen
                 type="button"
                 onClick={onConfirm}
                 disabled={isPending}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded transition-colors disabled:opacity-50"
+                className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isPending ? 'Deleting…' : 'Delete'}
               </button>

@@ -17,5 +17,6 @@ export function useAdminDashboardViewModel({ companies }: Props) {
     onSelectionChange: (id: string) => setSelectedId(id),
     onGoToJobs: (id: string) => router.push(`/admin/jobs?companyId=${id}`),
     onGoToSettings: (id: string) => router.push(`/admin/settings?companyId=${id}`),
+    onGoToFormFields: (id: string) => router.push(`/admin/form-fields?companyId=${id}`),
   };
 }

@@ -8,7 +8,7 @@ export function LogoutButton({ onLogout, isPending }: Props) {
     <button
       onClick={onLogout}
       disabled={isPending}
-      className="text-xs text-red-600 hover:text-red-800 font-medium transition-colors disabled:opacity-50"
+      className="cursor-pointer text-xs text-red-600 hover:text-red-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {isPending ? 'Signing out…' : 'Sign out'}
     </button>

@@ -1,5 +1,13 @@
 # Changelog
 
+* chore: update backlog index for issue #55 (a3c7d8a)
+* Merge pull request #56 from handharr-labs/fix/issue-055-design-system-tokens-font-color-strategy (79a2533)
+* feat(admin-header): revamp navbar with brand mark, user avatar, and sign-out icon (58e4bdf)
+* feat(dashboard): revamp admin dashboard with company cards and welcome header (bc4fbd0)
+* fix(design-system): establish design tokens, fix font, and unify color strategy (3002153)
+* Merge pull request #54 from handharr-labs/feat/issue-053-admin-configurable-form-fields-dynamic-sheet-sync (72445a7)
+* feat(form-fields): admin-configurable form fields with dynamic sheet sync (4cc99e0)
+
 All notable changes to WeHire are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning follows [Semantic Versioning](https://semver.org/).
 

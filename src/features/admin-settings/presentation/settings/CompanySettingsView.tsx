@@ -137,7 +137,7 @@ export function CompanySettingsView({ defaultValues, companyId }: Props) {
             <button
               type="submit"
               disabled={vm.isPending}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
+              className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded px-4 py-2 transition-colors"
             >
               {vm.isPending ? 'Saving…' : 'Save Settings'}
             </button>

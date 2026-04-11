@@ -20,6 +20,7 @@ export function AdminDashboardView({ companies, readonly = false }: Props) {
       readonly={readonly}
       onGoToJobs={vm.onGoToJobs}
       onGoToSettings={vm.onGoToSettings}
+      onGoToFormFields={vm.onGoToFormFields}
     />
   );
 }

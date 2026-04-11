@@ -31,6 +31,14 @@ import { CreateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/Cre
 import { UpdateJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/UpdateJobUseCase';
 import { DeleteJobUseCaseImpl } from '@/features/admin-jobs/domain/use-cases/DeleteJobUseCase';
 import { VerifyCompanyConnectionUseCaseImpl } from '@/shared/domain/use-cases/VerifyCompanyConnectionUseCase';
+import { FormFieldRemoteDataSourceImpl } from '@/features/admin-form-fields/data/data-sources/FormFieldRemoteDataSource';
+import { FormFieldMapperImpl } from '@/features/admin-form-fields/data/mappers/FormFieldMapper';
+import { FormFieldRepositoryImpl } from '@/features/admin-form-fields/data/repositories/FormFieldRepositoryImpl';
+import { GetFormFieldsUseCaseImpl } from '@/features/admin-form-fields/domain/use-cases/GetFormFieldsUseCase';
+import { CreateFormFieldUseCaseImpl } from '@/features/admin-form-fields/domain/use-cases/CreateFormFieldUseCase';
+import { UpdateFormFieldUseCaseImpl } from '@/features/admin-form-fields/domain/use-cases/UpdateFormFieldUseCase';
+import { DeleteFormFieldUseCaseImpl } from '@/features/admin-form-fields/domain/use-cases/DeleteFormFieldUseCase';
+import { ReorderFormFieldsUseCaseImpl } from '@/features/admin-form-fields/domain/use-cases/ReorderFormFieldsUseCase';
 
 // Infrastructure — Node.js module cache provides free singletons.
 const httpClient = new AxiosHTTPClient(
@@ -95,3 +103,20 @@ export const deleteJobUseCase = new DeleteJobUseCaseImpl(jobManagementRepository
 export const verifyCompanyConnectionUseCase = new VerifyCompanyConnectionUseCaseImpl(
   companyRepository,
 );
+
+// Form fields
+const formFieldDataSource = new FormFieldRemoteDataSourceImpl(
+  httpClient,
+  process.env.ADMIN_API_SECRET ?? '',
+);
+const formFieldMapper = new FormFieldMapperImpl();
+const formFieldRepository = new FormFieldRepositoryImpl(
+  formFieldDataSource,
+  formFieldMapper,
+  errorMapper,
+);
+export const getFormFieldsUseCase = new GetFormFieldsUseCaseImpl(formFieldRepository);
+export const createFormFieldUseCase = new CreateFormFieldUseCaseImpl(formFieldRepository);
+export const updateFormFieldUseCase = new UpdateFormFieldUseCaseImpl(formFieldRepository);
+export const deleteFormFieldUseCase = new DeleteFormFieldUseCaseImpl(formFieldRepository);
+export const reorderFormFieldsUseCase = new ReorderFormFieldsUseCaseImpl(formFieldRepository);

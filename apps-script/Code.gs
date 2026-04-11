@@ -18,11 +18,12 @@ function doGet(e) {
   try {
     var action = e.parameter.action;
 
-    if (action === 'getCompanies') return handleGetCompanies(e);
-    if (action === 'getCompany') return handleGetCompany(e);
-    if (action === 'getJobs')      return handleGetJobs(e);
-    if (action === 'getJob')       return handleGetJob(e);
-    if (action === 'getJobBySlug') return handleGetJobBySlug(e);
+    if (action === 'getCompanies')  return handleGetCompanies(e);
+    if (action === 'getCompany')    return handleGetCompany(e);
+    if (action === 'getJobs')       return handleGetJobs(e);
+    if (action === 'getJob')        return handleGetJob(e);
+    if (action === 'getJobBySlug')  return handleGetJobBySlug(e);
+    if (action === 'getFormFields') return handleGetFormFields(e);
 
     return jsonResponse({ error: 'Unknown action: ' + action }, 400);
   } catch (err) {
@@ -35,11 +36,15 @@ function doPost(e) {
   try {
     if (e.postData && e.postData.type === 'application/json') {
       var body = JSON.parse(e.postData.contents);
-      if (body.action === 'getAdminByEmail') return handleGetAdminByEmail(body);
-      if (body.action === 'createJob')       return handleCreateJob(body);
-      if (body.action === 'updateJob')       return handleUpdateJob(body);
-      if (body.action === 'deleteJob')       return handleDeleteJob(body);
-      if (body.action === 'updateCompany')   return handleUpdateCompany(body);
+      if (body.action === 'getAdminByEmail')    return handleGetAdminByEmail(body);
+      if (body.action === 'createJob')          return handleCreateJob(body);
+      if (body.action === 'updateJob')          return handleUpdateJob(body);
+      if (body.action === 'deleteJob')          return handleDeleteJob(body);
+      if (body.action === 'updateCompany')      return handleUpdateCompany(body);
+      if (body.action === 'createFormField')    return handleCreateFormField(body);
+      if (body.action === 'updateFormField')    return handleUpdateFormField(body);
+      if (body.action === 'deleteFormField')    return handleDeleteFormField(body);
+      if (body.action === 'reorderFormFields')  return handleReorderFormFields(body);
       return jsonResponse({ error: 'Unknown action: ' + body.action }, 400);
     }
     return handleSubmitApplication(e);
@@ -374,6 +379,302 @@ function handleUpdateCompany(body) {
 }
 
 // ------------------------------------------------------------
+// Form Fields — default seed data
+// ------------------------------------------------------------
+
+var DEFAULT_FORM_FIELDS = [
+  { id: 'sys_1',  label: 'Full Name',           field_name: 'full_name',          type: 'text',     required: true,  options: '', sort_order: 1,  enabled: true, is_system: true },
+  { id: 'sys_2',  label: 'Email',               field_name: 'email',              type: 'email',    required: true,  options: '', sort_order: 2,  enabled: true, is_system: true },
+  { id: 'sys_3',  label: 'Phone',               field_name: 'phone',              type: 'tel',      required: true,  options: '', sort_order: 3,  enabled: true, is_system: true },
+  { id: 'sys_4',  label: 'City',                field_name: 'city',               type: 'text',     required: true,  options: '', sort_order: 4,  enabled: true, is_system: true },
+  { id: 'sys_5',  label: 'Experience Summary',  field_name: 'experience_summary', type: 'textarea', required: true,  options: '', sort_order: 5,  enabled: true, is_system: true },
+  { id: 'sys_6',  label: 'Expected Salary',     field_name: 'expected_salary',    type: 'number',   required: true,  options: '', sort_order: 6,  enabled: true, is_system: true },
+  { id: 'sys_7',  label: 'CV / Resume',         field_name: 'cv_url',             type: 'file',     required: true,  options: '', sort_order: 7,  enabled: true, is_system: true },
+  { id: 'sys_8',  label: 'LinkedIn URL',        field_name: 'linkedin_url',       type: 'url',      required: false, options: '', sort_order: 8,  enabled: true, is_system: true },
+  { id: 'sys_9',  label: 'Portfolio URL',       field_name: 'portfolio_url',      type: 'url',      required: false, options: '', sort_order: 9,  enabled: true, is_system: true },
+  { id: 'sys_10', label: 'Cover Letter',        field_name: 'cover_letter',       type: 'textarea', required: false, options: '', sort_order: 10, enabled: true, is_system: true }
+];
+
+/**
+ * Returns the Form_Fields sheet for the given spreadsheet,
+ * creating and seeding it if it does not yet exist.
+ */
+function initFormFields(ss) {
+  var sheet = ss.getSheetByName('Form_Fields');
+  if (sheet) return sheet;
+
+  sheet = ss.insertSheet('Form_Fields');
+  sheet.appendRow(['id', 'label', 'field_name', 'type', 'required', 'options', 'sort_order', 'enabled', 'is_system']);
+  for (var i = 0; i < DEFAULT_FORM_FIELDS.length; i++) {
+    var f = DEFAULT_FORM_FIELDS[i];
+    sheet.appendRow([f.id, f.label, f.field_name, f.type, f.required, f.options, f.sort_order, f.enabled, f.is_system]);
+  }
+  return sheet;
+}
+
+/** Converts a label to a snake_case field_name. */
+function slugify(label) {
+  return String(label)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+function toFormFieldDTO(row) {
+  return {
+    id:         String(row.id         || ''),
+    label:      String(row.label      || ''),
+    field_name: String(row.field_name || ''),
+    type:       String(row.type       || 'text'),
+    required:   row.required  === true || String(row.required).toLowerCase()  === 'true',
+    options:    String(row.options    || ''),
+    sort_order: Number(row.sort_order || 0),
+    enabled:    row.enabled   === true || String(row.enabled).toLowerCase()   === 'true',
+    is_system:  row.is_system === true || String(row.is_system).toLowerCase() === 'true'
+  };
+}
+
+// ------------------------------------------------------------
+// Form Fields — GET handler
+// ------------------------------------------------------------
+
+function handleGetFormFields(e) {
+  var companyId = e.parameter.companyId;
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss    = openCompanySpreadsheet(company.slug);
+  var sheet = initFormFields(ss);
+  var rows  = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var fields  = [];
+
+  for (var i = 1; i < rows.length; i++) {
+    fields.push(toFormFieldDTO(rowToObject(headers, rows[i])));
+  }
+
+  return jsonResponse({ data: fields });
+}
+
+// ------------------------------------------------------------
+// Form Fields — POST handlers (admin, require secret)
+// ------------------------------------------------------------
+
+function handleCreateFormField(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var companyId = body.companyId;
+  if (!companyId)  return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+  if (!body.label) return jsonResponse({ error: 'Missing parameter: label' }, 400);
+  if (!body.type)  return jsonResponse({ error: 'Missing parameter: type' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss    = openCompanySpreadsheet(company.slug);
+  var sheet = initFormFields(ss);
+
+  var fieldName = slugify(body.label);
+
+  // Ensure field_name is unique among enabled fields
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var existing = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rowToObject(headers, rows[i]);
+    if (r.enabled !== false && String(r.enabled).toLowerCase() !== 'false') {
+      existing.push(String(r.field_name));
+    }
+  }
+  if (existing.indexOf(fieldName) !== -1) {
+    fieldName = fieldName + '_' + Date.now();
+  }
+
+  // Max sort_order
+  var maxOrder = 0;
+  for (var j = 1; j < rows.length; j++) {
+    var o = Number(rows[j][6]);
+    if (o > maxOrder) maxOrder = o;
+  }
+
+  var newId     = 'cf_' + Date.now();
+  var sortOrder = body.sort_order != null ? Number(body.sort_order) : maxOrder + 1;
+  var required  = body.required === true || body.required === 'true';
+  var options   = body.options || '';
+
+  sheet.appendRow([newId, body.label, fieldName, body.type, required, options, sortOrder, true, false]);
+
+  // Add column to Candidates sheet
+  var candidatesSheet = ss.getSheetByName('Candidates');
+  if (candidatesSheet) ensureColumn(candidatesSheet, fieldName);
+
+  return jsonResponse({ data: { id: newId, field_name: fieldName } });
+}
+
+function handleUpdateFormField(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var companyId = body.companyId;
+  var fieldId   = body.fieldId;
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+  if (!fieldId)   return jsonResponse({ error: 'Missing parameter: fieldId' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss    = openCompanySpreadsheet(company.slug);
+  var sheet = initFormFields(ss);
+
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var colMap  = {};
+  for (var c = 0; c < headers.length; c++) colMap[headers[c]] = c + 1;
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) !== String(fieldId)) continue;
+
+    var sheetRow = i + 1;
+    var isSystem = row.is_system === true || String(row.is_system).toLowerCase() === 'true';
+
+    // Label change
+    if (body.label !== undefined && body.label !== row.label) {
+      sheet.getRange(sheetRow, colMap['label']).setValue(body.label);
+
+      // For custom fields: derive new field_name and rename Candidates column
+      if (!isSystem) {
+        var oldFieldName = String(row.field_name);
+        var newFieldName = slugify(body.label);
+        if (newFieldName !== oldFieldName) {
+          sheet.getRange(sheetRow, colMap['field_name']).setValue(newFieldName);
+
+          var candidatesSheet = ss.getSheetByName('Candidates');
+          if (candidatesSheet) {
+            var lastCol = candidatesSheet.getLastColumn();
+            if (lastCol > 0) {
+              var cHeaders = candidatesSheet.getRange(1, 1, 1, lastCol).getValues()[0];
+              var colIdx   = cHeaders.indexOf(oldFieldName);
+              if (colIdx !== -1) {
+                candidatesSheet.getRange(1, colIdx + 1).setValue(newFieldName);
+              } else {
+                // Column didn't exist yet — create it under the new name
+                ensureColumn(candidatesSheet, newFieldName);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (body.required !== undefined) {
+      sheet.getRange(sheetRow, colMap['required']).setValue(
+        body.required === true || body.required === 'true'
+      );
+    }
+    if (body.options !== undefined) {
+      sheet.getRange(sheetRow, colMap['options']).setValue(body.options);
+    }
+    if (body.enabled !== undefined) {
+      // Core system fields (sort_order <= 7) cannot be disabled
+      var sortOrder = Number(row.sort_order);
+      if (isSystem && sortOrder <= 7) {
+        return jsonResponse({ error: 'Cannot disable core system fields' }, 400);
+      }
+      sheet.getRange(sheetRow, colMap['enabled']).setValue(
+        body.enabled === true || body.enabled === 'true'
+      );
+    }
+
+    return jsonResponse({ success: true });
+  }
+
+  return jsonResponse({ error: 'Field not found: ' + fieldId }, 404);
+}
+
+function handleDeleteFormField(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var companyId = body.companyId;
+  var fieldId   = body.fieldId;
+  if (!companyId) return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+  if (!fieldId)   return jsonResponse({ error: 'Missing parameter: fieldId' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss    = openCompanySpreadsheet(company.slug);
+  var sheet = initFormFields(ss);
+
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var colMap  = {};
+  for (var c = 0; c < headers.length; c++) colMap[headers[c]] = c + 1;
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) !== String(fieldId)) continue;
+
+    var isSystem = row.is_system === true || String(row.is_system).toLowerCase() === 'true';
+    if (isSystem) return jsonResponse({ error: 'Cannot delete system fields' }, 400);
+
+    // Soft delete — mark the Candidates column header and disable the field
+    var fieldName = String(row.field_name);
+    var candidatesSheet = ss.getSheetByName('Candidates');
+    if (candidatesSheet) {
+      var lastCol = candidatesSheet.getLastColumn();
+      if (lastCol > 0) {
+        var cHeaders = candidatesSheet.getRange(1, 1, 1, lastCol).getValues()[0];
+        var colIdx   = cHeaders.indexOf(fieldName);
+        if (colIdx !== -1) {
+          candidatesSheet.getRange(1, colIdx + 1).setValue('[deleted]_' + fieldName);
+        }
+      }
+    }
+    sheet.getRange(i + 1, colMap['enabled']).setValue(false);
+    return jsonResponse({ success: true });
+  }
+
+  return jsonResponse({ error: 'Field not found: ' + fieldId }, 404);
+}
+
+function handleReorderFormFields(body) {
+  if (!validateAdminSecret(body.secret)) return jsonResponse({ error: 'Forbidden' }, 403);
+
+  var companyId = body.companyId;
+  var order     = body.order;
+  if (!companyId)             return jsonResponse({ error: 'Missing parameter: companyId' }, 400);
+  if (!order || !Array.isArray(order)) return jsonResponse({ error: 'Missing parameter: order' }, 400);
+
+  var company = findCompanyById(companyId);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
+
+  var ss    = openCompanySpreadsheet(company.slug);
+  var sheet = initFormFields(ss);
+
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var colMap  = {};
+  for (var c = 0; c < headers.length; c++) colMap[headers[c]] = c + 1;
+
+  var orderMap = {};
+  for (var k = 0; k < order.length; k++) {
+    orderMap[String(order[k].id)] = Number(order[k].sort_order);
+  }
+
+  for (var i = 1; i < rows.length; i++) {
+    var id = String(rows[i][0]);
+    if (orderMap.hasOwnProperty(id)) {
+      sheet.getRange(i + 1, colMap['sort_order']).setValue(orderMap[id]);
+    }
+  }
+
+  return jsonResponse({ success: true });
+}
+
+// ------------------------------------------------------------
 // POST handler — multipart/form-data application submission
 // ------------------------------------------------------------
 
@@ -415,6 +716,24 @@ function handleSubmitApplication(e) {
   var companyResources = openCompanyResources(company.slug);
   var companySS        = companyResources.spreadsheet;
 
+  // Validate required custom fields
+  var formFieldsSheet = initFormFields(companySS);
+  var ffRows    = formFieldsSheet.getDataRange().getValues();
+  var ffHeaders = ffRows[0];
+  var missingCustom = [];
+  for (var fi = 1; fi < ffRows.length; fi++) {
+    var ff        = rowToObject(ffHeaders, ffRows[fi]);
+    var ffEnabled = ff.enabled  === true || String(ff.enabled).toLowerCase()  === 'true';
+    var ffReq     = ff.required === true || String(ff.required).toLowerCase() === 'true';
+    var ffSystem  = ff.is_system === true || String(ff.is_system).toLowerCase() === 'true';
+    if (!ffSystem && ffEnabled && ffReq && !field(String(ff.field_name))) {
+      missingCustom.push(String(ff.label));
+    }
+  }
+  if (missingCustom.length) {
+    return jsonResponse({ error: 'Missing required fields: ' + missingCustom.join(', ') }, 400);
+  }
+
   // CV upload
   var cvUrl = '';
   try {
@@ -449,7 +768,7 @@ function handleSubmitApplication(e) {
   var sheet = companySS.getSheetByName('Candidates');
   ensureColumn(sheet, 'screening_score');
 
-  appendRowByColumnMap(sheet, {
+  var rowData = {
     timestamp:          new Date().toISOString(),
     job_id:             jobId,
     company_id:         companyId,
@@ -464,7 +783,20 @@ function handleSubmitApplication(e) {
     portfolio_url:      portfolioUrl,
     cover_letter:       coverLetter,
     screening_score:    screeningScore !== '' ? Number(screeningScore) : ''
-  });
+  };
+
+  // Append enabled custom field values
+  for (var ci = 1; ci < ffRows.length; ci++) {
+    var cf       = rowToObject(ffHeaders, ffRows[ci]);
+    var cfEnabled = cf.enabled  === true || String(cf.enabled).toLowerCase()  === 'true';
+    var cfSystem  = cf.is_system === true || String(cf.is_system).toLowerCase() === 'true';
+    if (!cfSystem && cfEnabled) {
+      var cfName = String(cf.field_name);
+      rowData[cfName] = field(cfName) || '';
+    }
+  }
+
+  appendRowByColumnMap(sheet, rowData);
 
   return jsonResponse({ success: true });
 }

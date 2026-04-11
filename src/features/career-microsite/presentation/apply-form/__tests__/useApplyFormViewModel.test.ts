@@ -4,6 +4,7 @@ import { useApplyFormViewModel } from '../useApplyFormViewModel';
 import { type SubmitApplicationUseCase } from '../../../domain/use-cases/SubmitApplicationUseCase';
 import { type Company } from '../../../domain/entities/Company';
 import { type Job } from '../../../domain/entities/Job';
+import { type FormField } from '@/shared/domain/entities/FormField';
 import { DomainError } from '@/shared/domain/errors/DomainError';
 
 // ---------------------------------------------------------------------------
@@ -45,6 +46,19 @@ const job: Job = {
   sortOrder: 1,
 };
 
+const DEFAULT_FORM_FIELDS: FormField[] = [
+  { id: 'sys_1',  label: 'Full Name',          fieldName: 'full_name',          type: 'text',     required: true,  options: [], sortOrder: 1,  enabled: true, isSystem: true },
+  { id: 'sys_2',  label: 'Email',              fieldName: 'email',              type: 'email',    required: true,  options: [], sortOrder: 2,  enabled: true, isSystem: true },
+  { id: 'sys_3',  label: 'Phone',              fieldName: 'phone',              type: 'tel',      required: true,  options: [], sortOrder: 3,  enabled: true, isSystem: true },
+  { id: 'sys_4',  label: 'City',               fieldName: 'city',               type: 'text',     required: true,  options: [], sortOrder: 4,  enabled: true, isSystem: true },
+  { id: 'sys_5',  label: 'Experience Summary', fieldName: 'experience_summary', type: 'textarea', required: true,  options: [], sortOrder: 5,  enabled: true, isSystem: true },
+  { id: 'sys_6',  label: 'Expected Salary',    fieldName: 'expected_salary',    type: 'number',   required: true,  options: [], sortOrder: 6,  enabled: true, isSystem: true },
+  { id: 'sys_7',  label: 'CV / Resume',        fieldName: 'cv_url',             type: 'file',     required: true,  options: [], sortOrder: 7,  enabled: true, isSystem: true },
+  { id: 'sys_8',  label: 'LinkedIn URL',       fieldName: 'linkedin_url',       type: 'url',      required: false, options: [], sortOrder: 8,  enabled: true, isSystem: true },
+  { id: 'sys_9',  label: 'Portfolio URL',      fieldName: 'portfolio_url',      type: 'url',      required: false, options: [], sortOrder: 9,  enabled: true, isSystem: true },
+  { id: 'sys_10', label: 'Cover Letter',       fieldName: 'cover_letter',       type: 'textarea', required: false, options: [], sortOrder: 10, enabled: true, isSystem: true },
+];
+
 function buildFormData(overrides: Record<string, string | File> = {}): FormData {
   const fd = new FormData();
   const defaults: Record<string, string | File> = {
@@ -78,7 +92,7 @@ function setup(submitExecute: SubmitApplicationUseCase['execute'] = vi.fn().mock
   const submitUseCase: SubmitApplicationUseCase = { execute: submitExecute };
   const onSuccess = vi.fn();
   const { result } = renderHook(() =>
-    useApplyFormViewModel(company, job, submitUseCase, onSuccess),
+    useApplyFormViewModel(company, job, submitUseCase, onSuccess, DEFAULT_FORM_FIELDS),
   );
   return { result, submitUseCase, onSuccess };
 }

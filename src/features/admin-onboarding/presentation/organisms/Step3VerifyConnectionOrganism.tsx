@@ -10,7 +10,7 @@ interface Props {
 }
 
 const primaryButtonClass =
-  'rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors';
+  'cursor-pointer rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
 
 export function Step3VerifyConnectionOrganism({
   slug,
@@ -54,7 +54,7 @@ export function Step3VerifyConnectionOrganism({
         <button
           onClick={onVerify}
           disabled={isPending}
-          className="mt-2 ml-2 rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          className="cursor-pointer mt-2 ml-2 rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           Retry
         </button>

@@ -27,6 +27,11 @@ export class ApplicationRepositoryImpl implements ApplicationRepository {
     if (payload.portfolioUrl) formData.append('portfolioUrl', payload.portfolioUrl);
     if (payload.coverLetter) formData.append('coverLetter', payload.coverLetter);
     if (payload.screeningScore != null) formData.append('screeningScore', String(payload.screeningScore));
+    if (payload.customFields) {
+      for (const [key, value] of Object.entries(payload.customFields)) {
+        formData.append(key, String(value));
+      }
+    }
 
     try {
       await this.dataSource.submitApplication(formData);

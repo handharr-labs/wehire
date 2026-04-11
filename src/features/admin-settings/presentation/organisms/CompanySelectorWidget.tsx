@@ -9,9 +9,10 @@ interface Props {
   readonly?: boolean;
   onGoToJobs: (companyId: string) => void;
   onGoToSettings: (companyId: string) => void;
+  onGoToFormFields: (companyId: string) => void;
 }
 
-export function CompanySelectorWidget({ companies, selectedId, onSelectionChange, readonly = false, onGoToJobs, onGoToSettings }: Props) {
+export function CompanySelectorWidget({ companies, selectedId, onSelectionChange, readonly = false, onGoToJobs, onGoToSettings, onGoToFormFields }: Props) {
   return (
     <div className="flex gap-2 items-center">
       <select
@@ -29,16 +30,23 @@ export function CompanySelectorWidget({ companies, selectedId, onSelectionChange
       <button
         onClick={() => onGoToJobs(selectedId)}
         disabled={!selectedId}
-        className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded px-4 py-2 transition-colors"
+        className="cursor-pointer bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded px-4 py-2 transition-colors"
       >
         Manage Jobs
       </button>
       <button
         onClick={() => onGoToSettings(selectedId)}
         disabled={!selectedId}
-        className="bg-white hover:bg-gray-50 disabled:opacity-50 text-gray-700 border border-gray-300 text-sm font-medium rounded px-4 py-2 transition-colors"
+        className="cursor-pointer bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 border border-gray-300 text-sm font-medium rounded px-4 py-2 transition-colors"
       >
         Settings
+      </button>
+      <button
+        onClick={() => onGoToFormFields(selectedId)}
+        disabled={!selectedId}
+        className="cursor-pointer bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 border border-gray-300 text-sm font-medium rounded px-4 py-2 transition-colors"
+      >
+        Form Fields
       </button>
     </div>
   );

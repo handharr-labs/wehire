@@ -14,4 +14,5 @@ export interface ApplicationPayload {
   readonly portfolioUrl?: string;
   readonly coverLetter?: string;
   readonly screeningScore?: number | null;
+  readonly customFields?: Record<string, string | number>;
 }

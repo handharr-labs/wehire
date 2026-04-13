@@ -114,15 +114,26 @@ function openCompanyResources(slug) {
   if (!fileIter.hasNext()) throw new Error('Company database not found: ' + slug + '-database');
   var spreadsheetId = fileIter.next().getId();
 
-  var cvIter = companyDir.getFoldersByName('CVs');
-  var cvFolderId = cvIter.hasNext()
-    ? cvIter.next().getId()
-    : companyDir.createFolder('CVs').getId();
-
   return {
     spreadsheet: SpreadsheetApp.openById(spreadsheetId),
-    cvFolderId:  cvFolderId
+    companyDir:  companyDir
   };
+}
+
+function getOrCreateFolder(parentFolder, name) {
+  var iter = parentFolder.getFoldersByName(name);
+  return iter.hasNext() ? iter.next() : parentFolder.createFolder(name);
+}
+
+function findJobTitle(companySS, jobId) {
+  var sheet   = companySS.getSheetByName('Jobs');
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  for (var i = 1; i < rows.length; i++) {
+    var row = rowToObject(headers, rows[i]);
+    if (String(row.id) === String(jobId)) return String(row.title || 'Unknown Job');
+  }
+  return 'Unknown Job';
 }
 
 // ------------------------------------------------------------
@@ -734,9 +745,15 @@ function handleSubmitApplication(e) {
     return jsonResponse({ error: 'Missing required fields: ' + missingCustom.join(', ') }, 400);
   }
 
-  // CV upload
+  // CV upload — files are stored under {Job Title}/{timestamp} {fullName}/
+  var submissionTimestamp = new Date().toISOString();
   var cvUrl = '';
   try {
+    var jobTitle    = findJobTitle(companySS, jobId);
+    var jobFolder   = getOrCreateFolder(companyResources.companyDir, jobTitle);
+    var candFolderName = submissionTimestamp + ' ' + fullName;
+    var candFolder  = getOrCreateFolder(jobFolder, candFolderName);
+
     var cvBlob = null;
 
     // When sent as multipart, the blob may come through e.postData or via
@@ -752,9 +769,8 @@ function handleSubmitApplication(e) {
     }
 
     if (cvBlob) {
-      var folder     = DriveApp.getFolderById(companyResources.cvFolderId);
-      var cvFileName = 'CV_' + fullName.replace(/\s+/g, '_') + '_' + jobId + '_' + Date.now();
-      var cvFile     = folder.createFile(cvBlob.setName(cvFileName));
+      var cvFileName = params['cvFileName'] ? params['cvFileName'][0] : cvBlob.getName();
+      var cvFile     = candFolder.createFile(cvBlob.setName(cvFileName));
       cvFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
       cvUrl = cvFile.getUrl();
     }
@@ -769,7 +785,7 @@ function handleSubmitApplication(e) {
   ensureColumn(sheet, 'screening_score');
 
   var rowData = {
-    timestamp:          new Date().toISOString(),
+    timestamp:          submissionTimestamp,
     job_id:             jobId,
     company_id:         companyId,
     full_name:          fullName,

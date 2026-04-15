@@ -43,3 +43,5 @@ next-env.d.ts
 
 # Claude Code — delegation flags
 .claude/.delegated-*
+.claude/.session-id
+.claude/runs/

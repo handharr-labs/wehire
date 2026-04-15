@@ -44,3 +44,4 @@ Tracked issues for **WeHire**. Source of truth is GitHub Issues — this file is
 | 053 | Add admin-configurable form fields with dynamic Google Sheet column sync | `pending` | [#53](https://github.com/handharr-labs/wehire/issues/53) |
 | 055 | fix(design-system): establish proper design tokens, fix font setup, and unify color strategy | `pending` | [#55](https://github.com/handharr-labs/wehire/issues/55) |
 | 057 | refactor: organize candidate file uploads into nested Drive folders | `done` | [#57](https://github.com/handharr-labs/wehire/issues/57) |
+| 059 | perf: eliminate Drive folder traversal in Apps Script by storing spreadsheetId in Companies sheet | `pending` | [#59](https://github.com/handharr-labs/wehire/issues/59) |

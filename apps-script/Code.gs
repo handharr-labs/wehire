@@ -91,31 +91,18 @@ function findCompanyById(companyId) {
   return null;
 }
 
-function openCompanySpreadsheet(slug) {
-  var root    = DriveApp.getFolderById(ROOT_FOLDER_ID);
-  var dirIter = root.getFoldersByName(slug + '-dir');
-  if (!dirIter.hasNext()) throw new Error('Company folder not found: ' + slug + '-dir');
-  var companyDir = dirIter.next();
-
-  var fileIter = companyDir.getFilesByName(slug + '-database');
-  if (!fileIter.hasNext()) throw new Error('Company database not found: ' + slug + '-database');
-  var spreadsheetId = fileIter.next().getId();
-
-  return SpreadsheetApp.openById(spreadsheetId);
+function openCompanySpreadsheet(company) {
+  return SpreadsheetApp.openById(company.spreadsheetId);
 }
 
-function openCompanyResources(slug) {
+function openCompanyResources(company) {
   var root    = DriveApp.getFolderById(ROOT_FOLDER_ID);
-  var dirIter = root.getFoldersByName(slug + '-dir');
-  if (!dirIter.hasNext()) throw new Error('Company folder not found: ' + slug + '-dir');
+  var dirIter = root.getFoldersByName(company.slug + '-dir');
+  if (!dirIter.hasNext()) throw new Error('Company folder not found: ' + company.slug + '-dir');
   var companyDir = dirIter.next();
 
-  var fileIter = companyDir.getFilesByName(slug + '-database');
-  if (!fileIter.hasNext()) throw new Error('Company database not found: ' + slug + '-database');
-  var spreadsheetId = fileIter.next().getId();
-
   return {
-    spreadsheet: SpreadsheetApp.openById(spreadsheetId),
+    spreadsheet: SpreadsheetApp.openById(company.spreadsheetId),
     companyDir:  companyDir
   };
 }
@@ -172,7 +159,7 @@ function handleGetJobs(e) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss      = openCompanySpreadsheet(company.slug);
+  var ss      = openCompanySpreadsheet(company);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -194,7 +181,7 @@ function handleGetJob(e) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss      = openCompanySpreadsheet(company.slug);
+  var ss      = openCompanySpreadsheet(company);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -215,7 +202,10 @@ function handleGetJobBySlug(e) {
   if (!jobId) return jsonResponse({ error: 'Missing parameter: jobId' }, 400);
   if (!slug)  return jsonResponse({ error: 'Missing parameter: slug' }, 400);
 
-  var ss      = openCompanySpreadsheet(slug);
+  var company = findCompanyBySlug(slug);
+  if (!company) return jsonResponse({ error: 'Company not found: ' + slug }, 404);
+
+  var ss      = openCompanySpreadsheet(company);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -243,7 +233,7 @@ function handleCreateJob(body) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss    = openCompanySpreadsheet(company.slug);
+  var ss    = openCompanySpreadsheet(company);
   var sheet = ss.getSheetByName('Jobs');
   var rows  = sheet.getDataRange().getValues();
 
@@ -290,7 +280,7 @@ function handleUpdateJob(body) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss      = openCompanySpreadsheet(company.slug);
+  var ss      = openCompanySpreadsheet(company);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -336,7 +326,7 @@ function handleDeleteJob(body) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss      = openCompanySpreadsheet(company.slug);
+  var ss      = openCompanySpreadsheet(company);
   var sheet   = ss.getSheetByName('Jobs');
   var rows    = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -457,7 +447,7 @@ function handleGetFormFields(e) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss    = openCompanySpreadsheet(company.slug);
+  var ss    = openCompanySpreadsheet(company);
   var sheet = initFormFields(ss);
   var rows  = sheet.getDataRange().getValues();
   var headers = rows[0];
@@ -485,7 +475,7 @@ function handleCreateFormField(body) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss    = openCompanySpreadsheet(company.slug);
+  var ss    = openCompanySpreadsheet(company);
   var sheet = initFormFields(ss);
 
   var fieldName = slugify(body.label);
@@ -536,7 +526,7 @@ function handleUpdateFormField(body) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss    = openCompanySpreadsheet(company.slug);
+  var ss    = openCompanySpreadsheet(company);
   var sheet = initFormFields(ss);
 
   var rows    = sheet.getDataRange().getValues();
@@ -616,7 +606,7 @@ function handleDeleteFormField(body) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss    = openCompanySpreadsheet(company.slug);
+  var ss    = openCompanySpreadsheet(company);
   var sheet = initFormFields(ss);
 
   var rows    = sheet.getDataRange().getValues();
@@ -662,7 +652,7 @@ function handleReorderFormFields(body) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var ss    = openCompanySpreadsheet(company.slug);
+  var ss    = openCompanySpreadsheet(company);
   var sheet = initFormFields(ss);
 
   var rows    = sheet.getDataRange().getValues();
@@ -724,7 +714,7 @@ function handleSubmitApplication(e) {
   var company = findCompanyById(companyId);
   if (!company) return jsonResponse({ error: 'Company not found: ' + companyId }, 404);
 
-  var companyResources = openCompanyResources(company.slug);
+  var companyResources = openCompanyResources(company);
   var companySS        = companyResources.spreadsheet;
 
   // Validate required custom fields
@@ -878,7 +868,8 @@ function toCompanyDTO(row) {
     whatsapp_number:  String(row.whatsapp_number  || ''),
     site_status:      String(row.site_status      || ''),
     max_active_jobs:  Number(row.max_active_jobs  || 0),
-    scoring_enabled:  row.scoring_enabled === true || String(row.scoring_enabled).toLowerCase() === 'true'
+    scoring_enabled:  row.scoring_enabled === true || String(row.scoring_enabled).toLowerCase() === 'true',
+    spreadsheetId:    String(row.spreadsheetId    || '')
   };
 }
 

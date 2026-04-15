@@ -41,7 +41,7 @@ Each subdirectory under `sheets/` mirrors one company's Google Sheet. When addin
 | `companies_database` (global) | Registry of all companies: branding and config |
 | `[company]-database` (per-company) | Jobs, Candidates, and Form_Logs for that company only |
 
-Each company's CV files are stored in a dedicated Drive folder (`CVs/`) inside that company's directory. The script auto-discovers per-company resources via Drive traversal using the company slug — no IDs need to be stored in the sheet.
+Each company's CV files are stored in a dedicated Drive folder (`CVs/`) inside that company's directory. The script resolves the CV folder via Drive traversal (needed for uploads), but the `spreadsheetId` for each company's database spreadsheet is stored directly in the Companies sheet for fast direct access.
 
 ---
 
@@ -80,6 +80,8 @@ One tab named **`Companies`**:
 | I | whatsapp_number | string | e.g. `628123456789` |
 | J | site_status | string | `active` / `inactive` |
 | K | max_active_jobs | number | |
+| L | scoring_enabled | boolean | `true` / `false` |
+| M | spreadsheetId | string | Google Sheets file ID of the company's database spreadsheet — **must be filled in by the operator; see §5** |
 
 ### Per-company sheet: `[company]-database`
 
@@ -137,7 +139,7 @@ In the Apps Script editor: **Project Settings → Script Properties**.
 | `COMPANIES_SPREADSHEET_ID` | The ID from your `companies_database` Google Sheet URL (`/d/<ID>/edit`) |
 | `ROOT_FOLDER_ID` | The ID of the Drive root folder that contains all `{slug}-dir/` company folders |
 
-> Per-company `spreadsheet_id` and `cv_folder_id` are no longer stored in the Companies sheet — the script auto-discovers them by traversing the Drive folder tree using the company slug.
+> Per-company CV folder is still resolved via Drive traversal (needed for CV uploads), but the `spreadsheetId` is now stored directly in the Companies sheet to eliminate the slow Drive folder/file traversal on every read request.
 
 ---
 
@@ -149,7 +151,9 @@ To add a new company:
 2. **Create a `CVs/` subfolder** inside `{slug}-dir`. Set its sharing to **"Anyone with the link — Viewer"** so CV links work for the hiring team.
 3. **Create a spreadsheet** named `{slug}-database` (e.g. `acme-corp-database`) inside `{slug}-dir`.
    - Add three tabs: `Jobs`, `Candidates`, `Form_Logs` with the columns listed in §3.
-4. **Add a row to the `Companies` tab** in `companies_database` — fill all columns. No IDs to copy; the script discovers resources by slug automatically.
+4. **Add a row to the `Companies` tab** in `companies_database` — fill all columns, including the `spreadsheetId` column (column M). Copy the ID from the spreadsheet URL: `https://docs.google.com/spreadsheets/d/<ID>/edit`.
+
+> The `spreadsheetId` column is required. Without it, every `getJobs`, `getJob`, and `getJobBySlug` request for that company will fail. This value replaces the previous Drive folder/file traversal and reduces cold response times from 5–15 s to under 1 s.
 
 > The naming convention is critical. If a folder or file name doesn't match exactly, the script returns a descriptive error (e.g. `Company folder not found: acme-corp-dir`).
 
@@ -213,7 +217,7 @@ All error responses have the shape `{ error: "message" }`. Check the `Form_Logs`
 After deploying a new version:
 
 1. **Company data** — `GET ?action=getCompany&slug=test-company`
-   - Expect: `{ data: { id, name, slug, logo_url, primary_color, ... } }` — no `spreadsheet_id`/`cv_folder_id`
+   - Expect: `{ data: { id, name, slug, logo_url, primary_color, ..., spreadsheetId } }`
 
 2. **Job listing** — `GET ?action=getJobs&companyId=1`
    - Expect: `{ data: [...] }` fetched from `test-company-database`
